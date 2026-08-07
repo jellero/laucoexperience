@@ -1,0 +1,21 @@
+{
+  "name": "Lauco Experience",
+  "short_name": "Lauco",
+  "description": "Percorsi, borghi e natura dell'altopiano di Lauco.",
+  "lang": "it",
+  "start_url": "./index.html#home",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f7f5ef",
+  "theme_color": "#153f35",
+  "categories": ["travel", "navigation", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

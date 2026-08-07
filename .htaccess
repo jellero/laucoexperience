@@ -1,0 +1,38 @@
+Options -MultiViews
+
+RewriteEngine On
+RewriteBase /
+
+<FilesMatch "^(?:\.env(?:\.example)?|composer\.(?:json|lock)|phpunit\.xml|REFACTOR_LOGICA\.md)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Il front controller Slim mantiene URL e template del sito originale.
+# Asset, media, backoffice e handler POST restano serviti direttamente.
+RewriteRule ^public/index\.php$ - [L]
+RewriteRule ^(?:bootstrap|config|inc|migrations|resources|src|storage|tests|tools|vendor)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:assets|gpx|uploads|app|admin)(?:/|$) - [L]
+
+# 1) /eventi.php -> /eventi (redirect 301), escluso il front controller.
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteCond %1 !^public/index$ [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# 2) Tutte le pagine pubbliche GET/HEAD passano dal framework.
+RewriteCond %{REQUEST_METHOD} ^(?:GET|HEAD)$ [NC]
+RewriteRule ^(?:|index|map|mappa1|segnaletica|consigli|itinerari-piedi|itinerari-mtb|itinerari-speciali|gestione-sentieri|contribuisci|segnala-problema|luoghi|luogo|eventi|evento|percorso|contatti|newsletter|privacy|cookie|400)/?$ public/index.php [QSA,L]
+
+# 3) API del nuovo framework.
+RewriteRule ^api/v1/(?:health|site-texts/[a-z]{2})/?$ public/index.php [QSA,L]
+
+# 4) Compatibilita clean URL per backoffice e handler legacy.
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+# 5) Pagine non esistenti -> 400.php (404 personalizzato).
+ErrorDocument 404 /400.php

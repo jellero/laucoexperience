@@ -1,0 +1,8 @@
+.env
+*.log
+.DS_Store
+/vendor/
+/storage/translations/*.json
+/storage/translations/*.bak
+/storage/translations/*.tmp
+/.phpunit.cache/

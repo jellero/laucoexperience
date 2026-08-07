@@ -1,0 +1,85 @@
+#percorso-map {
+    width: 100%;
+    height: 560px;
+    position: relative;
+    z-index: 1;
+}
+
+#percorso-elevation {
+    width: 100%;
+    min-height: 250px;
+    background: #fff;
+}
+
+.percorso-map-error {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 500;
+    background: #fff;
+    padding: 12px 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.15);
+}
+
+.showcase-trek {
+    position: relative;
+}
+
+.recommended-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 3;
+    display: inline-block;
+    padding: 7px 11px;
+    background: rgba(0,0,0,.78);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.percorso-stats-icons {
+    padding-top: 50px;
+    padding-bottom: 45px;
+}
+
+.percorso-stats-icons .col-sm-4 {
+    margin-top: 25px;
+}
+
+.percorso-stats-icons em {
+    display: block;
+    margin-top: 10px;
+    font-style: normal;
+}
+
+.percorso-gallery-grid .row:first-child {
+    padding-top: 0;
+}
+
+.percorso-gallery-grid .image {
+    min-height: 360px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.percorso-gallery-grid .lightbox-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+
+@media (max-width: 600px) {
+    #percorso-map {
+        height: 420px;
+    }
+
+    .percorso-gallery-grid .image {
+        min-height: 260px;
+        margin-bottom: 20px;
+    }
+}

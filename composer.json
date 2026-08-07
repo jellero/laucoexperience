@@ -1,0 +1,43 @@
+{
+  "name": "lauco-experience/website",
+  "description": "Lauco Experience: sito pubblico, CMS e contenuti multilingua su Slim 4.",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.3 || ^8.4",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "slim/psr7": "^1.7",
+    "slim/slim": "^4.15"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "LaucoExperience\\": "src/"
+    }
+  },
+  "scripts": {
+    "lint": [
+      "find admin bootstrap config inc public sections src tests tools -type f -name '*.php' -print0 | xargs -0 -n1 php -l",
+      "find . -maxdepth 1 -type f -name '*.php' -print0 | xargs -0 -n1 php -l"
+    ],
+    "audit:i18n": "php tools/audit-site-catalog.php",
+    "smoke": "php tests/refactor-smoke.php",
+    "test": "phpunit --colors=always",
+    "check": [
+      "@lint",
+      "@audit:i18n",
+      "@smoke",
+      "@test"
+    ]
+  },
+  "config": {
+    "allow-plugins": {},
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}

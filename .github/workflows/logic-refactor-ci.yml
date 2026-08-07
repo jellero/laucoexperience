@@ -1,0 +1,84 @@
+name: Modern framework and visual contract
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  visual-contract:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Keep the original public design immutable
+        shell: bash
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+
+          mapfile -t changed < <(git diff --name-only "$base" HEAD)
+          forbidden=()
+          for file in "${changed[@]}"; do
+            if [[ "$file" == assets/* ]]; then
+              forbidden+=("$file")
+            elif [[ "$file" != */* && "$file" == *.php && "$file" != "newsletter.php" ]]; then
+              forbidden+=("$file")
+            elif [[ "$file" == sections/* && "$file" != "sections/slider.php" ]]; then
+              forbidden+=("$file")
+            fi
+          done
+
+          if (( ${#forbidden[@]} )); then
+            echo "La modernizzazione modifica file che definiscono la grafica pubblica originale:"
+            printf ' - %s\n' "${forbidden[@]}"
+            exit 1
+          fi
+
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, dom, json, libxml, mbstring, pdo_mysql, simplexml
+          coverage: none
+      - uses: ramsey/composer-install@v3
+      - run: composer check
+
+  migrations:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: test-root
+          MARIADB_DATABASE: lauco
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes mariadb-client
+      - name: Apply additive migrations on MariaDB 11.4
+        env:
+          MYSQL_PWD: test-root
+        run: |
+          mariadb --host=127.0.0.1 --user=root lauco < database.sql
+          for migration in migrations/*.sql; do
+            mariadb --host=127.0.0.1 --user=root lauco < "$migration"
+          done
+          mariadb --host=127.0.0.1 --user=root lauco -e "SHOW TABLES"

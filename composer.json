@@ -22,8 +22,8 @@
   },
   "scripts": {
     "lint": [
-      "find admin bootstrap config inc public sections src tests tools -type f -name '*.php' -print0 | xargs -0 -n1 php -l",
-      "find . -maxdepth 1 -type f -name '*.php' -print0 | xargs -0 -n1 php -l"
+      "find admin bootstrap config inc public resources/views src tests tools -type f -name '*.php' -print0 | xargs -0 -n1 php -l",
+      "test -z \"$(find . -maxdepth 1 -type f -name '*.php' -print -quit)\""
     ],
     "audit:i18n": "php tools/audit-site-catalog.php",
     "smoke": "php tests/refactor-smoke.php",

@@ -76,6 +76,7 @@ try {
         ]
     );
     $pdo->setAttribute(PDO::ATTR_STATEMENT_CLASS, [LaucoPDOStatement::class]);
+    $GLOBALS['pdo'] = $pdo;
 } catch (Throwable $e) {
     error_log('[Lauco DB] ' . $e->getMessage());
     http_response_code(500);

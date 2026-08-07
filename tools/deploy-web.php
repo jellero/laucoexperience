@@ -513,7 +513,7 @@ function extractZip(string $archive, string $destination): void
 
 function validateSource(string $source): void
 {
-    foreach (['index.php', '.htaccess', 'composer.json', 'composer.lock', 'public/index.php', 'admin/index.php', 'admin/_admin_layout.php', 'inc/db.php', 'inc/env.php', 'tools/migrate-logic.php'] as $required) {
+    foreach (['.htaccess', 'composer.json', 'composer.lock', 'public/index.php', 'config/routes.php', 'resources/views/pages/index.php', 'src/Http/ApplicationFactory.php', 'src/Http/PageAction.php', 'admin/index.php', 'admin/_admin_layout.php', 'inc/db.php', 'inc/env.php', 'tools/migrate-logic.php'] as $required) {
         if (!is_file($source . '/' . $required)) {
             throw new RuntimeException('Release incompleta: manca ' . $required);
         }
@@ -760,7 +760,7 @@ function fileMode(string $relative): int
 function verifyRelease(string $release): void
 {
     $checks = [
-        is_readable($release . '/index.php'),
+        is_readable($release . '/public/index.php'),
         is_readable($release . '/.htaccess'),
         is_readable($release . '/assets'),
         is_writable($release . '/uploads'),
@@ -784,8 +784,8 @@ function installRouter(string $root, string $stateDir): void
         . "Options -Indexes\n<IfModule mod_rewrite.c>\nRewriteEngine On\n"
         . "RewriteRule ^deploy\\.php$ - [L]\nRewriteRule ^\\.well-known/acme-challenge/ - [L]\n"
         . "RewriteRule ^\\.lauco-deploy(?:/|$) - [F,L]\n"
-        . "RewriteRule ^(?:inc|config|migrations|tools|tests|\\.github)(?:/|$) - [F,L,NC]\n"
-        . "RewriteRule ^(?:\\.env(?:\\.example)?|REFACTOR_LOGICA\\.md)$ - [F,L,NC]\n"
+        . "RewriteRule ^(?:bootstrap|inc|config|migrations|resources|src|storage|tools|tests|vendor|\\.github)(?:/|$) - [F,L,NC]\n"
+        . "RewriteRule ^(?:\\.env(?:\\.example)?|composer\\.(?:json|lock)|database\\.sql|README\\.md)$ - [F,L,NC]\n"
         . "RewriteCond %{THE_REQUEST} \\s/+" . $live . "(?:[/?\\s]) [NC]\nRewriteRule ^" . $live . "(?:/|$) - [F,L]\n"
         . "RewriteRule ^" . $live . "/ - [L]\nRewriteRule ^(.*)$ " . DEPLOY_LIVE_DIR . "/$1 [L,QSA]\n</IfModule>\n"
         . "# END LAUCO CONSERVATIVE DEPLOY ROUTER\n";

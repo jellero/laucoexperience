@@ -5,6 +5,8 @@ use LaucoExperience\Http\ApplicationFactory;
 use LaucoExperience\Localization\SiteCatalogRepository;
 
 $root = dirname(__DIR__);
+defined('LAUCO_ROOT') || define('LAUCO_ROOT', $root);
+defined('LAUCO_VIEW_PATH') || define('LAUCO_VIEW_PATH', $root . '/resources/views');
 require_once $root . '/inc/env.php';
 
 $autoload = $root . '/vendor/autoload.php';

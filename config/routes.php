@@ -1,0 +1,30 @@
+<?php
+declare(strict_types=1);
+
+return [
+    ['name' => 'home', 'methods' => ['GET'], 'paths' => ['/', '/index', '/index.php'], 'handler' => 'page', 'template' => 'index.php', 'script' => 'index.php'],
+    ['name' => 'map', 'methods' => ['GET'], 'paths' => ['/map', '/map.php'], 'handler' => 'page', 'template' => 'map.php', 'script' => 'map.php'],
+    ['name' => 'map.secondary', 'methods' => ['GET'], 'paths' => ['/mappa1', '/mappa1.php'], 'handler' => 'page', 'template' => 'mappa1.php', 'script' => 'mappa1.php'],
+    ['name' => 'signage', 'methods' => ['GET'], 'paths' => ['/segnaletica', '/segnaletica.php'], 'handler' => 'page', 'template' => 'segnaletica.php', 'script' => 'segnaletica.php'],
+    ['name' => 'advice', 'methods' => ['GET'], 'paths' => ['/consigli', '/consigli.php'], 'handler' => 'page', 'template' => 'consigli.php', 'script' => 'consigli.php'],
+    ['name' => 'routes.walking', 'methods' => ['GET'], 'paths' => ['/itinerari-piedi', '/itinerari-piedi.php'], 'handler' => 'page', 'template' => 'itinerari-piedi.php', 'script' => 'itinerari-piedi.php'],
+    ['name' => 'routes.mtb', 'methods' => ['GET'], 'paths' => ['/itinerari-mtb', '/itinerari-mtb.php'], 'handler' => 'page', 'template' => 'itinerari-mtb.php', 'script' => 'itinerari-mtb.php'],
+    ['name' => 'routes.special', 'methods' => ['GET'], 'paths' => ['/itinerari-speciali', '/itinerari-speciali.php'], 'handler' => 'page', 'template' => 'itinerari-speciali.php', 'script' => 'itinerari-speciali.php'],
+    ['name' => 'routes.detail', 'methods' => ['GET'], 'paths' => ['/percorso', '/percorso.php'], 'handler' => 'page', 'template' => 'percorso.php', 'script' => 'percorso.php'],
+    ['name' => 'trail.management', 'methods' => ['GET'], 'paths' => ['/gestione-sentieri', '/gestione-sentieri.php'], 'handler' => 'page', 'template' => 'gestione-sentieri.php', 'script' => 'gestione-sentieri.php'],
+    ['name' => 'places', 'methods' => ['GET'], 'paths' => ['/luoghi', '/luoghi.php'], 'handler' => 'page', 'template' => 'luoghi.php', 'script' => 'luoghi.php'],
+    ['name' => 'places.detail', 'methods' => ['GET'], 'paths' => ['/luogo', '/luogo.php'], 'handler' => 'page', 'template' => 'luogo.php', 'script' => 'luogo.php'],
+    ['name' => 'events', 'methods' => ['GET'], 'paths' => ['/eventi', '/eventi.php'], 'handler' => 'page', 'template' => 'eventi.php', 'script' => 'eventi.php'],
+    ['name' => 'events.detail', 'methods' => ['GET'], 'paths' => ['/evento', '/evento.php'], 'handler' => 'page', 'template' => 'evento.php', 'script' => 'evento.php'],
+    ['name' => 'contact', 'methods' => ['GET'], 'paths' => ['/contatti', '/contatti.php'], 'handler' => 'page', 'template' => 'contatti.php', 'script' => 'contatti.php'],
+    ['name' => 'contribute', 'methods' => ['GET', 'POST'], 'paths' => ['/contribuisci', '/contribuisci.php'], 'handler' => 'page', 'template' => 'contribuisci.php', 'script' => 'contribuisci.php'],
+    ['name' => 'report', 'methods' => ['GET', 'POST'], 'paths' => ['/segnala-problema', '/segnala-problema.php'], 'handler' => 'page', 'template' => 'segnala-problema.php', 'script' => 'segnala-problema.php'],
+    ['name' => 'privacy', 'methods' => ['GET'], 'paths' => ['/privacy', '/privacy.php'], 'handler' => 'page', 'template' => 'privacy.php', 'script' => 'privacy.php'],
+    ['name' => 'cookies', 'methods' => ['GET'], 'paths' => ['/cookie', '/cookie.php'], 'handler' => 'page', 'template' => 'cookie.php', 'script' => 'cookie.php'],
+    ['name' => 'login', 'methods' => ['GET', 'POST'], 'paths' => ['/login', '/login.php'], 'handler' => 'login', 'template' => 'login.php'],
+    ['name' => 'logout', 'methods' => ['GET', 'POST'], 'paths' => ['/logout', '/logout.php'], 'handler' => 'logout'],
+    ['name' => 'account.setup', 'methods' => ['GET', 'POST'], 'paths' => ['/crea-account', '/crea-account.php'], 'handler' => 'account-setup', 'template' => 'crea-account.php'],
+    ['name' => 'contact.submit', 'methods' => ['GET', 'POST'], 'paths' => ['/send', '/send.php'], 'handler' => 'contact-submit'],
+    ['name' => 'newsletter.subscribe', 'methods' => ['GET', 'POST'], 'paths' => ['/newsletter', '/newsletter.php'], 'handler' => 'newsletter'],
+    ['name' => 'error.not-found', 'methods' => ['GET'], 'paths' => ['/400', '/400.php'], 'handler' => 'page', 'template' => '400.php', 'script' => '400.php', 'status' => 404],
+];

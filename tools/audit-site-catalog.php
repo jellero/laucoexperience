@@ -40,17 +40,19 @@ if (isset($catalogs['it'])) {
 
     $normalize = static fn (string $value): string => trim(preg_replace('/\s+/u', ' ', html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8')) ?? '');
     $known = array_fill_keys(array_map($normalize, array_values($catalogs['it'])), true);
-    $files = array_values(array_filter(
-        glob($root . '/*.php') ?: [],
-        static fn (string $path): bool => !in_array(basename($path), ['login.php', 'logout.php', 'crea-account.php', 'send.php'], true)
-    ));
     $files = array_merge(
-        $files,
         array_values(array_filter(
-            glob($root . '/sections/*.php') ?: [],
+            glob($root . '/resources/views/pages/*.php') ?: [],
+            static fn (string $path): bool => !in_array(basename($path), ['login.php', 'crea-account.php'], true)
+        )),
+        array_values(array_filter(
+            glob($root . '/resources/views/sections/*.php') ?: [],
             static fn (string $path): bool => basename($path) !== 'mapok.php'
         )),
-        array_map(static fn (string $name): string => $root . '/inc/' . $name, ['header.php', 'menu.php', 'footer.php', 'footerf.php', 'scripts.php'])
+        array_map(
+            static fn (string $name): string => $root . '/resources/views/partials/' . $name,
+            ['header.php', 'menu.php', 'footer.php', 'footerf.php', 'scripts.php']
+        )
     );
 
     foreach ($files as $path) {

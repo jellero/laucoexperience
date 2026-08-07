@@ -1,13 +1,14 @@
 # Lauco Experience
 
-Versione production-ready del sito Lauco Experience: framework Slim 4, grafica pubblica invariata, backoffice editoriale e contenuti in italiano, inglese, tedesco e sloveno.
+Versione production-ready del sito Lauco Experience: micro-framework Slim 4 con front controller unico, grafica pubblica invariata, backoffice editoriale e contenuti in italiano, inglese, tedesco e sloveno.
 
 ## Contratto
 
 - tema, CSS, JavaScript, immagini e impaginazioni pubbliche restano invariati;
 - URL pubblici e amministrativi rimangono disponibili;
 - tabelle, contenuti e CRUD esistenti sono conservati;
-- Slim 4 orchestra le richieste pubbliche GET/HEAD senza sostituire i template originali;
+- Slim 4 orchestra pagine, form, API e risposte HTTP tramite route e Action PSR-7;
+- le pagine sono view in `resources/views/pages`, le sezioni in `resources/views/sections` e la root non contiene endpoint PHP;
 - le migrazioni sono additive e non cancellano dati.
 
 ## Installazione
@@ -24,6 +25,24 @@ mariadb lauco < migrations/20260807_framework_i18n.sql
 Le credenziali restano esclusivamente nel file locale `.env`; `.env` e i dump con dati reali non devono essere versionati. La directory `storage/translations` deve essere scrivibile dal processo PHP.
 
 Per il deploy da hosting condiviso, caricare `tools/deploy-web.php` nel document root con il nome `deploy.php`: conserva automaticamente `.env`, upload e cataloghi aggiornati, installa le dipendenze, applica le migrazioni additive e mantiene le release precedenti per il rollback.
+
+## Architettura
+
+```text
+public/index.php             front controller unico
+bootstrap/app.php            bootstrap e dependency wiring
+config/routes.php            inventario dichiarativo delle route
+src/Http/Action/             controller per login, form e newsletter
+src/View/PhpView.php         renderer PHP confinato alle view
+resources/views/pages/       layout delle pagine
+resources/views/sections/    componenti editoriali della home e degli elenchi
+resources/views/partials/    head, menu, footer e script condivisi
+resources/lang/              cataloghi statici IT / EN / DE / SL
+admin/                       backoffice protetto
+inc/                         servizi legacy isolati e compatibili
+```
+
+Le URL canoniche sono prive dell'estensione (`/eventi`, `/luoghi`, `/privacy`). Gli indirizzi storici `.php` restano alias compatibili; le richieste web GET/HEAD vengono reindirizzate alla forma pulita. Una route sconosciuta usa la view 404 del framework.
 
 ## Contenuti AI e quattro lingue
 

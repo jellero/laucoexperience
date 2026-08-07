@@ -1,0 +1,84 @@
+<?php
+declare(strict_types=1);
+
+namespace LaucoExperience\Tests\Unit;
+
+use PHPUnit\Framework\TestCase;
+use Slim\Psr7\Factory\ServerRequestFactory;
+
+final class RoutingTest extends TestCase
+{
+    public function testCleanAndLegacyPrivacyUrlsUseTheFrontController(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $factory = new ServerRequestFactory();
+
+        $request = $factory->createServerRequest('GET', 'https://example.test/privacy');
+        $response = $app->handle($request);
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringContainsString('<!DOCTYPE html>', (string) $response->getBody());
+        self::assertSame('it', $response->getHeaderLine('Content-Language'));
+
+        $request = $factory->createServerRequest('GET', 'https://example.test/privacy.php?lang=en');
+        $response = $app->handle($request);
+        self::assertSame(301, $response->getStatusCode());
+        self::assertSame('/privacy?lang=en', $response->getHeaderLine('Location'));
+
+        $request = $factory->createServerRequest('GET', 'https://example.test/privacy/?lang=de');
+        $response = $app->handle($request);
+        self::assertSame(301, $response->getStatusCode());
+        self::assertSame('/privacy?lang=de', $response->getHeaderLine('Location'));
+    }
+
+    public function testLegacyPostKeepsItsBodyAndReachesTheAction(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('POST', 'https://example.test/newsletter.php');
+        $response = $app->handle($request);
+
+        self::assertNotSame(301, $response->getStatusCode());
+        self::assertStringStartsWith('application/json', $response->getHeaderLine('Content-Type'));
+    }
+
+    public function testHealthEndpointDescribesTheNewArchitecture(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/api/v1/health');
+        $response = $app->handle($request);
+        $payload = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertSame('front-controller', $payload['architecture'] ?? null);
+        self::assertSame('slim-4', $payload['framework'] ?? null);
+    }
+
+    public function testUnknownPageUsesTheOrganized404View(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/non-esiste');
+        $response = $app->handle($request);
+
+        self::assertSame(404, $response->getStatusCode());
+        self::assertStringContainsString('<!DOCTYPE html>', (string) $response->getBody());
+    }
+
+    public function testExplicitErrorRouteReturns404(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/400');
+        $response = $app->handle($request);
+
+        self::assertSame(404, $response->getStatusCode());
+        self::assertStringContainsString('<!DOCTYPE html>', (string) $response->getBody());
+    }
+
+    public function testNewsletterRejectsGetWithJsonResponse(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/newsletter');
+        $response = $app->handle($request);
+
+        self::assertSame(405, $response->getStatusCode());
+        self::assertStringStartsWith('application/json', $response->getHeaderLine('Content-Type'));
+    }
+}

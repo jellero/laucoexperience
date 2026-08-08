@@ -24,7 +24,7 @@ final class SiteCatalogRepository
             return $defaults;
         }
 
-        return array_replace($defaults, $this->read($runtimePath));
+        return $this->normalize(array_replace($defaults, $this->read($runtimePath)));
     }
 
     /** @return array<string,string> */
@@ -37,7 +37,7 @@ final class SiteCatalogRepository
             return $defaults;
         }
 
-        return array_replace($defaults, $this->read($supplementalPath));
+        return $this->normalize(array_replace($defaults, $this->read($supplementalPath)));
     }
 
     /** @return array<string,array<string,string>> */

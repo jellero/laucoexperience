@@ -31,7 +31,13 @@ final class SiteCatalogRepository
     public function loadDefault(string $locale): array
     {
         $this->assertLocale($locale);
-        return $this->read($this->defaultPath($locale));
+        $defaults = $this->read($this->defaultPath($locale));
+        $supplementalPath = $this->supplementalPath($locale);
+        if (!is_file($supplementalPath)) {
+            return $defaults;
+        }
+
+        return array_replace($defaults, $this->read($supplementalPath));
     }
 
     /** @return array<string,array<string,string>> */
@@ -87,6 +93,11 @@ final class SiteCatalogRepository
     private function defaultPath(string $locale): string
     {
         return $this->defaultsDirectory . '/site.' . $locale . '.json';
+    }
+
+    private function supplementalPath(string $locale): string
+    {
+        return $this->defaultsDirectory . '/feature-forra.' . $locale . '.json';
     }
 
     private function runtimePath(string $locale): string

@@ -1,10 +1,15 @@
 <?php
 declare(strict_types=1);
 
+function qr_root_path(): string
+{
+    return defined('LAUCO_ROOT') ? LAUCO_ROOT : dirname(__DIR__);
+}
+
 /** @return array<string,array{label:string,area:string,destination:string}> */
 function qr_registry(): array
 {
-    $registry = require LAUCO_ROOT . '/config/qr_codes.php';
+    $registry = require qr_root_path() . '/config/qr_codes.php';
     return is_array($registry) ? $registry : [];
 }
 
@@ -29,7 +34,7 @@ function qr_definition(string $code): ?array
 
 function qr_stats_open_pdo(): ?PDO
 {
-    require_once LAUCO_ROOT . '/inc/env.php';
+    require_once qr_root_path() . '/inc/env.php';
 
     try {
         $host = lauco_env_required('DB_HOST');

@@ -8,6 +8,7 @@ use LaucoExperience\Http\Action\ContactSubmitAction;
 use LaucoExperience\Http\Action\LoginAction;
 use LaucoExperience\Http\Action\LogoutAction;
 use LaucoExperience\Http\Action\NewsletterSubscribeAction;
+use LaucoExperience\Http\Action\QrRedirectAction;
 use LaucoExperience\Http\Middleware\CanonicalUrlMiddleware;
 use LaucoExperience\Localization\HtmlLocalizer;
 use LaucoExperience\Localization\LocaleResolver;
@@ -41,6 +42,7 @@ final class ApplicationFactory
             'account-setup' => new AccountSetupAction($root, $pages),
             'contact-submit' => new ContactSubmitAction($root),
             'newsletter' => new NewsletterSubscribeAction($root, $locales),
+            'qr-redirect' => new QrRedirectAction($root),
         ];
 
         $definitions = require $root . '/config/routes.php';

@@ -30,6 +30,32 @@ final class RoutingTest extends TestCase
         self::assertSame('/privacy?lang=de', $response->getHeaderLine('Location'));
     }
 
+    public function testForraPageIsRoutedByTheApplication(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/forra');
+        $response = $app->handle($request);
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringContainsString('Forra del Vinadia', (string) $response->getBody());
+    }
+
+    public function testQrRedirectUsesWhitelistAndDoesNotSetTrackingCookies(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $factory = new ServerRequestFactory();
+
+        $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=forra-vinadia'));
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame('/forra', $response->getHeaderLine('Location'));
+        self::assertSame('', $response->getHeaderLine('Set-Cookie'));
+        self::assertSame('no-store', $response->getHeaderLine('Cache-Control'));
+
+        $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=non-esiste'));
+        self::assertSame(404, $response->getStatusCode());
+        self::assertSame('', $response->getHeaderLine('Set-Cookie'));
+    }
+
     public function testLegacyPostKeepsItsBodyAndReachesTheAction(): void
     {
         $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';

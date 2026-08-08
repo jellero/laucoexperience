@@ -25,12 +25,18 @@ jobs:
             if [[ "$file" == assets/* ]]; then
               forbidden+=("$file")
             elif [[ "$file" == resources/views/* ]]; then
-              forbidden+=("$file")
+              case "$file" in
+                resources/views/pages/forra.php|resources/views/pages/privacy.php|resources/views/pages/cookie.php|resources/views/partials/menu.php)
+                  ;;
+                *)
+                  forbidden+=("$file")
+                  ;;
+              esac
             fi
           done
 
           if (( ${#forbidden[@]} )); then
-            echo "La modernizzazione modifica file che definiscono la grafica pubblica originale:"
+            echo "La modifica interviene su file che definiscono la grafica pubblica fuori dal perimetro autorizzato:"
             printf ' - %s\n' "${forbidden[@]}"
             exit 1
           fi

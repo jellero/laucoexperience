@@ -1,7 +1,7 @@
 <?php
 /** Sezione pagina mappa */
 
-$gpxDirFs  = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/gpx';
+$gpxDirFs  = rtrim((string) (defined('LAUCO_ROOT') ? LAUCO_ROOT : dirname(__DIR__, 3)), '/') . '/gpx';
 $gpxDirWeb = '/gpx';
 $routes    = [];
 

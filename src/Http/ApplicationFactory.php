@@ -5,6 +5,7 @@ namespace LaucoExperience\Http;
 
 use LaucoExperience\Http\Action\AccountSetupAction;
 use LaucoExperience\Http\Action\ContactSubmitAction;
+use LaucoExperience\Http\Action\GpxFileAction;
 use LaucoExperience\Http\Action\LoginAction;
 use LaucoExperience\Http\Action\LogoutAction;
 use LaucoExperience\Http\Action\NewsletterSubscribeAction;
@@ -43,6 +44,7 @@ final class ApplicationFactory
             'contact-submit' => new ContactSubmitAction($root),
             'newsletter' => new NewsletterSubscribeAction($root, $locales),
             'qr-redirect' => new QrRedirectAction($root),
+            'gpx-file' => new GpxFileAction($root),
         ];
 
         $definitions = require $root . '/config/routes.php';

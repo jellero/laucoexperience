@@ -43,7 +43,7 @@ admin_page_open('Revisione evento importato', 'eventi');
 <main class="wrap">
     <div class="page-title">
         <h1>Revisione evento importato</h1>
-        <p>Confronta i dati con la pagina ufficiale. L’approvazione crea un normale evento in bozza, modificabile con tutte le funzioni già presenti.</p>
+        <p>Confronta i dati con la fonte web. L’approvazione crea un normale evento in bozza, modificabile con tutte le funzioni già presenti.</p>
     </div>
 
     <?php if ($error !== ''): ?>
@@ -61,7 +61,7 @@ admin_page_open('Revisione evento importato', 'eventi');
             <a class="btn" href="evento-form.php?id=<?= (int) $eventId ?>">Apri evento nel gestionale</a>
         <?php endif; ?>
 
-        <a class="btn secondary" href="<?= e($candidate['source_url']) ?>" target="_blank" rel="noopener">Apri fonte ufficiale</a>
+        <a class="btn secondary" href="<?= e($candidate['source_url']) ?>" target="_blank" rel="noopener">Apri fonte</a>
     </div>
 
     <section class="grid">
@@ -78,7 +78,7 @@ admin_page_open('Revisione evento importato', 'eventi');
 
         <div class="box">
             <h2>Controlli</h2>
-            <p>Verificare data, luogo, organizzatore, eventuali orari, immagine e completezza della descrizione sulla pagina ufficiale.</p>
+            <p>Verificare data, luogo, organizzatore, eventuali orari, immagine e completezza della descrizione sulla fonte collegata.</p>
             <p><strong>Stato:</strong> <?= e($candidate['review_status']) ?></p>
 
             <?php if ($candidate['review_status'] === 'pending' && empty($candidate['published_event_id'])): ?>

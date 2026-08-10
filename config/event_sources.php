@@ -2,6 +2,15 @@
 declare(strict_types=1);
 
 return [
+    'ai_web_lauco' => [
+        'name' => 'AI + Web Search — Lauco',
+        'enabled' => true,
+        'kind' => 'ai_web',
+        'localities' => [
+            'Lauco', 'Vinaio', 'Porteal', 'Buttea', 'Trava', 'Avaglio', 'Allegnidis',
+            'Val di Lauco', 'Chiassis',
+        ],
+    ],
     'turismofvg_carnia' => [
         'name' => 'PromoTurismoFVG — Carnia',
         'enabled' => true,

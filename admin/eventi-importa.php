@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../inc/auth.php';
 require_once __DIR__ . '/../inc/event-import-v2.php';
+require_once __DIR__ . '/../inc/event-ai-web.php';
 require_admin();
 require_once __DIR__ . '/_admin_layout.php';
 
@@ -10,13 +11,21 @@ $sources = event_import_sources();
 $preview = [];
 $error = '';
 $success = '';
+$selectedSourceKey = (string) ($_POST['source_key'] ?? array_key_first($sources) ?? '');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
-    $sourceKey = (string) ($_POST['source_key'] ?? '');
+    $sourceKey = $selectedSourceKey;
+    $source = $sources[$sourceKey] ?? null;
 
     try {
-        $preview = event_import_fetch($sourceKey);
+        if (!is_array($source) || empty($source['enabled'])) {
+            throw new RuntimeException('Fonte non disponibile.');
+        }
+
+        $preview = (($source['kind'] ?? '') === 'ai_web')
+            ? event_ai_web_fetch($sourceKey, $source)
+            : event_import_fetch($sourceKey);
 
         if (($_POST['action'] ?? '') === 'stage') {
             $runId = event_import_stage($pdo, $sourceKey, $preview, admin_id());
@@ -24,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 . ' candidati salvati nella coda di revisione (importazione #'
                 . $runId
                 . ').';
+        } elseif ($preview === []) {
+            $success = 'Nessun evento verificato trovato per la fonte selezionata.';
         }
     } catch (Throwable $e) {
         $error = $e->getMessage();
@@ -51,7 +62,7 @@ admin_page_open('Importazione eventi', 'eventi');
 <main class="wrap">
     <div class="page-title">
         <h1>Importazione eventi</h1>
-        <p>Scarica eventi esclusivamente da fonti configurate. I risultati entrano nel gestionale come bozze e richiedono revisione manuale.</p>
+        <p>Ricerca eventi da fonti configurate o tramite AI + Web Search. I risultati entrano nel gestionale come candidati e richiedono sempre revisione manuale.</p>
     </div>
 
     <?php if ($error !== ''): ?>
@@ -69,7 +80,7 @@ admin_page_open('Importazione eventi', 'eventi');
 
     <section class="box">
         <h2>Fonte eventi</h2>
-        <p class="hint">PromoTurismoFVG e Comune di Lauco sono attivi. L’import segue solo URL consentiti, gestisce i redirect in modo controllato e non pubblica mai automaticamente: ogni candidato passa dalla revisione.</p>
+        <p class="hint">“AI + Web Search — Lauco” usa la Responses API con ricerca web in tempo reale, conserva solo eventi futuri con una fonte web effettivamente consultata e li mette in coda. Nessun candidato viene pubblicato automaticamente.</p>
 
         <form method="post">
             <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
@@ -78,7 +89,7 @@ admin_page_open('Importazione eventi', 'eventi');
                 <label for="source_key">Fonte</label>
                 <select id="source_key" name="source_key">
                     <?php foreach ($sources as $key => $source): ?>
-                        <option value="<?= e($key) ?>"<?= empty($source['enabled']) ? ' disabled' : '' ?>>
+                        <option value="<?= e($key) ?>"<?= $selectedSourceKey === $key ? ' selected' : '' ?><?= empty($source['enabled']) ? ' disabled' : '' ?>>
                             <?= e($source['name']) ?><?= empty($source['enabled']) ? ' — non attiva' : '' ?>
                         </option>
                     <?php endforeach; ?>
@@ -87,7 +98,7 @@ admin_page_open('Importazione eventi', 'eventi');
 
             <div class="actions">
                 <button class="btn secondary" type="submit" name="action" value="preview">Anteprima</button>
-                <button class="btn" type="submit" name="action" value="stage">Scarica nella coda</button>
+                <button class="btn" type="submit" name="action" value="stage">Cerca e salva nella coda</button>
             </div>
         </form>
     </section>
@@ -114,7 +125,7 @@ admin_page_open('Importazione eventi', 'eventi');
                             <td><?= e($event['start_at_raw'] ?: '-') ?></td>
                             <td><?= e($event['locality'] ?: $event['location_name']) ?></td>
                             <td>
-                                <a href="<?= e($event['source_url']) ?>" target="_blank" rel="noopener">Pagina ufficiale</a>
+                                <a href="<?= e($event['source_url']) ?>" target="_blank" rel="noopener">Apri fonte</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

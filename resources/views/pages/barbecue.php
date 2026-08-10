@@ -88,13 +88,13 @@ $barbecueHeroImage = $barbecuePortealImage !== ''
                         <div class="col-md-6">
                             <div class="info-card">
                                 <h3>Un omaggio al territorio</h3>
-                                <p>Le installazioni sono un omaggio del <strong>Giro degli Auguri</strong>, con il supporto di <strong>Valerio</strong>: un contributo concreto alla fruibilità e alla convivialità sul territorio.</p>
+                                <p>Le installazioni sono un omaggio del <strong>Giro degli Auguri</strong>: un contributo concreto alla fruibilità e alla convivialità sul territorio.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="callout upcoming">
-                        <h3>Prossimamente: Val di Lauco</h3>
+                        <h3>Prossimamente: Terrazza panoramica</h3>
                         <p>La rete si allargherà con una nuova installazione prevista in Val di Lauco. La pagina verrà aggiornata quando il nuovo barbecue sarà disponibile.</p>
                     </div>
 

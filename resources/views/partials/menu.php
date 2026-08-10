@@ -41,7 +41,6 @@ if (!function_exists('isCurrent')) {
                                 <li><a href="/itinerari-mtb">In MTB</a></li>
                             </ul>
                         </li>
-                        <li><a href="/forra" class="<?= isCurrent('forra.php') ? 'active-item' : '' ?>">Forra</a></li>
                         <li><a href="/itinerari-speciali" class="<?= isCurrent('itinerari-speciali.php') ? 'active-item' : '' ?>">Speciali</a></li>
                         <li class="submenu">
                             <a href="javascript:void(0)" class="<?= isCurrent(['gestione-sentieri.php','contribuisci.php','segnala-problema.php']) ? 'active-item' : '' ?>">Patrimonio</a>
@@ -51,7 +50,13 @@ if (!function_exists('isCurrent')) {
                                 <li><a href="/segnala-problema">Segnala problema</a></li>
                             </ul>
                         </li>
-                        <li><a href="/luoghi" class="<?= isCurrent(['luoghi.php','luogo.php']) ? 'active-item' : '' ?>">Luoghi</a></li>
+                        <li class="submenu">
+                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','forra.php']) ? 'active-item' : '' ?>">Luoghi</a>
+                            <ul class="sub-menu">
+                                <li><a href="/luoghi">Luoghi</a></li>
+                                <li><a href="/forra">Forra del Vinadia</a></li>
+                            </ul>
+                        </li>
                         <li><a href="/eventi" class="<?= isCurrent(['eventi.php','evento.php']) ? 'active-item' : '' ?>">Eventi</a></li>
                         <li><a href="/contatti" class="<?= isCurrent('contatti.php') ? 'active-item' : '' ?>">Contatti</a></li>
                         <li class="submenu"><a><?= htmlspecialchars($languageCodes[$currentLanguage], ENT_QUOTES, 'UTF-8') ?></a>

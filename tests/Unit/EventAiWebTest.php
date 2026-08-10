@@ -6,6 +6,7 @@ namespace LaucoExperience\Tests\Unit;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
+require_once dirname(__DIR__, 2) . '/inc/event-import-v2.php';
 require_once dirname(__DIR__, 2) . '/inc/event-ai-web.php';
 
 final class EventAiWebTest extends TestCase

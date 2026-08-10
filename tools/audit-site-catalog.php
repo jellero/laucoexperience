@@ -7,10 +7,11 @@ $catalogs = [];
 $errors = [];
 
 foreach ($locales as $locale) {
-    $paths = [
-        $root . '/resources/lang/site.' . $locale . '.json',
-        $root . '/resources/lang/feature-forra.' . $locale . '.json',
-    ];
+    $paths = [$root . '/resources/lang/site.' . $locale . '.json'];
+    $featurePaths = glob($root . '/resources/lang/feature-*.' . $locale . '.json') ?: [];
+    sort($featurePaths, SORT_STRING);
+    $paths = array_merge($paths, $featurePaths);
+
     $catalog = [];
     foreach ($paths as $path) {
         if (!is_file($path)) {

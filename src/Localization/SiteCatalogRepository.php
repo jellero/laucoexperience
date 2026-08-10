@@ -32,12 +32,10 @@ final class SiteCatalogRepository
     {
         $this->assertLocale($locale);
         $defaults = $this->read($this->defaultPath($locale));
-        $supplementalPath = $this->supplementalPath($locale);
-        if (!is_file($supplementalPath)) {
-            return $defaults;
+        foreach ($this->supplementalPaths($locale) as $supplementalPath) {
+            $defaults = array_replace($defaults, $this->read($supplementalPath));
         }
-
-        return $this->normalize(array_replace($defaults, $this->read($supplementalPath)));
+        return $this->normalize($defaults);
     }
 
     /** @return array<string,array<string,string>> */
@@ -95,9 +93,12 @@ final class SiteCatalogRepository
         return $this->defaultsDirectory . '/site.' . $locale . '.json';
     }
 
-    private function supplementalPath(string $locale): string
+    /** @return list<string> */
+    private function supplementalPaths(string $locale): array
     {
-        return $this->defaultsDirectory . '/feature-forra.' . $locale . '.json';
+        $paths = glob($this->defaultsDirectory . '/feature-*.' . $locale . '.json') ?: [];
+        sort($paths, SORT_STRING);
+        return array_values(array_filter($paths, 'is_file'));
     }
 
     private function runtimePath(string $locale): string

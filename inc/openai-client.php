@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/env.php';
 require_once __DIR__ . '/http-client.php';
+require_once __DIR__ . '/route-ai-editorial.php';
 
 $laucoAutoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (is_file($laucoAutoload)) {
@@ -57,6 +58,12 @@ if (!function_exists('lauco_openai_structured')) {
      */
     function lauco_openai_structured(string $developerInstructions, string $userInput, string $schemaName, array $schema): array
     {
+        if (function_exists('lauco_route_ai_enrich_request')) {
+            $enriched = lauco_route_ai_enrich_request($schemaName, $developerInstructions, $userInput);
+            $developerInstructions = $enriched['developer'];
+            $userInput = $enriched['user'];
+        }
+
         $apiKey = lauco_env_required('OPENAI_API_KEY');
         $model = lauco_env_required('OPENAI_MODEL');
 

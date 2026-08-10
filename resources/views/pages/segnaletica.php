@@ -508,17 +508,14 @@ $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
                     </div>
                 </div>
 
-
-
                 <!-- Contatti -->
                 <div class="row margin-leftright-null contact-strip">
                     <div class="container">
                         <div class="col-md-12 text text-center">
                             <h3 class="big margin-bottom-small">Hai dubbi su segnaletica o difficoltà di un percorso?</h3>
                             <p>
-                                Contatta Lauco Experience: 
-                                <a href="mailto:info@laucoexperience.it">info@laucoexperience.it</a> · 
-                              
+                                Contatta Lauco Experience:
+                                <a href="mailto:info@laucoexperience.it">info@laucoexperience.it</a>
                             </p>
                             <a href="/contatti" class="btn-alt small white margin-null active shadow">Vai ai contatti</a>
                         </div>

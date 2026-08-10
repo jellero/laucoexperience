@@ -2,6 +2,19 @@
 declare(strict_types=1);
 
 return [
+    'ai_calendar_lauco' => [
+        'name' => 'AI + calendario ufficiale — Lauco 2026',
+        'enabled' => true,
+        'kind' => 'ai_calendar_web',
+        'target_events' => 30,
+        'calendar_documents' => [
+            'https://www.comune.lauco.ud.it/media/files/030047/attachment/Locandina_Eventi_Lauco_2026_30x60_colore.pdf',
+        ],
+        'localities' => [
+            'Lauco', 'Vinaio', 'Porteal', 'Buttea', 'Trava', 'Avaglio', 'Allegnidis',
+            'Val di Lauco', 'Chiassis', 'Chiauians',
+        ],
+    ],
     'ai_web_lauco' => [
         'name' => 'AI + Web Search — Lauco e Carnia',
         'enabled' => true,

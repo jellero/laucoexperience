@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../inc/auth.php';
 require_once __DIR__ . '/../inc/event-import-v2.php';
 require_once __DIR__ . '/../inc/event-ai-web.php';
+require_once __DIR__ . '/../inc/event-ai-calendar.php';
 require_admin();
 require_once __DIR__ . '/_admin_layout.php';
 
@@ -23,9 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new RuntimeException('Fonte non disponibile.');
         }
 
-        $preview = (($source['kind'] ?? '') === 'ai_web')
-            ? event_ai_web_fetch($sourceKey, $source)
-            : event_import_fetch($sourceKey);
+        $kind = (string) ($source['kind'] ?? '');
+        if ($kind === 'ai_calendar_web') {
+            $preview = event_ai_calendar_fetch($sourceKey, $source);
+        } elseif ($kind === 'ai_web') {
+            $preview = event_ai_web_fetch($sourceKey, $source);
+        } else {
+            $preview = event_import_fetch($sourceKey);
+        }
 
         if (($_POST['action'] ?? '') === 'stage') {
             $runId = event_import_stage($pdo, $sourceKey, $preview, admin_id());
@@ -62,7 +68,7 @@ admin_page_open('Importazione eventi', 'eventi');
 <main class="wrap">
     <div class="page-title">
         <h1>Importazione eventi</h1>
-        <p>Ricerca eventi da fonti configurate o tramite AI + Web Search. I risultati entrano nel gestionale come candidati e richiedono sempre revisione manuale.</p>
+        <p>Ricerca eventi da fonti configurate, dal calendario ufficiale del Comune o tramite AI + Web Search. I risultati entrano nel gestionale come candidati e richiedono sempre revisione manuale.</p>
     </div>
 
     <?php if ($error !== ''): ?>
@@ -80,7 +86,7 @@ admin_page_open('Importazione eventi', 'eventi');
 
     <section class="box">
         <h2>Fonte eventi</h2>
-        <p class="hint">“AI + Web Search — Lauco e Carnia” esegue più ricerche: prima Lauco e frazioni, poi la Carnia vicina. Cerca anche una foto o locandina specifica dell’evento e conserva solo candidati con fonte web effettivamente consultata. Nessun candidato viene pubblicato automaticamente.</p>
+        <p class="hint">“AI + calendario ufficiale — Lauco 2026” legge direttamente la locandina PDF del Comune, estrae tutti gli appuntamenti futuri e usa Web Search per verificare dettagli e cercare una foto o locandina specifica. La fonte “AI + Web Search — Lauco e Carnia” resta disponibile per ampliare la ricerca sul territorio vicino. Nessun candidato viene pubblicato automaticamente.</p>
 
         <form method="post">
             <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">

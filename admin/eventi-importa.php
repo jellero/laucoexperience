@@ -80,7 +80,7 @@ admin_page_open('Importazione eventi', 'eventi');
 
     <section class="box">
         <h2>Fonte eventi</h2>
-        <p class="hint">“AI + Web Search — Lauco” usa la Responses API con ricerca web in tempo reale, conserva solo eventi futuri con una fonte web effettivamente consultata e li mette in coda. Nessun candidato viene pubblicato automaticamente.</p>
+        <p class="hint">“AI + Web Search — Lauco e Carnia” esegue più ricerche: prima Lauco e frazioni, poi la Carnia vicina. Cerca anche una foto o locandina specifica dell’evento e conserva solo candidati con fonte web effettivamente consultata. Nessun candidato viene pubblicato automaticamente.</p>
 
         <form method="post">
             <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
@@ -112,6 +112,7 @@ admin_page_open('Importazione eventi', 'eventi');
             <table>
                 <thead>
                     <tr>
+                        <th>Foto</th>
                         <th>Titolo</th>
                         <th>Data</th>
                         <th>Località</th>
@@ -121,6 +122,13 @@ admin_page_open('Importazione eventi', 'eventi');
                 <tbody>
                     <?php foreach ($preview as $event): ?>
                         <tr>
+                            <td style="width:140px">
+                                <?php if (!empty($event['image_url'])): ?>
+                                    <img src="<?= e($event['image_url']) ?>" alt="" loading="lazy" style="display:block;width:120px;height:80px;object-fit:cover;border-radius:4px">
+                                <?php else: ?>
+                                    <span class="hint">—</span>
+                                <?php endif; ?>
+                            </td>
                             <td><?= e($event['title']) ?></td>
                             <td><?= e($event['start_at_raw'] ?: '-') ?></td>
                             <td><?= e($event['locality'] ?: $event['location_name']) ?></td>
@@ -145,6 +153,7 @@ admin_page_open('Importazione eventi', 'eventi');
             <table>
                 <thead>
                     <tr>
+                        <th>Foto</th>
                         <th>Titolo</th>
                         <th>Data</th>
                         <th>Località</th>
@@ -156,6 +165,13 @@ admin_page_open('Importazione eventi', 'eventi');
                 <tbody>
                     <?php foreach ($candidates as $candidate): ?>
                         <tr>
+                            <td style="width:110px">
+                                <?php if (!empty($candidate['image_url'])): ?>
+                                    <img src="<?= e($candidate['image_url']) ?>" alt="" loading="lazy" style="display:block;width:90px;height:60px;object-fit:cover;border-radius:4px">
+                                <?php else: ?>
+                                    <span class="hint">—</span>
+                                <?php endif; ?>
+                            </td>
                             <td><strong><?= e($candidate['title']) ?></strong></td>
                             <td><?= e($candidate['start_at_raw'] ?: '-') ?></td>
                             <td><?= e($candidate['locality'] ?: $candidate['location_name']) ?></td>

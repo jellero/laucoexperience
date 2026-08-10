@@ -3,12 +3,22 @@ declare(strict_types=1);
 
 return [
     'ai_web_lauco' => [
-        'name' => 'AI + Web Search — Lauco',
+        'name' => 'AI + Web Search — Lauco e Carnia',
         'enabled' => true,
         'kind' => 'ai_web',
-        'localities' => [
+        'target_events' => 18,
+        'primary_localities' => [
             'Lauco', 'Vinaio', 'Porteal', 'Buttea', 'Trava', 'Avaglio', 'Allegnidis',
             'Val di Lauco', 'Chiassis',
+        ],
+        'nearby_localities' => [
+            'Villa Santina', 'Raveo', 'Verzegnis', 'Tolmezzo', 'Enemonzo',
+            'Zuglio', 'Ovaro', 'Ampezzo', 'Socchieve', 'Preone', 'Cavazzo Carnico', 'Arta Terme',
+        ],
+        'localities' => [
+            'Lauco', 'Vinaio', 'Porteal', 'Buttea', 'Trava', 'Avaglio', 'Allegnidis',
+            'Val di Lauco', 'Chiassis', 'Villa Santina', 'Raveo', 'Verzegnis', 'Tolmezzo',
+            'Enemonzo', 'Zuglio', 'Ovaro', 'Ampezzo', 'Socchieve', 'Preone', 'Cavazzo Carnico', 'Arta Terme',
         ],
     ],
     'turismofvg_carnia' => [

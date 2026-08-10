@@ -21,9 +21,21 @@ final class EventAiWebTest extends TestCase
         );
     }
 
+    public function testImageUrlAcceptsOnlyPublicHttpsStyleUrls(): void
+    {
+        self::assertSame(
+            'https://www.turismofvg.it/media/eventi/festa.jpg',
+            \event_ai_web_image_url('https://www.turismofvg.it/media/eventi/festa.jpg')
+        );
+        self::assertNull(\event_ai_web_image_url('http://www.turismofvg.it/media/eventi/festa.jpg'));
+        self::assertNull(\event_ai_web_image_url('https://127.0.0.1/festa.jpg'));
+        self::assertNull(\event_ai_web_image_url('https://localhost/festa.jpg'));
+    }
+
     public function testNormalizationKeepsOnlyFutureLocalEventsBackedByActualWebSources(): void
     {
         $source = 'https://www.turismofvg.it/eventi/festa-del-miele-di-montagna';
+        $image = 'https://www.turismofvg.it/media/eventi/festa-del-miele.jpg';
         $webSources = [
             $source . '?utm_source=chatgpt.com',
             'https://www.comune.lauco.ud.it/it/events',
@@ -39,6 +51,7 @@ final class EventAiWebTest extends TestCase
             'organizer' => '',
             'source_url' => $source,
             'secondary_source_url' => '',
+            'image_url' => $image,
             'evidence' => 'La fonte riporta titolo, data e località Lauco.',
         ];
 
@@ -73,6 +86,22 @@ final class EventAiWebTest extends TestCase
         self::assertCount(1, $events);
         self::assertSame('Festa del miele di montagna', $events[0]['title']);
         self::assertSame($source, $events[0]['source_url']);
+        self::assertSame($image, $events[0]['image_url']);
         self::assertSame('openai_web_search', $events[0]['raw']['origin']);
+    }
+
+    public function testSearchPassesSeparateLaucoFromNearbyCarnia(): void
+    {
+        $passes = \event_ai_web_search_passes([
+            'localities' => ['Lauco', 'Vinaio', 'Tolmezzo', 'Preone'],
+            'primary_localities' => ['Lauco', 'Vinaio'],
+            'nearby_localities' => ['Tolmezzo', 'Preone'],
+        ]);
+
+        self::assertCount(2, $passes);
+        self::assertSame('lauco', $passes[0]['name']);
+        self::assertSame(['Lauco', 'Vinaio'], $passes[0]['localities']);
+        self::assertSame('carnia-vicina', $passes[1]['name']);
+        self::assertSame(['Tolmezzo', 'Preone'], $passes[1]['localities']);
     }
 }

@@ -1,8 +1,10 @@
 <?php
 require_once LAUCO_ROOT . '/inc/translations.php';
+require_once LAUCO_ROOT . '/inc/territory-content.php';
 
 $currentLanguage = content_language_from_request();
 $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
+$territoryNav = territory_navigation();
 if (!function_exists('isCurrent')) {
     function isCurrent($pages): bool {
         $current = basename((string) ($_SERVER['PHP_SELF'] ?? ''));
@@ -51,9 +53,12 @@ if (!function_exists('isCurrent')) {
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','forra.php','barbecue.php']) ? 'active-item' : '' ?>">Luoghi</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>">Luoghi</a>
                             <ul class="sub-menu">
                                 <li><a href="/luoghi">Luoghi</a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/storia'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['history'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/natura'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['nature'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/come-arrivare'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['arrive'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/forra">Forra del Vinadia</a></li>
                                 <li><a href="/barbecue">Aree barbecue</a></li>
                             </ul>

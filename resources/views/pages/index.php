@@ -29,6 +29,7 @@
 
                 <?php
                     require LAUCO_VIEW_PATH . '/sections/about.php';
+                    require LAUCO_VIEW_PATH . '/sections/territorio.php';
                     require LAUCO_VIEW_PATH . '/sections/services.php';
                     require LAUCO_VIEW_PATH . '/sections/gallery.php';
                     require LAUCO_VIEW_PATH . '/sections/trips.php';

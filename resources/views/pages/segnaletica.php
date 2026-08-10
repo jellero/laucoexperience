@@ -341,12 +341,12 @@ $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
                             <div class="row">
                                 <div class="col-md-6 col-sm-6">
                                     <figure class="signage-photo-card">
-                                        <img src="assets/img/segnaletica-panoramiche.webp" loading="lazy" width="700" height="933" alt="Palina con indicazioni Panoramica del Cretis e Panoramica del Forcadana e dischi numerati con QR">
+                                        <img src="assets/img/segnaleticapanoramiche.webp" loading="lazy" width="700" height="933" alt="Palina con indicazioni Panoramica del Cretis e Panoramica del Forcadana e dischi numerati con QR">
                                     </figure>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
                                     <figure class="signage-photo-card">
-                                        <img src="assets/img/segnaletica-segnavia-arancione.webp" loading="lazy" width="700" height="933" alt="Segnavia arancione dipinto su un albero lungo un percorso nel bosco">
+                                        <img src="assets/img/segnaleticasegnaviaarancione.webp" loading="lazy" width="700" height="933" alt="Segnavia arancione dipinto su un albero lungo un percorso nel bosco">
                                     </figure>
                                 </div>
                             </div>

@@ -28,7 +28,7 @@
         <div id="page-content" class="header-static">
             <div id="flexslider" class="fullpage-wrap small">
                 <ul class="slides">
-                    <li style="background-image:url(assets/img/sentieri.webp)">
+                    <li style="background-image:url('https://www.forravinadia.it/wp-content/uploads/2020/10/verdi-acque-700x300.jpg')">
                         <div class="container text text-center">
                             <h1 class="white margin-bottom-small">Forra del Vinadia</h1>
                             <p class="heading white">Natura, accessi e informazioni per preparare la visita.</p>

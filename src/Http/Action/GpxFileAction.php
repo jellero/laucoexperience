@@ -12,9 +12,10 @@ final class GpxFileAction
     {
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args = []): ResponseInterface
     {
-        $filename = trim((string) ($request->getQueryParams()['f'] ?? ''));
+        $filename = trim((string) ($args['filename'] ?? $request->getQueryParams()['f'] ?? ''));
+        $filename = rawurldecode($filename);
 
         if ($filename === '' || basename($filename) !== $filename || !preg_match('/\.gpx$/i', $filename)) {
             return $this->notFound($response);

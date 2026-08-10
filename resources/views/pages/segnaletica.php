@@ -100,6 +100,26 @@ $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
             top: 0;
         }
 
+        .signage-gallery .signage-photo-card {
+            margin: 0;
+            background: #fff;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,.10);
+        }
+
+        .signage-gallery .signage-photo-card img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+        }
+
+        .signage-gallery .signage-note {
+            max-width: 900px;
+            margin: 28px auto 0;
+            line-height: 1.75;
+        }
+
         .contact-strip {
             background: #222;
             color: #fff;
@@ -122,6 +142,10 @@ $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
 
             .pdf-viewer {
                 height: 560px;
+            }
+
+            .signage-gallery .signage-photo-card {
+                margin-bottom: 24px;
             }
         }
 
@@ -301,6 +325,35 @@ $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
 
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segnaletica reale sul territorio -->
+                <div class="row margin-leftright-null signage-gallery">
+                    <div class="container">
+                        <div class="col-md-12 text padding-bottom-null text-center">
+                            <h2 class="margin-bottom-null title line center">Info segnaletica</h2>
+                            <p class="heading center grey margin-bottom-null">Consulta la sigla prima di iniziare il percorso.</p>
+                        </div>
+
+                        <div class="col-md-12 text padding-top-null">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <figure class="signage-photo-card">
+                                        <img src="assets/img/segnaletica-panoramiche.webp" loading="lazy" width="700" height="933" alt="Palina con indicazioni Panoramica del Cretis e Panoramica del Forcadana e dischi numerati con QR">
+                                    </figure>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <figure class="signage-photo-card">
+                                        <img src="assets/img/segnaletica-segnavia-arancione.webp" loading="lazy" width="700" height="933" alt="Segnavia arancione dipinto su un albero lungo un percorso nel bosco">
+                                    </figure>
+                                </div>
+                            </div>
+
+                            <p class="text-center signage-note">
+                                La segnaletica aiuta, ma può essere danneggiata, coperta dalla vegetazione o temporaneamente assente. Non proseguire alla cieca se perdi la traccia: torna all’ultimo punto certo e rivaluta il percorso.
+                            </p>
                         </div>
                     </div>
                 </div>

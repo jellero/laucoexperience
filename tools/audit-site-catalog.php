@@ -7,17 +7,28 @@ $catalogs = [];
 $errors = [];
 
 foreach ($locales as $locale) {
-    $path = $root . '/resources/lang/site.' . $locale . '.json';
-    try {
-        $catalog = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
-    } catch (Throwable $e) {
-        $errors[] = "{$locale}: JSON non valido ({$e->getMessage()})";
-        continue;
+    $paths = [
+        $root . '/resources/lang/site.' . $locale . '.json',
+        $root . '/resources/lang/feature-forra.' . $locale . '.json',
+    ];
+    $catalog = [];
+    foreach ($paths as $path) {
+        if (!is_file($path)) {
+            continue;
+        }
+        try {
+            $part = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        } catch (Throwable $e) {
+            $errors[] = "{$locale}: JSON non valido in " . basename($path) . " ({$e->getMessage()})";
+            continue;
+        }
+        if (!is_array($part)) {
+            $errors[] = "{$locale}: " . basename($path) . " non è un oggetto JSON";
+            continue;
+        }
+        $catalog = array_replace($catalog, $part);
     }
-    if (!is_array($catalog)) {
-        $errors[] = "{$locale}: il catalogo non è un oggetto JSON";
-        continue;
-    }
+
     ksort($catalog, SORT_STRING);
     foreach ($catalog as $key => $value) {
         if (!is_string($key) || !preg_match('/^[a-z0-9][a-z0-9_.-]*$/', $key)) {

@@ -11,6 +11,8 @@ return [
     ['name' => 'routes.mtb', 'methods' => ['GET'], 'paths' => ['/itinerari-mtb', '/itinerari-mtb.php'], 'handler' => 'page', 'template' => 'itinerari-mtb.php', 'script' => 'itinerari-mtb.php'],
     ['name' => 'routes.special', 'methods' => ['GET'], 'paths' => ['/itinerari-speciali', '/itinerari-speciali.php'], 'handler' => 'page', 'template' => 'itinerari-speciali.php', 'script' => 'itinerari-speciali.php'],
     ['name' => 'routes.detail', 'methods' => ['GET'], 'paths' => ['/percorso', '/percorso.php'], 'handler' => 'page', 'template' => 'percorso.php', 'script' => 'percorso.php'],
+    ['name' => 'forra', 'methods' => ['GET'], 'paths' => ['/forra', '/forra.php'], 'handler' => 'page', 'template' => 'forra.php', 'script' => 'forra.php'],
+    ['name' => 'qr.redirect', 'methods' => ['GET'], 'paths' => ['/qr', '/qr.php'], 'handler' => 'qr-redirect'],
     ['name' => 'trail.management', 'methods' => ['GET'], 'paths' => ['/gestione-sentieri', '/gestione-sentieri.php'], 'handler' => 'page', 'template' => 'gestione-sentieri.php', 'script' => 'gestione-sentieri.php'],
     ['name' => 'places', 'methods' => ['GET'], 'paths' => ['/luoghi', '/luoghi.php'], 'handler' => 'page', 'template' => 'luoghi.php', 'script' => 'luoghi.php'],
     ['name' => 'places.detail', 'methods' => ['GET'], 'paths' => ['/luogo', '/luogo.php'], 'handler' => 'page', 'template' => 'luogo.php', 'script' => 'luogo.php'],

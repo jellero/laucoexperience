@@ -51,7 +51,7 @@ $barbecuePortealImage = lauco_barbecue_image_data_uri('porteal');
             </div>
         </div>
 
-        <p class="barbecue-credit"><strong>Un omaggio del Giro degli Auguri, con il supporto di Valerio.</strong></p>
+        <p class="barbecue-credit"><strong>Un omaggio del Giro degli Auguri.</strong></p>
         <div class="barbecue-action"><a href="/barbecue" class="btn-alt small active">Scopri le aree barbecue</a></div>
     </div>
 </section>

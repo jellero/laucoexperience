@@ -13,6 +13,7 @@ return [
     ['name' => 'routes.special', 'methods' => ['GET'], 'paths' => ['/itinerari-speciali', '/itinerari-speciali.php'], 'handler' => 'page', 'template' => 'itinerari-speciali.php', 'script' => 'itinerari-speciali.php'],
     ['name' => 'routes.detail', 'methods' => ['GET'], 'paths' => ['/percorso', '/percorso.php'], 'handler' => 'page', 'template' => 'percorso.php', 'script' => 'percorso.php'],
     ['name' => 'forra', 'methods' => ['GET'], 'paths' => ['/forra', '/forra.php'], 'handler' => 'page', 'template' => 'forra.php', 'script' => 'forra.php'],
+    ['name' => 'barbecue', 'methods' => ['GET'], 'paths' => ['/barbecue', '/barbecue.php'], 'handler' => 'page', 'template' => 'barbecue.php', 'script' => 'barbecue.php'],
     ['name' => 'qr.redirect', 'methods' => ['GET'], 'paths' => ['/qr', '/qr.php'], 'handler' => 'qr-redirect'],
     ['name' => 'trail.management', 'methods' => ['GET'], 'paths' => ['/gestione-sentieri', '/gestione-sentieri.php'], 'handler' => 'page', 'template' => 'gestione-sentieri.php', 'script' => 'gestione-sentieri.php'],
     ['name' => 'places', 'methods' => ['GET'], 'paths' => ['/luoghi', '/luoghi.php'], 'handler' => 'page', 'template' => 'luoghi.php', 'script' => 'luoghi.php'],

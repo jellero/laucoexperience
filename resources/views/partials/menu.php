@@ -51,10 +51,11 @@ if (!function_exists('isCurrent')) {
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','forra.php']) ? 'active-item' : '' ?>">Luoghi</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','forra.php','barbecue.php']) ? 'active-item' : '' ?>">Luoghi</a>
                             <ul class="sub-menu">
                                 <li><a href="/luoghi">Luoghi</a></li>
                                 <li><a href="/forra">Forra del Vinadia</a></li>
+                                <li><a href="/barbecue">Aree barbecue</a></li>
                             </ul>
                         </li>
                         <li><a href="/eventi" class="<?= isCurrent(['eventi.php','evento.php']) ? 'active-item' : '' ?>">Eventi</a></li>

@@ -35,6 +35,7 @@
                     require LAUCO_VIEW_PATH . '/sections/testimonials.php';
                     require LAUCO_VIEW_PATH . '/sections/news.php';
                     require LAUCO_VIEW_PATH . '/sections/forra.php';
+                    require LAUCO_VIEW_PATH . '/sections/barbecue.php';
                     require LAUCO_VIEW_PATH . '/sections/contributi.php';
                     require LAUCO_VIEW_PATH . '/sections/sponsors.php';
                 ?>

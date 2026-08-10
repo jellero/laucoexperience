@@ -30,6 +30,37 @@ if (!function_exists('lauco_http_assert_url')) {
     }
 }
 
+if (!function_exists('lauco_http_resolve_url')) {
+    function lauco_http_resolve_url(string $baseUrl, string $location): string
+    {
+        $location = trim($location);
+        if ($location === '') {
+            throw new RuntimeException('Redirect privo di destinazione.');
+        }
+        if (preg_match('~^https://~i', $location)) {
+            return $location;
+        }
+        if (str_starts_with($location, '//')) {
+            return 'https:' . $location;
+        }
+
+        $base = parse_url($baseUrl);
+        if (!isset($base['scheme'], $base['host'])) {
+            throw new RuntimeException('URL base non valido.');
+        }
+
+        $port = isset($base['port']) ? ':' . $base['port'] : '';
+        $origin = $base['scheme'] . '://' . $base['host'] . $port;
+        if (str_starts_with($location, '/')) {
+            return $origin . $location;
+        }
+
+        $path = (string) ($base['path'] ?? '/');
+        $directory = rtrim(str_replace('\\', '/', dirname($path)), '/');
+        return $origin . ($directory !== '' ? $directory : '') . '/' . $location;
+    }
+}
+
 if (!function_exists('lauco_http_request')) {
     /**
      * @param list<string> $headers
@@ -102,12 +133,37 @@ if (!function_exists('lauco_http_get_allowlisted')) {
     /** @param list<string> $allowedHosts */
     function lauco_http_get_allowlisted(string $url, array $allowedHosts, int $timeout = 30): string
     {
-        lauco_http_assert_url($url, $allowedHosts);
-        $response = lauco_http_request('GET', $url, ['Accept: text/html,application/ld+json;q=0.9,*/*;q=0.8'], null, $timeout);
-        if ($response['status'] < 200 || $response['status'] >= 300) {
+        $currentUrl = $url;
+        $redirects = 0;
+        $maxRedirects = max(0, min(8, lauco_env_int('HTTP_MAX_REDIRECTS', 5)));
+        $headers = [
+            'Accept: text/html,application/ld+json,application/json;q=0.9,*/*;q=0.8',
+            'Accept-Language: it-IT,it;q=0.9,en;q=0.6',
+        ];
+
+        while (true) {
+            lauco_http_assert_url($currentUrl, $allowedHosts);
+            $response = lauco_http_request('GET', $currentUrl, $headers, null, $timeout);
+
+            if ($response['status'] >= 200 && $response['status'] < 300) {
+                return $response['body'];
+            }
+
+            if (
+                in_array($response['status'], [301, 302, 303, 307, 308], true)
+                && isset($response['headers']['location'])
+            ) {
+                if ($redirects >= $maxRedirects) {
+                    throw new RuntimeException('La fonte ha superato il numero massimo di redirect consentiti.');
+                }
+                $currentUrl = lauco_http_resolve_url($currentUrl, $response['headers']['location']);
+                lauco_http_assert_url($currentUrl, $allowedHosts);
+                $redirects++;
+                continue;
+            }
+
             throw new RuntimeException('La fonte ha restituito HTTP ' . $response['status'] . '.');
         }
-        return $response['body'];
     }
 }
 

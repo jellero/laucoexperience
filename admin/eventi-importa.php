@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../inc/auth.php';
-require_once __DIR__ . '/../inc/event-import.php';
+require_once __DIR__ . '/../inc/event-import-v2.php';
 require_admin();
 require_once __DIR__ . '/_admin_layout.php';
 
@@ -69,7 +69,7 @@ admin_page_open('Importazione eventi', 'eventi');
 
     <section class="box">
         <h2>Fonte eventi</h2>
-        <p class="hint">La fonte del Comune di Lauco resta disattivata finché non è disponibile un feed o endpoint stabile. Nessun candidato viene pubblicato automaticamente.</p>
+        <p class="hint">PromoTurismoFVG e Comune di Lauco sono attivi. L’import segue solo URL consentiti, gestisce i redirect in modo controllato e non pubblica mai automaticamente: ogni candidato passa dalla revisione.</p>
 
         <form method="post">
             <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">

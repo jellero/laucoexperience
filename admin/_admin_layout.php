@@ -140,8 +140,23 @@ if (!function_exists('admin_page_open')) {
                 <?php
                 require_once dirname(__DIR__) . '/inc/qr-stats.php';
                 $qrDashboardSummary = qr_stats_summary($GLOBALS['pdo']);
+                $newsletterDashboardSummary = [
+                    'total' => 0,
+                    'active' => 0,
+                    'available' => false,
+                ];
+                try {
+                    $newsletterDashboardSummary['total'] = (int) $GLOBALS['pdo']->query(
+                        'SELECT COUNT(*) FROM newsletter_subscribers'
+                    )->fetchColumn();
+                    $newsletterDashboardSummary['active'] = (int) $GLOBALS['pdo']->query(
+                        "SELECT COUNT(*) FROM newsletter_subscribers WHERE status = 'active'"
+                    )->fetchColumn();
+                    $newsletterDashboardSummary['available'] = true;
+                } catch (Throwable) {
+                }
                 ?>
-                <section class="qr-dashboard-summary" aria-label="Riepilogo statistiche QR">
+                <section class="qr-dashboard-summary" aria-label="Riepilogo dashboard">
                     <div class="dashboard-grid">
                         <a class="dashboard-card" href="statistiche-qr.php">
                             <small>QR territoriali · oggi</small>
@@ -152,6 +167,15 @@ if (!function_exists('admin_page_open')) {
                             <small>QR territoriali · 30 giorni</small>
                             <span class="number"><?= (int) $qrDashboardSummary['last30'] ?></span>
                             <p><?= $qrDashboardSummary['available'] ? 'Statistiche privacy-first attive.' : 'Migrazione statistiche QR da applicare.' ?></p>
+                        </a>
+                        <a class="dashboard-card" href="newsletter.php">
+                            <small>Newsletter · iscrizioni</small>
+                            <span class="number"><?= (int) $newsletterDashboardSummary['active'] ?></span>
+                            <p>
+                                <?= $newsletterDashboardSummary['available']
+                                    ? (int) $newsletterDashboardSummary['total'] . ' iscritti totali. Gestisci iscrizioni e newsletter.'
+                                    : 'Migrazione newsletter da applicare.' ?>
+                            </p>
                         </a>
                     </div>
                 </section>

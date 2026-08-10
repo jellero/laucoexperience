@@ -3,6 +3,9 @@ require_once LAUCO_ROOT . '/inc/barbecue-images.php';
 
 $barbecueVinaioImage = lauco_barbecue_image_data_uri('vinaio');
 $barbecuePortealImage = lauco_barbecue_image_data_uri('porteal');
+$barbecueHeroImage = $barbecuePortealImage !== ''
+    ? $barbecuePortealImage
+    : ($barbecueVinaioImage !== '' ? $barbecueVinaioImage : 'assets/img/sentieri.webp');
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -32,7 +35,7 @@ $barbecuePortealImage = lauco_barbecue_image_data_uri('porteal');
         <div id="page-content" class="header-static">
             <div id="flexslider" class="fullpage-wrap small">
                 <ul class="slides">
-                    <li style="background-image:url('assets/img/sentieri.webp')">
+                    <li style="background-image:url('<?= htmlspecialchars($barbecueHeroImage, ENT_QUOTES, 'UTF-8') ?>');background-position:center center;">
                         <div class="container text text-center">
                             <h1 class="white margin-bottom-small">Barbecue ad uso comune</h1>
                             <p class="heading white">Porteal, Vinaio e prossimamente Val di Lauco.</p>

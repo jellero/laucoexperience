@@ -29,12 +29,12 @@
 
                 <?php
                     require LAUCO_VIEW_PATH . '/sections/about.php';
-                    require LAUCO_VIEW_PATH . '/sections/forra.php';
                     require LAUCO_VIEW_PATH . '/sections/services.php';
                     require LAUCO_VIEW_PATH . '/sections/gallery.php';
                     require LAUCO_VIEW_PATH . '/sections/trips.php';
                     require LAUCO_VIEW_PATH . '/sections/testimonials.php';
                     require LAUCO_VIEW_PATH . '/sections/news.php';
+                    require LAUCO_VIEW_PATH . '/sections/forra.php';
                     require LAUCO_VIEW_PATH . '/sections/contributi.php';
                     require LAUCO_VIEW_PATH . '/sections/sponsors.php';
                 ?>

@@ -11,6 +11,14 @@
     background: #fff;
 }
 
+/* Bootstrap nasconde il tooltip SVG del profilo impostando opacity: 0. */
+#percorso-elevation .tooltip {
+    opacity: 1 !important;
+    filter: none !important;
+    position: static !important;
+    z-index: auto !important;
+}
+
 /* Lo swipe verticale scorre la pagina; quello sul profilo aggiorna l'indicatore. */
 @media (max-width: 991px) {
     #percorso-elevation .elevation-control,

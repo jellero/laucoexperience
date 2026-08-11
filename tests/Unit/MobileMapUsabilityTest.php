@@ -39,5 +39,9 @@ final class MobileMapUsabilityTest extends TestCase
             '/#percorso-elevation \.elevation-control[^\{]*\{[^\}]*pointer-events:\s*none;/',
             $routeCss
         );
+        self::assertMatchesRegularExpression(
+            '/#percorso-elevation \.tooltip\s*\{[^\}]*opacity:\s*1\s*!important;/',
+            $routeCss
+        );
     }
 }

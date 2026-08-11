@@ -125,4 +125,34 @@ $backToTopLabel = $backToTopLabels[$backToTopLocale] ?? $backToTopLabels['it'];
 })();
 </script>
 
+<script>
+(function () {
+    'use strict';
+
+    function trackedGpxUrl(href) {
+        try {
+            var url = new URL(href, window.location.origin);
+            if (!/\.gpx$/i.test(url.pathname)) {
+                return null;
+            }
+            var parts = url.pathname.split('/');
+            var filename = decodeURIComponent(parts[parts.length - 1] || '');
+            if (!filename || !/\.gpx$/i.test(filename)) {
+                return null;
+            }
+            return '/gpx/' + encodeURIComponent(filename) + '?download=1';
+        } catch (e) {
+            return null;
+        }
+    }
+
+    document.querySelectorAll('a[download][href]').forEach(function (link) {
+        var tracked = trackedGpxUrl(link.getAttribute('href') || '');
+        if (tracked) {
+            link.setAttribute('href', tracked);
+        }
+    });
+})();
+</script>
+
 <?php require LAUCO_VIEW_PATH . '/partials/consent.php'; ?>

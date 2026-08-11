@@ -25,6 +25,7 @@ jobs:
           cp assets/img/cronoradima.jpg audit/local/cronoradima.jpg
           cp assets/img/alpini.jpg audit/local/maina.jpg
           get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Blood%20donation%20mobile%20unit.jpg?width=1200' audit/candidates/autoemoteca.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Theater%20stage.jpg?width=1200' audit/candidates/teatro.jpg
           get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Monte%20Arvenis.jpg?width=1200' audit/candidates/monte-arvenis.jpg
           get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco-panorama.jpg?width=1200' audit/candidates/lauco-panorama.jpg
           get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Chiesa%20di%20Avaglio%20di%20Lauco.jpg?width=1200' audit/candidates/avaglio.jpg

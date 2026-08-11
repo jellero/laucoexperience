@@ -18,7 +18,7 @@ admin_page_open('Statistiche QR', 'qr-stats');
 <main class="wrap">
     <section class="page-title">
         <h1>Statistiche QR mappa</h1>
-        <p>Qui vengono conteggiati soltanto gli accessi alla mappa provenienti dal QR fisico. I click dal menu e i link diretti a <code>/map</code> non vengono registrati da questo sistema.</p>
+        <p>Qui vengono conteggiati soltanto gli accessi che arrivano dal QR fisico su <code>/map</code>. Il menu e i normali link del sito aprono direttamente <code>/mappa</code> e non incrementano queste statistiche.</p>
     </section>
 
     <?php if (!$summary['available']): ?>
@@ -31,17 +31,17 @@ admin_page_open('Statistiche QR', 'qr-stats');
         <div class="dashboard-card">
             <small>Oggi</small>
             <span class="number"><?= (int) $summary['today'] ?></span>
-            <p>accessi da QR</p>
+            <p>scansioni del QR mappa</p>
         </div>
         <div class="dashboard-card">
             <small>Ultimi 30 giorni</small>
             <span class="number"><?= (int) $summary['last30'] ?></span>
-            <p>accessi da QR</p>
+            <p>scansioni del QR mappa</p>
         </div>
         <div class="dashboard-card">
             <small>Totale storico</small>
             <span class="number"><?= (int) $summary['total'] ?></span>
-            <p>accessi da QR attivo</p>
+            <p>scansioni del QR attivo</p>
         </div>
         <div class="dashboard-card">
             <small>QR attivi</small>
@@ -53,7 +53,7 @@ admin_page_open('Statistiche QR', 'qr-stats');
     <section class="dashboard-columns">
         <div class="admin-card">
             <h2>QR ufficiale</h2>
-            <p class="hint">Il QR usa un URL tracciato e viene poi reindirizzato alla stessa mappa aperta dal menu.</p>
+            <p class="hint">Il QR usa <code>/map</code>, registra una scansione e reindirizza alla mappa pubblica.</p>
             <table>
                 <thead><tr><th>QR</th><th>30 giorni</th><th>Totale</th></tr></thead>
                 <tbody>
@@ -77,7 +77,7 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
         <div class="admin-card">
             <h2>Andamento 30 giorni</h2>
-            <p class="hint">Sono incluse solo le scansioni del QR attivo; gli accessi diretti alla mappa restano fuori da questo conteggio.</p>
+            <p class="hint">Sono incluse solo le scansioni del QR <code>map</code>; gli accessi diretti a <code>/mappa</code> restano fuori dal conteggio.</p>
             <?php if ($daily === []): ?>
                 <p>Nessuna scansione registrata.</p>
             <?php else: ?>
@@ -98,15 +98,16 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>URL del QR</h2>
-        <p class="hint">Nel QR fisico usa esclusivamente l’URL tracciato. Menu e normali collegamenti del sito devono invece continuare a puntare direttamente a <code>/map</code>.</p>
+        <p class="hint">Il QR fisico deve continuare a contenere <code>/map</code>. Il menu del sito usa invece <code>/mappa</code>.</p>
         <table>
-            <thead><tr><th>Etichetta</th><th>Codice</th><th>URL da codificare nel QR</th><th>Destinazione finale</th></tr></thead>
+            <thead><tr><th>Etichetta</th><th>Codice</th><th>URL nel QR</th><th>Destinazione finale</th></tr></thead>
             <tbody>
             <?php foreach ($registry as $code => $definition): ?>
+                <?php $entry = (string) ($definition['entry'] ?? ('/qr?c=' . rawurlencode($code))); ?>
                 <tr>
                     <td><?= e((string) ($definition['label'] ?? $code)) ?></td>
                     <td><code><?= e($code) ?></code></td>
-                    <td><code>/qr?c=<?= e(rawurlencode($code)) ?></code></td>
+                    <td><code><?= e($entry) ?></code></td>
                     <td><a href="<?= e((string) ($definition['destination'] ?? '/')) ?>" target="_blank" rel="noopener noreferrer"><?= e((string) ($definition['destination'] ?? '/')) ?></a></td>
                 </tr>
             <?php endforeach; ?>
@@ -116,8 +117,8 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Come funziona</h2>
-        <p><strong>QR fisico:</strong> <code>/qr?c=map</code> → registra una scansione anonima → redirect a <code>/map</code>.</p>
-        <p><strong>Menu e link:</strong> <code>/map</code> → apertura diretta della mappa → nessuna registrazione nelle statistiche QR.</p>
+        <p><strong>QR fisico:</strong> <code>/map</code> → registra una scansione anonima → redirect a <code>/mappa</code>.</p>
+        <p><strong>Menu e link:</strong> <code>/mappa</code> → apertura diretta della mappa → nessuna registrazione nelle statistiche QR.</p>
     </section>
 
     <section class="admin-card" style="margin-top:22px">

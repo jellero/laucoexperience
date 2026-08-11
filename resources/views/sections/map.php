@@ -59,7 +59,7 @@ window.GPX_ROUTES = <?= json_encode($routes, JSON_UNESCAPED_UNICODE | JSON_UNESC
                 <p id="trailInfo"><strong>Sentiero:</strong> <span class="muted">non ancora determinato</span></p>
                 <p id="trailDetails" class="muted"></p>
 
-                <div class="row" style="margin-top:10px;">
+                <div class="row map-actions">
                     <button class="btn btn-primary" id="btnInteractive" disabled>
                         Visualizza il percorso più vicino
                     </button>

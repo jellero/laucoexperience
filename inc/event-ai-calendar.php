@@ -21,6 +21,17 @@ if (!function_exists('event_ai_calendar_documents')) {
     }
 }
 
+if (!function_exists('event_ai_calendar_file_input')) {
+    /** @return array{type:string,file_url:string} */
+    function event_ai_calendar_file_input(string $documentUrl): array
+    {
+        return [
+            'type' => 'input_file',
+            'file_url' => $documentUrl,
+        ];
+    }
+}
+
 if (!function_exists('event_ai_calendar_request')) {
     /**
      * @param array<string,mixed> $config
@@ -91,11 +102,6 @@ TEXT;
             ],
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 
-        $filename = basename((string) (parse_url($documentUrl, PHP_URL_PATH) ?? 'calendario-lauco.pdf'));
-        if ($filename === '' || !str_ends_with(strtolower($filename), '.pdf')) {
-            $filename = 'calendario-eventi-lauco.pdf';
-        }
-
         $payload = [
             'model' => $model,
             'store' => false,
@@ -123,11 +129,7 @@ TEXT;
                     'role' => 'user',
                     'content' => [
                         ['type' => 'input_text', 'text' => $userInput],
-                        [
-                            'type' => 'input_file',
-                            'file_url' => $documentUrl,
-                            'filename' => $filename,
-                        ],
+                        event_ai_calendar_file_input($documentUrl),
                     ],
                 ],
             ],

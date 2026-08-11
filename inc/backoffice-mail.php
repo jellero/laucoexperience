@@ -12,6 +12,7 @@ use Webklex\PHPIMAP\Folder;
 use Webklex\PHPIMAP\Message;
 
 require_once __DIR__ . '/env.php';
+require_once __DIR__ . '/newsletter.php';
 
 $backofficeMailAutoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (!is_file($backofficeMailAutoload)) {
@@ -280,6 +281,7 @@ if (!function_exists('backoffice_mail_send')) {
         array $bcc,
         string $subject,
         string $body,
+        string $htmlBody = '',
         array $attachments = [],
         string $inReplyTo = '',
         string $references = ''
@@ -300,12 +302,17 @@ if (!function_exists('backoffice_mail_send')) {
             (int) $config['smtp_port']
         );
 
+        $htmlBody = newsletter_sanitize_editor_html($htmlBody);
+        $renderedHtml = $htmlBody !== ''
+            ? '<div style="font-family:Arial,sans-serif;line-height:1.55">' . $htmlBody . '</div>'
+            : '<div style="font-family:Arial,sans-serif;line-height:1.55">' . nl2br(htmlspecialchars($body, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')) . '</div>';
+
         $email = (new Email())
             ->from(new SymfonyAddress((string) $config['from_address'], (string) $config['from_name']))
             ->to(...$to)
             ->subject(trim($subject) ?: '(Senza oggetto)')
             ->text($body)
-            ->html('<div style="font-family:Arial,sans-serif;line-height:1.55">' . nl2br(htmlspecialchars($body, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')) . '</div>');
+            ->html($renderedHtml);
 
         if ($cc !== []) {
             $email->cc(...$cc);
@@ -336,6 +343,22 @@ if (!function_exists('backoffice_mail_send')) {
         }
 
         return $sent;
+    }
+}
+
+if (!function_exists('backoffice_mail_html_to_text')) {
+    function backoffice_mail_html_to_text(string $html): string
+    {
+        $text = preg_replace('/<\s*br\s*\/?\s*>/i', "\n", $html) ?? $html;
+        $text = preg_replace('/<\s*\/\s*(p|div|h[1-6]|blockquote|tr|ul|ol)\s*>/i', "\n", $text) ?? $text;
+        $text = preg_replace('/<\s*li\b[^>]*>/i', '- ', $text) ?? $text;
+        $text = preg_replace('/<\s*\/\s*li\s*>/i', "\n", $text) ?? $text;
+        $text = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+        $text = preg_replace('/[ \t]+\n/', "\n", $text) ?? $text;
+        $text = preg_replace('/\n{3,}/', "\n\n", $text) ?? $text;
+
+        return trim($text);
     }
 }
 

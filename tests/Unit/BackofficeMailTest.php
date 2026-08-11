@@ -43,4 +43,17 @@ final class BackofficeMailTest extends TestCase
         self::assertStringNotContainsString('onclick', $safe);
         self::assertStringNotContainsString('style=', $safe);
     }
+
+    public function testHtmlComposerAlwaysProducesPlainTextAlternative(): void
+    {
+        $plain = backoffice_mail_html_to_text(
+            '<h1>Titolo</h1><p>Ciao <strong>mondo</strong></p><ul><li>Uno</li><li>Due</li></ul>'
+        );
+
+        self::assertStringContainsString('Titolo', $plain);
+        self::assertStringContainsString('Ciao mondo', $plain);
+        self::assertStringContainsString('- Uno', $plain);
+        self::assertStringContainsString('- Due', $plain);
+        self::assertStringNotContainsString('<', $plain);
+    }
 }

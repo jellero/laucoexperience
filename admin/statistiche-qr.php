@@ -61,7 +61,7 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
     <?php if (!$detailAvailable): ?>
         <div class="error">
-            Il dettaglio con data/ora, IP e dispositivo sarà disponibile dopo l'applicazione della nuova migrazione <code>20260811_qr_scan_details.sql</code>.
+            Il dettaglio con data/ora e dispositivo sarà disponibile dopo l'applicazione delle nuove migrazioni QR del 11 agosto 2026.
         </div>
     <?php endif; ?>
 
@@ -136,22 +136,21 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Ultime scansioni</h2>
-        <p class="hint">Dettaglio delle ultime 100 scansioni del QR mappa. IP, user agent e classificazione del dispositivo vengono conservati per <?= (int) $retentionDays ?> giorni.</p>
+        <p class="hint">Dettaglio delle ultime 100 scansioni del QR mappa. Data/ora, user agent e classificazione del dispositivo vengono conservati per <?= (int) $retentionDays ?> giorni. L'indirizzo IP non viene conservato.</p>
         <?php if (!$detailAvailable): ?>
-            <p>Dettaglio non ancora disponibile: applicare la migrazione indicata sopra.</p>
+            <p>Dettaglio non ancora disponibile: applicare le nuove migrazioni QR.</p>
         <?php elseif ($recent === []): ?>
             <p>Nessuna scansione dettagliata registrata.</p>
         <?php else: ?>
             <div style="overflow-x:auto">
                 <table>
-                    <thead><tr><th>Data e ora</th><th>IP</th><th>Dispositivo</th><th>User agent</th></tr></thead>
+                    <thead><tr><th>Data e ora</th><th>Dispositivo</th><th>User agent</th></tr></thead>
                     <tbody>
                     <?php foreach ($recent as $scan): ?>
                         <tr>
                             <td style="white-space:nowrap"><?= e($scan['scanned_at']) ?></td>
-                            <td><code><?= e($scan['ip_address'] !== '' ? $scan['ip_address'] : '-') ?></code></td>
                             <td><?= e($deviceLabels[$scan['device_type']] ?? ucfirst($scan['device_type'])) ?></td>
-                            <td style="max-width:520px;word-break:break-word"><small><?= e($scan['user_agent'] !== '' ? $scan['user_agent'] : '-') ?></small></td>
+                            <td style="max-width:620px;word-break:break-word"><small><?= e($scan['user_agent'] !== '' ? $scan['user_agent'] : '-') ?></small></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -206,13 +205,13 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Come funziona</h2>
-        <p><strong>QR fisico:</strong> <code>/map</code> → registra data/ora, IP e dati tecnici del dispositivo → redirect a <code>/mappa</code>.</p>
+        <p><strong>QR fisico:</strong> <code>/map</code> → registra data/ora e dati tecnici del dispositivo, senza conservare l'IP → redirect a <code>/mappa</code>.</p>
         <p><strong>Menu e link:</strong> <code>/mappa</code> → apertura diretta della mappa → nessuna registrazione nelle statistiche QR.</p>
     </section>
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Dati e conservazione</h2>
-        <p>Il log QR registra <strong>data e ora, indirizzo IP, user agent e classe dispositivo</strong>. Non usa cookie analitici e non salva la geolocalizzazione. I dettagli vengono conservati per <?= (int) $retentionDays ?> giorni; i conteggi aggregati giornalieri restano disponibili per le statistiche storiche.</p>
+        <p>Il log QR registra <strong>data e ora, user agent e classe dispositivo</strong>. Non conserva l'indirizzo IP, non usa cookie analitici e non salva la geolocalizzazione. I dettagli vengono conservati per <?= (int) $retentionDays ?> giorni; i conteggi aggregati giornalieri restano disponibili per le statistiche storiche.</p>
         <p><a class="btn secondary" href="../privacy" target="_blank">Privacy</a> <a class="btn secondary" href="../cookie" target="_blank">Cookie</a></p>
     </section>
 </main>

@@ -19,16 +19,36 @@ try {
     $client = backoffice_mail_client();
     $folder = backoffice_mail_folder($folderPath, $client);
     $message = $folder->query()->setFetchBody(false)->leaveUnread()->getMessageByUid($uid);
-    match ($action) {
-        'read' => $message->setFlag('Seen'),
-        'unread' => $message->unsetFlag('Seen'),
-        'flag' => $message->setFlag('Flagged'),
-        'unflag' => $message->unsetFlag('Flagged'),
-        default => throw new InvalidArgumentException('Azione non valida.'),
-    };
+    if ($action === 'delete') {
+        $trashFolder = backoffice_mail_trash_folder($client);
+        $alreadyInTrash = $trashFolder instanceof Webklex\PHPIMAP\Folder
+            && strcasecmp($folder->path, $trashFolder->path) === 0;
+
+        if ($trashFolder instanceof Webklex\PHPIMAP\Folder && !$alreadyInTrash) {
+            if (!$message->move($trashFolder->path, true)) {
+                throw new RuntimeException('Non è stato possibile spostare il messaggio nel Cestino.');
+            }
+        } elseif (!$message->delete(true)) {
+            throw new RuntimeException('Non è stato possibile eliminare il messaggio.');
+        }
+    } else {
+        match ($action) {
+            'read' => $message->setFlag('Seen'),
+            'unread' => $message->unsetFlag('Seen'),
+            'flag' => $message->setFlag('Flagged'),
+            'unflag' => $message->unsetFlag('Flagged'),
+            default => throw new InvalidArgumentException('Azione non valida.'),
+        };
+    }
 } catch (Throwable $exception) {
     backoffice_mail_log_exception($exception, 'azione posta');
     header('Location: posta.php?' . http_build_query(['folder' => $folderPath, 'error' => 1]));
+    exit;
+}
+
+if ($action === 'delete') {
+    unset($_SESSION['mail_dashboard_summary']);
+    header('Location: posta.php?' . http_build_query(['folder' => $folderPath, 'deleted' => 1]));
     exit;
 }
 

@@ -38,6 +38,7 @@ if (!function_exists('backoffice_mail_config')) {
             'imap_password' => $imapPassword !== '' ? $imapPassword : $sharedPassword,
             'imap_timeout' => max(5, min(60, lauco_env_int('MAIL_IMAP_TIMEOUT_SECONDS', 20))),
             'imap_sent_folder' => trim((string) lauco_env('MAIL_IMAP_SENT_FOLDER', '')),
+            'imap_trash_folder' => trim((string) lauco_env('MAIL_IMAP_TRASH_FOLDER', '')),
             'smtp_host' => trim((string) lauco_env('MAIL_SMTP_HOST', 'out.postassl.it')),
             'smtp_port' => max(1, lauco_env_int('MAIL_SMTP_PORT', 465)),
             'smtp_encryption' => strtolower(trim((string) lauco_env('MAIL_SMTP_ENCRYPTION', 'ssl'))),
@@ -261,6 +262,40 @@ if (!function_exists('backoffice_mail_sent_folder')) {
                 }
             }
             if (in_array(strtolower($folder->name), ['sent', 'sent messages', 'posta inviata', 'inviata', 'inviati'], true)) {
+                return $folder;
+            }
+        }
+        return null;
+    }
+}
+
+if (!function_exists('backoffice_mail_trash_folder')) {
+    function backoffice_mail_trash_folder(Client $client): ?Folder
+    {
+        $configured = trim((string) backoffice_mail_config()['imap_trash_folder']);
+        $candidates = array_filter([
+            $configured,
+            'Trash',
+            'INBOX/Trash',
+            'INBOX.Trash',
+            'Cestino',
+            'INBOX/Cestino',
+            'INBOX.Cestino',
+            'Deleted',
+            'Deleted Messages',
+            'INBOX/Deleted Messages',
+            'Posta eliminata',
+            'INBOX/Posta eliminata',
+        ]);
+        $trashNames = ['trash', 'cestino', 'deleted', 'deleted messages', 'posta eliminata', 'eliminata'];
+
+        foreach (backoffice_mail_folders($client) as $folder) {
+            foreach ($candidates as $candidate) {
+                if (strcasecmp($folder->path, $candidate) === 0 || strcasecmp($folder->name, $candidate) === 0) {
+                    return $folder;
+                }
+            }
+            if (in_array(strtolower($folder->name), $trashNames, true)) {
                 return $folder;
             }
         }

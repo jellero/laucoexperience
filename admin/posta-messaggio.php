@@ -15,12 +15,17 @@ $message = null;
 $data = null;
 $bodyHtml = '';
 $attachments = [];
+$trashFolder = null;
+$isTrashFolder = false;
 $error = '';
 
 try {
     $client = backoffice_mail_client();
     $folders = backoffice_mail_folders($client);
     $folder = backoffice_mail_folder($folderPath, $client);
+    $trashFolder = backoffice_mail_trash_folder($client);
+    $isTrashFolder = $trashFolder instanceof Webklex\PHPIMAP\Folder
+        && strcasecmp($folder->path, $trashFolder->path) === 0;
     $message = backoffice_mail_message($folder, $uid, true);
     $data = backoffice_mail_message_data($message);
     $html = (string) ($message->getHTMLBody() ?? '');
@@ -57,6 +62,13 @@ admin_mail_styles();
                 <input type="hidden" name="uid" value="<?= (int) $data['uid'] ?>">
                 <input type="hidden" name="action" value="unread">
                 <button class="btn secondary" type="submit">Segna da leggere</button>
+            </form>
+            <form method="post" action="posta-azione.php" class="inline" onsubmit="return confirm(<?= e(json_encode($isTrashFolder ? 'Eliminare definitivamente questa email? L\'operazione non è reversibile.' : 'Spostare questa email nel Cestino?', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>)">
+                <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
+                <input type="hidden" name="folder" value="<?= e($selectedFolder) ?>">
+                <input type="hidden" name="uid" value="<?= (int) $data['uid'] ?>">
+                <input type="hidden" name="action" value="delete">
+                <button class="btn danger" type="submit"><?= $isTrashFolder ? 'Elimina definitivamente' : 'Elimina' ?></button>
             </form>
         <?php endif; ?>
     </div>

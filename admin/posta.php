@@ -35,6 +35,7 @@ try {
 
 $selectedFolder = $folder?->path ?? $requestedFolder;
 $sent = isset($_GET['sent']);
+$deleted = isset($_GET['deleted']);
 if ($error === '' && isset($_GET['error'])) {
     $error = 'Non è stato possibile aggiornare il messaggio.';
 }
@@ -50,6 +51,10 @@ admin_mail_styles();
 
     <?php if ($sent): ?>
         <div class="success">Email inviata correttamente.</div>
+    <?php endif; ?>
+
+    <?php if ($deleted): ?>
+        <div class="success">Email eliminata.</div>
     <?php endif; ?>
 
     <?php if ($error !== ''): ?>

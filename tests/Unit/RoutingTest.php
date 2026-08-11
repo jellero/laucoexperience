@@ -40,16 +40,24 @@ final class RoutingTest extends TestCase
         self::assertStringContainsString('Forra del Vinadia', (string) $response->getBody());
     }
 
-    public function testQrRedirectUsesWhitelistAndDoesNotSetTrackingCookies(): void
+    public function testMapQrEntryIsTrackedRouteAndPublicMapIsDirect(): void
     {
         $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
         $factory = new ServerRequestFactory();
 
-        $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=forra-vinadia'));
+        $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/map'));
         self::assertSame(302, $response->getStatusCode());
-        self::assertSame('/forra', $response->getHeaderLine('Location'));
+        self::assertSame('/mappa', $response->getHeaderLine('Location'));
         self::assertSame('', $response->getHeaderLine('Set-Cookie'));
         self::assertSame('no-store', $response->getHeaderLine('Cache-Control'));
+
+        $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/mappa'));
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringContainsString('<!DOCTYPE html>', (string) $response->getBody());
+
+        $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=map'));
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame('/mappa', $response->getHeaderLine('Location'));
 
         $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=non-esiste'));
         self::assertSame(404, $response->getStatusCode());
@@ -89,6 +97,8 @@ final class RoutingTest extends TestCase
         self::assertStringStartsWith('application/xml', $response->getHeaderLine('Content-Type'));
         self::assertStringContainsString('<urlset', $body);
         self::assertStringContainsString('<loc>https://', $body);
+        self::assertStringContainsString('/mappa', $body);
+        self::assertStringNotContainsString('<loc>https://laucoexperience.it/map</loc>', $body);
         self::assertStringContainsString('hreflang="en"', $body);
     }
 

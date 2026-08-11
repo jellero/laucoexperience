@@ -1,5 +1,20 @@
 <?php
 require_once LAUCO_ROOT . '/inc/db.php';
+require_once LAUCO_ROOT . '/inc/translations.php';
+
+$currentLanguage = content_language_from_request();
+$fractionsIntro = match ($currentLanguage) {
+    'en' => 'For a complete reading of the settlements on the plateau, explore the dedicated section on Lauco’s villages and hamlets.',
+    'de' => 'Für einen vollständigen Überblick über die Siedlungen des Hochplateaus gibt es einen eigenen Bereich zu den Fraktionen und Weilern von Lauco.',
+    'sl' => 'Za celovit pregled naselij na planoti si oglejte tudi posebno rubriko o vaseh in zaselkih Lauca.',
+    default => 'Per una lettura completa degli abitati dell’altopiano, consulta anche la sezione dedicata alle frazioni e alle borgate di Lauco.',
+};
+$fractionsLabel = match ($currentLanguage) {
+    'en' => 'Villages and hamlets',
+    'de' => 'Fraktionen und Weiler',
+    'sl' => 'Vasi in zaselki',
+    default => 'Frazioni e borgate',
+};
 
 $stmt = $pdo->query("
     SELECT *
@@ -19,6 +34,10 @@ $luoghi = $stmt->fetchAll();
             font-size: 18px;
             line-height: 1.75;
             color: #555;
+            margin-bottom: 20px;
+        }
+
+        .places-editorial-link {
             margin-bottom: 34px;
         }
 
@@ -139,6 +158,10 @@ $luoghi = $stmt->fetchAll();
                             <p class="lead-text">
                                 Questa sezione raccoglie luoghi, punti di interesse e testimonianze del territorio di Lauco:
                                 elementi storici, scorci panoramici, architetture minori e luoghi naturali da conoscere con rispetto.
+                            </p>
+                            <p class="places-editorial-link">
+                                <?= htmlspecialchars($fractionsIntro, ENT_QUOTES, 'UTF-8') ?>
+                                <a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/frazioni'), ENT_QUOTES, 'UTF-8') ?>"><strong><?= htmlspecialchars($fractionsLabel, ENT_QUOTES, 'UTF-8') ?></strong></a>.
                             </p>
                         </div>
                     </div>

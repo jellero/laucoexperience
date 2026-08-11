@@ -17,6 +17,12 @@ $fractionsLabel = match ($currentLanguage) {
     'sl' => 'Vasi in zaselki',
     default => 'Frazioni e borgate',
 };
+$trailMapLabel = match ($currentLanguage) {
+    'en' => 'Trail map',
+    'de' => 'Wanderkarte',
+    'sl' => 'Zemljevid poti',
+    default => 'Mappa dei sentieri',
+};
 if (!function_exists('isCurrent')) {
     function isCurrent($pages): bool {
         $current = basename((string) ($_SERVER['PHP_SELF'] ?? ''));
@@ -44,7 +50,7 @@ if (!function_exists('isCurrent')) {
                         <li class="submenu">
                             <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php']) ? 'active-item' : '' ?>">Mappa</a>
                             <ul class="sub-menu">
-                                <li><a href="/mappa">Mappa dei sentieri</a></li>
+                                <li><a href="/mappa"><?= htmlspecialchars($trailMapLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/segnaletica">Segnaletica</a></li>
                                 <li><a href="/consigli">Consigli escursionistici</a></li>
                             </ul>

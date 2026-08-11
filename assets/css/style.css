@@ -4387,6 +4387,14 @@ header {
         display: block;
         border-radius: 2px 2px 0 0;
         position: relative; }
+      #page-content #showcase-treks .item .showcase-trek > img.itinerary-card-image {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        object-position: center; }
+        @media screen and (max-width: 767px) {
+          #page-content #showcase-treks .item .showcase-trek > img.itinerary-card-image {
+            height: 240px; } }
         #page-content #showcase-projects .item .showcase-project img:before,
         #page-content #showcase-projects .item .showcase-trek img:before,
         #page-content #showcase-treks .item .showcase-project img:before,

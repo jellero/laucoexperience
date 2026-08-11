@@ -193,7 +193,7 @@ if (seo_path() === '/mappa') {
 <link rel="stylesheet" href="assets/css/bootstrap/bootstrap-theme.min.css">
 
 <!-- Template CSS -->
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/style.css?v=<?= (int) filemtime(LAUCO_ROOT . '/assets/css/style.css') ?>">
 <link rel="stylesheet" href="assets/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/css/ionicons.min.css">
 <link rel="stylesheet" href="assets/css/puredesign.css">

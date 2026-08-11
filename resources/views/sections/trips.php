@@ -77,7 +77,7 @@ $percorsiConsigliati = $stmt->fetchAll();
                                 <?= e($stats['length_label']) ?>
                             </span>
 
-                            <img src="<?= e($cover) ?>" alt="<?= e($percorso['titolo']) ?>">
+                            <img class="itinerary-card-image" src="<?= e($cover) ?>" alt="<?= e($percorso['titolo']) ?>">
 
                             <div class="content text-center">
                                 <div class="row margin-leftright-null">

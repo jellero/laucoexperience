@@ -21,15 +21,8 @@ final class GpxFileAction
             return $this->notFound($response);
         }
 
-        $gpxRoot = realpath($this->root . '/gpx');
-        if ($gpxRoot === false || !is_dir($gpxRoot)) {
-            return $this->notFound($response);
-        }
-
-        $filePath = realpath($gpxRoot . DIRECTORY_SEPARATOR . $filename);
-        $prefix = rtrim($gpxRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-
-        if ($filePath === false || !is_file($filePath) || !str_starts_with($filePath, $prefix)) {
+        $filePath = $this->resolveFile($filename);
+        if ($filePath === null) {
             return $this->notFound($response);
         }
 
@@ -44,8 +37,32 @@ final class GpxFileAction
         return $response
             ->withHeader('Content-Type', 'application/gpx+xml; charset=utf-8')
             ->withHeader('Content-Length', (string) filesize($filePath))
+            ->withHeader('Content-Disposition', 'attachment; filename="' . str_replace('"', '', basename($filePath)) . '"')
             ->withHeader('Cache-Control', 'public, max-age=300')
             ->withHeader('X-Content-Type-Options', 'nosniff');
+    }
+
+    private function resolveFile(string $filename): ?string
+    {
+        $roots = [
+            $this->root . '/gpx',
+            $this->root . '/uploads/percorsi/gpx',
+        ];
+
+        foreach ($roots as $candidateRoot) {
+            $root = realpath($candidateRoot);
+            if ($root === false || !is_dir($root)) {
+                continue;
+            }
+
+            $filePath = realpath($root . DIRECTORY_SEPARATOR . $filename);
+            $prefix = rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            if ($filePath !== false && is_file($filePath) && str_starts_with($filePath, $prefix)) {
+                return $filePath;
+            }
+        }
+
+        return null;
     }
 
     private function notFound(ResponseInterface $response): ResponseInterface

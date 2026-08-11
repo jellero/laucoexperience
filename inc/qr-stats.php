@@ -84,7 +84,40 @@ function qr_stats_open_pdo(): ?PDO
     }
 }
 
-function qr_track_scan(PDO $pdo, string $code): void
+function qr_device_type(string $userAgent): string
+{
+    $ua = strtolower(trim($userAgent));
+    if ($ua === '') {
+        return 'unknown';
+    }
+    if (preg_match('/ipad|tablet|kindle|silk/', $ua)) {
+        return 'tablet';
+    }
+    if (preg_match('/mobile|iphone|ipod|android.*mobile|windows phone/', $ua)) {
+        return 'mobile';
+    }
+    if (str_contains($ua, 'android')) {
+        return 'tablet';
+    }
+    return 'desktop';
+}
+
+function qr_scan_log_retention_days(): int
+{
+    return 90;
+}
+
+function qr_scan_log_available(PDO $pdo): bool
+{
+    try {
+        $pdo->query('SELECT 1 FROM qr_scan_log LIMIT 1');
+        return true;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+function qr_track_scan(PDO $pdo, string $code, string $ipAddress = '', string $userAgent = ''): void
 {
     if (qr_definition($code) === null) {
         return;
@@ -95,6 +128,30 @@ function qr_track_scan(PDO $pdo, string $code): void
         . 'ON DUPLICATE KEY UPDATE scans = scans + 1'
     );
     $stmt->execute(['qr_code' => $code]);
+
+    if (!qr_scan_log_available($pdo)) {
+        return;
+    }
+
+    $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP) !== false ? $ipAddress : '';
+    $userAgent = trim($userAgent);
+    $userAgent = function_exists('mb_substr') ? mb_substr($userAgent, 0, 512) : substr($userAgent, 0, 512);
+
+    $detail = $pdo->prepare(
+        'INSERT INTO qr_scan_log (qr_code, scanned_at, ip_address, user_agent, device_type) '
+        . 'VALUES (:qr_code, CURRENT_TIMESTAMP, :ip_address, :user_agent, :device_type)'
+    );
+    $detail->execute([
+        'qr_code' => $code,
+        'ip_address' => $ipAddress,
+        'user_agent' => $userAgent,
+        'device_type' => qr_device_type($userAgent),
+    ]);
+
+    $pdo->exec(
+        'DELETE FROM qr_scan_log WHERE scanned_at < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL '
+        . qr_scan_log_retention_days() . ' DAY)'
+    );
 }
 
 function qr_stats_available(PDO $pdo): bool
@@ -182,4 +239,30 @@ function qr_stats_daily(PDO $pdo, int $days = 30): array
         'scan_date' => (string) $row['scan_date'],
         'scans' => (int) $row['scans'],
     ], $rows ?: []);
+}
+
+/** @return list<array{id:int,qr_code:string,scanned_at:string,ip_address:string,user_agent:string,device_type:string}> */
+function qr_stats_recent(PDO $pdo, int $limit = 100): array
+{
+    if (!qr_scan_log_available($pdo)) {
+        return [];
+    }
+
+    $limit = max(1, min(500, $limit));
+    $filter = qr_stats_active_filter('recent_qr');
+    $sql = 'SELECT id, qr_code, scanned_at, ip_address, user_agent, device_type '
+        . 'FROM qr_scan_log WHERE ' . $filter['sql'] . ' '
+        . 'ORDER BY scanned_at DESC, id DESC LIMIT ' . $limit;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($filter['params']);
+    $rows = $stmt->fetchAll() ?: [];
+
+    return array_map(static fn (array $row): array => [
+        'id' => (int) ($row['id'] ?? 0),
+        'qr_code' => (string) ($row['qr_code'] ?? ''),
+        'scanned_at' => (string) ($row['scanned_at'] ?? ''),
+        'ip_address' => (string) ($row['ip_address'] ?? ''),
+        'user_agent' => (string) ($row['user_agent'] ?? ''),
+        'device_type' => (string) ($row['device_type'] ?? 'unknown'),
+    ], $rows);
 }

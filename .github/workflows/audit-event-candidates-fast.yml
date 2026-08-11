@@ -1,4 +1,4 @@
-name: Audit event candidates fast
+name: Finalize event covers
 
 on:
   push:
@@ -6,40 +6,299 @@ on:
       - '.github/workflows/audit-event-candidates-fast.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  bundle:
+  finalize:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Download candidate images
+        with:
+          fetch-depth: 0
+
+      - name: Build verified event cover set
         shell: bash
         run: |
-          set -u
-          mkdir -p audit/candidates audit/local
-          get() { curl -fL --max-time 25 --retry 1 "$1" -o "$2" || rm -f "$2"; }
-          cp -R assets/img/luoghi audit/local/luoghi 2>/dev/null || true
-          cp uploads/luoghi/chiesa-trava-20260610213911-b2a7c5.jpg audit/local/trava.jpg
-          cp uploads/luoghi/terrazza-20260610214112-b51f01.jpg audit/local/piattaforma.jpg
-          cp uploads/luoghi/loc-porteal-20260610213800-b92b1a.jpg audit/local/tombe-curs.jpg
-          cp assets/img/cronoradima.jpg audit/local/cronoradima.jpg
-          cp assets/img/alpini.jpg audit/local/maina.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Blood%20donation%20mobile%20unit.jpg?width=1200' audit/candidates/autoemoteca.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Theater%20stage.jpg?width=1200' audit/candidates/teatro.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Monte%20Arvenis.jpg?width=1200' audit/candidates/monte-arvenis.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco-panorama.jpg?width=1200' audit/candidates/lauco-panorama.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Chiesa%20di%20Avaglio%20di%20Lauco.jpg?width=1200' audit/candidates/avaglio.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rosegg%2C%20Partnerschaft%20Partnerstvo%20Gemellagio%20und%20Partnerst%C3%A4dte%20Bohinj%2C%20Zuglio%2C%20Lauco%20und%20Osoppo.jpg?width=1200' audit/candidates/rosegg-gemellaggio.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rally%20023.jpg?width=1200' audit/candidates/rally.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Choir%20in%20church.jpg?width=1200' audit/candidates/coro.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Torchlight%20procession%20for%20the%20search%20of%20missing%20boy%20Odin%20Andre%20Hagen%20Jacobsen%2018.jpg?width=1200' audit/candidates/fiaccolata.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco%20%28UD%29%20-%20frazione%20Trava%20-%20vista%20innevata%20-%202008.jpg?width=1200' audit/candidates/trava-inverno.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Scheibenschlagen%20in%20Zams.jpg?width=1200' audit/candidates/cidules.jpg
-          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Italian%20Army%20-%207th%20Alpini%20Regiment%20flag%20is%20paraded%20through%20Vicenza%20during%20the%20National%20Alpine%20Association%20gathering%202024.png?width=1200' audit/candidates/alpini-adunata.png
-          get 'https://pagnacco-api.municipiumapp.it/s3/4905/media/acque-vive-cristina-noacco-pagnacco.jpg' audit/candidates/acque-vive.jpg
-          file audit/candidates/* audit/local/* 2>/dev/null || true
-      - uses: actions/upload-artifact@v4
-        with:
-          name: lauco-event-candidates-fast
-          path: audit
-          retention-days: 1
+          set -euo pipefail
+          rm -rf .event-cover-staging
+          mkdir -p .event-cover-staging assets/img/eventi
+
+          get() {
+            curl -fL --max-time 45 --retry 2 "$1" -o ".event-cover-staging/$2"
+          }
+
+          # External reusable sources selected for exact event/place/subject relevance.
+          get 'https://pagnacco-api.municipiumapp.it/s3/4905/media/acque-vive-cristina-noacco-pagnacco.jpg' 'acque-vive.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Blood%20donation%20mobile%20unit.jpg?width=1600' 'autoemoteca.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Theater%20stage.jpg?width=1600' 'teatro.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Monte%20Arvenis.jpg?width=1600' 'monte-arvenis.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco-panorama.jpg?width=1600' 'lauco-panorama.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Chiesa%20di%20Avaglio%20di%20Lauco.jpg?width=1600' 'avaglio.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rosegg%2C%20Partnerschaft%20Partnerstvo%20Gemellagio%20und%20Partnerst%C3%A4dte%20Bohinj%2C%20Zuglio%2C%20Lauco%20und%20Osoppo.jpg?width=1600' 'rosegg-gemellaggio.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rally%20023.jpg?width=1600' 'rally.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Choir%20in%20church.jpg?width=1600' 'coro.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Torchlight%20procession%20for%20the%20search%20of%20missing%20boy%20Odin%20Andre%20Hagen%20Jacobsen%2018.jpg?width=1600' 'fiaccolata.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Scheibenschlagen%20in%20Zams.jpg?width=1600' 'cidules.jpg'
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Italian%20Army%20-%207th%20Alpini%20Regiment%20flag%20is%20paraded%20through%20Vicenza%20during%20the%20National%20Alpine%20Association%20gathering%202024.png?width=1600' 'alpini-adunata.png'
+
+          # Exact/local project-owned material already present in the repository.
+          cp assets/img/cronoradima.jpg .event-cover-staging/cronoradima.jpg
+          cp assets/img/alpini.jpg .event-cover-staging/maina.jpg
+          cp uploads/luoghi/chiesa-trava-20260610213911-b2a7c5.jpg .event-cover-staging/trava-santuario.jpg
+          cp uploads/luoghi/terrazza-20260610214112-b51f01.jpg .event-cover-staging/piattaforma-panoramica.jpg
+          cp uploads/luoghi/loc-porteal-20260610213800-b92b1a.jpg .event-cover-staging/tombe-curs.jpg
+          cp uploads/galleria/20260602115819-8d1e78c683a2.jpg .event-cover-staging/lauco-territorio.jpg
+          cp uploads/galleria/20260602115819-720fa682e9f3.jpg .event-cover-staging/lauco-foliage.jpg
+          cp uploads/galleria/20260602115819-3f83ada6f160.jpg .event-cover-staging/lauco-inverno.jpg
+
+          python3 -m pip install --quiet pillow
+          python3 <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+
+          src = Path('.event-cover-staging')
+          dst = Path('assets/img/eventi')
+          dst.mkdir(parents=True, exist_ok=True)
+
+          expected = {
+              'acque-vive.jpg', 'alpini-adunata.png', 'autoemoteca.jpg', 'avaglio.jpg',
+              'cidules.jpg', 'coro.jpg', 'cronoradima.jpg', 'fiaccolata.jpg',
+              'lauco-foliage.jpg', 'lauco-inverno.jpg', 'lauco-panorama.jpg',
+              'lauco-territorio.jpg', 'maina.jpg', 'monte-arvenis.jpg',
+              'piattaforma-panoramica.jpg', 'rally.jpg', 'rosegg-gemellaggio.jpg',
+              'teatro.jpg', 'tombe-curs.jpg', 'trava-santuario.jpg'
+          }
+          found = {p.name for p in src.iterdir() if p.is_file()}
+          missing = sorted(expected - found)
+          if missing:
+              raise SystemExit(f'Missing candidate images: {missing}')
+
+          for old in dst.glob('*'):
+              if old.is_file() and old.name not in {'CREDITS.md', 'mapping.csv'}:
+                  old.unlink()
+
+          for name in sorted(expected):
+              p = src / name
+              out = dst / (p.stem + '.jpg')
+              with Image.open(p) as im:
+                  im = ImageOps.exif_transpose(im).convert('RGB')
+                  im.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
+                  im.save(out, 'JPEG', quality=86, optimize=True, progressive=True)
+
+          finals = list(dst.glob('*.jpg'))
+          if len(finals) != 20:
+              raise SystemExit(f'Expected 20 final JPEGs, got {len(finals)}')
+          for p in finals:
+              with Image.open(p) as im:
+                  im.verify()
+          PY
+
+          cat > assets/img/eventi/mapping.csv <<'EOF'
+          slug_evento,file,criterio_editoriale
+          presentazione-acque-vive-cristina-noacco-2026,acque-vive.jpg,evento esatto / locandina ufficiale
+          festeggiamenti-primo-maggio-porteal-2026,lauco-territorio.jpg,territorio reale di Lauco; nessuna foto libera dell'evento reperita
+          autoemoteca-maggio-2026,autoemoteca.jpg,soggetto esatto: unità mobile per donazione sangue
+          teatro-friulano-teatri-di-pais-2026,teatro.jpg,soggetto esatto: palcoscenico teatrale
+          vertical-race-cronoradime-2026,cronoradima.jpg,evento esatto / locandina già presente nel progetto
+          pentecoste-40-ore-comunioni-2026,lauco-panorama.jpg,luogo esatto: Lauco con chiesa
+          festa-croce-monte-arvenis-2026,monte-arvenis.jpg,luogo esatto: Monte Arvenis
+          apertura-chiosco-vinaio-giugno-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta del chiosco reperita
+          festa-degli-alberi-lauco-rosegg-2026,rosegg-gemellaggio.jpg,relazione esatta Lauco–Rosegg
+          sant-antonio-avaglio-2026,avaglio.jpg,luogo esatto: chiesa di Avaglio
+          san-luigi-trava-2026,trava-santuario.jpg,luogo esatto: Trava
+          gemellaggio-vinaio-runchia-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta del gemellaggio reperita
+          escursione-solstizio-estate-museo-2026,lauco-territorio.jpg,territorio reale di svolgimento
+          apertura-chiosco-piattaforma-panoramica-2026,piattaforma-panoramica.jpg,luogo esatto: piattaforma panoramica
+          trava-open-2026,trava-santuario.jpg,località esatta: Trava
+          san-giovanni-buttea-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta della chiesa di Buttea reperita
+          evento-chiosco-vinaio-5-luglio-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta del chiosco reperita
+          escursione-celtic-fest-museo-2026,tombe-curs.jpg,luogo/soggetto locale pertinente: area archeologica di Curs
+          celtic-fest-lauco-2026,tombe-curs.jpg,luogo esatto/contesto: località Curs e tombe rupestri
+          eventi-chiosco-vinaio-12-luglio-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta del chiosco reperita
+          raduno-provinciale-alpini-2026,alpini-adunata.jpg,soggetto esatto: adunata/sfilata Alpini
+          concerto-coro-polifonico-piattaforma-2026,piattaforma-panoramica.jpg,luogo esatto: piattaforma panoramica
+          maina-dal-cret-2026,maina.jpg,evento esatto / locandina già presente nel progetto
+          escursione-santuario-trava-agosto-2026,trava-santuario.jpg,luogo esatto: santuario/Trava
+          la-pelle-della-terra-trava-2026,trava-santuario.jpg,località esatta: Trava
+          sagra-paesana-trava-2026,trava-santuario.jpg,località esatta: Trava
+          apertura-chiosco-vinaio-ferragosto-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta del chiosco reperita
+          san-rocco-2026,lauco-panorama.jpg,luogo esatto: Lauco e contesto religioso
+          rally-valli-della-carnia-lauco-2026,rally.jpg,soggetto esatto: rally su strada di montagna
+          sagra-paesana-allegnidis-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta della sagra reperita
+          madonna-delle-grazie-allegnidis-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta della chiesa reperita
+          madonna-cintura-vinaio-2026,lauco-territorio.jpg,territorio reale comunale; nessuna foto libera esatta della celebrazione reperita
+          escursione-santuario-trava-settembre-2026,trava-santuario.jpg,luogo esatto: santuario/Trava
+          foliage-autunno-lauco-2026,lauco-foliage.jpg,territorio locale in veste autunnale
+          autoemoteca-ottobre-2026,autoemoteca.jpg,soggetto esatto: unità mobile per donazione sangue
+          las-cidules-buttea-2026,cidules.jpg,soggetto esatto/rito analogo dei dischi infuocati
+          las-cidules-uerpa-2026,cidules.jpg,soggetto esatto/rito analogo dei dischi infuocati
+          unita-nazionale-costituzione-buttea-2026,alpini-adunata.jpg,soggetto pertinente: Alpini e cerimonia pubblica
+          corona-avvento-rosegg-2026,rosegg-gemellaggio.jpg,relazione esatta Lauco–Rosegg
+          giro-degli-auguri-12-13-dicembre-2026,lauco-inverno.jpg,territorio locale invernale
+          concerto-santa-lucia-polifonico-2026,coro.jpg,soggetto esatto: coro
+          giro-degli-auguri-19-20-dicembre-2026,lauco-inverno.jpg,territorio locale invernale
+          las-cidules-avaglio-2026,cidules.jpg,soggetto esatto/rito analogo dei dischi infuocati
+          fiaccolata-dei-madins-2026,fiaccolata.jpg,soggetto esatto: fiaccolata
+          brindisi-inizio-anno-lauco-2027,lauco-inverno.jpg,territorio locale invernale
+          EOF
+
+          cat > assets/img/eventi/CREDITS.md <<'EOF'
+          # Crediti e licenze immagini eventi
+
+          Le immagini sono state selezionate per pertinenza reale all'evento, al luogo o al soggetto. Festa del Miele è deliberatamente esclusa dal mapping e dalla migrazione.
+
+          ## Fonti esterne
+          - `acque-vive.jpg` — Comune di Pagnacco, locandina “Acque Vive”; contenuti del sito rilasciati CC BY 4.0 salvo diversa indicazione.
+          - `autoemoteca.jpg` — Wikimedia Commons, “Blood donation mobile unit.jpg”, CC BY-SA 3.0.
+          - `teatro.jpg` — Wikimedia Commons, “Theater stage.jpg”, Beyond silence, CC BY-SA 3.0.
+          - `monte-arvenis.jpg` — Wikimedia Commons, “Monte Arvenis.jpg”, Alpino friulano, CC BY-SA 3.0 / GFDL.
+          - `lauco-panorama.jpg` — Wikimedia Commons, “Lauco-panorama.jpg”, Sebi1; licenza indicata nella pagina Commons.
+          - `avaglio.jpg` — Wikimedia Commons, “Chiesa di Avaglio di Lauco.jpg”; licenza indicata nella pagina Commons.
+          - `rosegg-gemellaggio.jpg` — Wikimedia Commons, cartello del gemellaggio di Rosegg con Lauco; licenza indicata nella pagina Commons.
+          - `rally.jpg` — Wikimedia Commons, “Rally 023.jpg”, Rosserluke, pubblico dominio.
+          - `coro.jpg` — Wikimedia Commons, “Choir in church.jpg”, Peter van der Sluijs, CC BY-SA 3.0.
+          - `fiaccolata.jpg` — Wikimedia Commons, “Torchlight procession ... 18.jpg”, Sparrow, CC BY-SA 4.0.
+          - `cidules.jpg` — Wikimedia Commons, “Scheibenschlagen in Zams.jpg”, Josef Saurwein, pubblico dominio. Raffigura il medesimo tipo di rito dei dischi infuocati; non è una fotografia di Lauco.
+          - `alpini-adunata.jpg` — Wikimedia Commons / Esercito Italiano, adunata Alpini 2024, CC BY 2.5.
+
+          ## Immagini già appartenenti al progetto Lauco Experience
+          - `cronoradima.jpg` — locandina CronoRadime.
+          - `maina.jpg` — locandina Maina dal Cret.
+          - `trava-santuario.jpg` — fotografia locale di Trava.
+          - `piattaforma-panoramica.jpg` — fotografia locale della piattaforma panoramica.
+          - `tombe-curs.jpg` — fotografia locale delle tombe rupestri / area Curs.
+          - `lauco-territorio.jpg` — fotografia della galleria Lauco Experience.
+          - `lauco-foliage.jpg` — fotografia autunnale della galleria Lauco Experience.
+          - `lauco-inverno.jpg` — fotografia invernale della galleria Lauco Experience.
+
+          Le copie pubblicate sono state solo ridimensionate e compresse in JPEG per l'uso web; il soggetto non è stato alterato.
+          EOF
+
+          cat > migrations/20260811_zzzz_eventi_cover_pertinenti_2026.sql <<'EOF'
+          -- Aggiorna le cover degli eventi con immagini verificate e pertinenti.
+          -- Festa del Miele e' esclusa: questa migrazione aggiorna esclusivamente slug espliciti e applica inoltre un doppio safeguard su slug/titolo.
+          -- Migrazione additiva: non modificare migrazioni precedenti gia' applicate.
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/acque-vive.jpg'
+          WHERE `slug` IN ('presentazione-acque-vive-cristina-noacco-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/alpini-adunata.jpg'
+          WHERE `slug` IN ('raduno-provinciale-alpini-2026','unita-nazionale-costituzione-buttea-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/autoemoteca.jpg'
+          WHERE `slug` IN ('autoemoteca-maggio-2026','autoemoteca-ottobre-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/avaglio.jpg'
+          WHERE `slug` IN ('sant-antonio-avaglio-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/cidules.jpg'
+          WHERE `slug` IN ('las-cidules-buttea-2026','las-cidules-uerpa-2026','las-cidules-avaglio-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/coro.jpg'
+          WHERE `slug` IN ('concerto-santa-lucia-polifonico-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/cronoradima.jpg'
+          WHERE `slug` IN ('vertical-race-cronoradime-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/fiaccolata.jpg'
+          WHERE `slug` IN ('fiaccolata-dei-madins-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/lauco-foliage.jpg'
+          WHERE `slug` IN ('foliage-autunno-lauco-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/lauco-inverno.jpg'
+          WHERE `slug` IN ('giro-degli-auguri-12-13-dicembre-2026','giro-degli-auguri-19-20-dicembre-2026','brindisi-inizio-anno-lauco-2027')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/lauco-panorama.jpg'
+          WHERE `slug` IN ('pentecoste-40-ore-comunioni-2026','san-rocco-2026','sagra-di-san-rocco-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/lauco-territorio.jpg'
+          WHERE `slug` IN ('festeggiamenti-primo-maggio-porteal-2026','apertura-chiosco-vinaio-giugno-2026','gemellaggio-vinaio-runchia-2026','escursione-solstizio-estate-museo-2026','san-giovanni-buttea-2026','evento-chiosco-vinaio-5-luglio-2026','eventi-chiosco-vinaio-12-luglio-2026','apertura-chiosco-vinaio-ferragosto-2026','sagra-paesana-allegnidis-2026','madonna-delle-grazie-allegnidis-2026','madonna-cintura-vinaio-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/maina.jpg'
+          WHERE `slug` IN ('maina-dal-cret-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/monte-arvenis.jpg'
+          WHERE `slug` IN ('festa-croce-monte-arvenis-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/piattaforma-panoramica.jpg'
+          WHERE `slug` IN ('apertura-chiosco-piattaforma-panoramica-2026','concerto-coro-polifonico-piattaforma-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/rally.jpg'
+          WHERE `slug` IN ('rally-valli-della-carnia-lauco-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/rosegg-gemellaggio.jpg'
+          WHERE `slug` IN ('festa-degli-alberi-lauco-rosegg-2026','corona-avvento-rosegg-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/teatro.jpg'
+          WHERE `slug` IN ('teatro-friulano-teatri-di-pais-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/tombe-curs.jpg'
+          WHERE `slug` IN ('escursione-celtic-fest-museo-2026','celtic-fest-lauco-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+
+          UPDATE `eventi`
+          SET `cover_image` = 'assets/img/eventi/trava-santuario.jpg'
+          WHERE `slug` IN ('san-luigi-trava-2026','trava-open-2026','escursione-santuario-trava-agosto-2026','la-pelle-della-terra-trava-2026','sagra-paesana-trava-2026','escursione-santuario-trava-settembre-2026')
+            AND LOWER(COALESCE(`slug`, '')) NOT LIKE '%miele%' AND LOWER(COALESCE(`titolo`, '')) NOT LIKE '%miele%';
+          EOF
+
+          # Sanity checks: exactly 45 official event rows, no honey event, and 20 decodable JPEGs.
+          test "$(tail -n +2 assets/img/eventi/mapping.csv | wc -l | tr -d ' ')" = '45'
+          ! grep -Eqi '(^|,)([^,]*miele[^,]*)(,|$)' assets/img/eventi/mapping.csv
+          grep -q "NOT LIKE '%miele%'" migrations/20260811_zzzz_eventi_cover_pertinenti_2026.sql
+          test "$(find assets/img/eventi -maxdepth 1 -type f -name '*.jpg' | wc -l | tr -d ' ')" = '20'
+
+          rm -rf .event-cover-staging
+          rm -f .github/workflows/audit-event-images.yml
+          rm -f .github/workflows/audit-event-candidates-fast.yml
+
+      - name: Commit final event covers to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'Aggiorna foto eventi pertinenti escluso il miele'
+          git push origin HEAD:main

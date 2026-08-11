@@ -65,7 +65,7 @@ window.GPX_ROUTES = <?= json_encode($routes, JSON_UNESCAPED_UNICODE | JSON_UNESC
                     </button>
                     <button class="btn btn-secondary" id="btnFallback">Vai all'elenco percorsi</button>
                     <?php if (empty($printMode)): ?>
-                        <a class="btn btn-secondary" href="/mappa/pdf" target="_blank" rel="noopener">Scarica mappa PDF</a>
+                        <a class="btn btn-secondary" href="/assets/pdf/laucoexperience.pdf" target="_blank" rel="noopener" style="text-transform:none;letter-spacing:normal;">Scarica mappa</a>
                     <?php endif; ?>
                 </div>
             </div>

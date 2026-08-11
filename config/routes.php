@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 return [
     ['name' => 'home', 'methods' => ['GET'], 'paths' => ['/', '/index', '/index.php'], 'handler' => 'page', 'template' => 'index.php', 'script' => 'index.php'],
-    ['name' => 'map', 'methods' => ['GET'], 'paths' => ['/map', '/map.php'], 'handler' => 'page', 'template' => 'map.php', 'script' => 'map.php'],
+    ['name' => 'map.qr', 'methods' => ['GET'], 'paths' => ['/map', '/map.php'], 'handler' => 'qr-redirect'],
+    ['name' => 'map', 'methods' => ['GET'], 'paths' => ['/mappa'], 'handler' => 'page', 'template' => 'map.php', 'script' => 'map.php'],
     ['name' => 'gpx.file', 'methods' => ['GET'], 'paths' => ['/gpx-file', '/gpx/{filename:.+}'], 'handler' => 'gpx-file'],
     ['name' => 'map.secondary', 'methods' => ['GET'], 'paths' => ['/mappa1', '/mappa1.php'], 'handler' => 'page', 'template' => 'mappa1.php', 'script' => 'mappa1.php'],
     ['name' => 'signage', 'methods' => ['GET'], 'paths' => ['/segnaletica', '/segnaletica.php'], 'handler' => 'page', 'template' => 'segnaletica.php', 'script' => 'segnaletica.php'],

@@ -136,7 +136,7 @@ $hero = $percorsi[0]['cover_image'] ?? 'assets/img/trip11.jpg';
                                 <span class="recommended-badge">Consigliato</span>
                             <?php endif; ?>
 
-                            <img src="<?= e($p['cover_image'] ?: 'assets/img/trip5.jpg') ?>" alt="<?= e($p['titolo']) ?>">
+                            <img class="itinerary-card-image" src="<?= e($p['cover_image'] ?: 'assets/img/trip5.jpg') ?>" alt="<?= e($p['titolo']) ?>">
 
                             <div class="content text-center">
                                 <div class="row margin-leftright-null">

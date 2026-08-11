@@ -7,7 +7,7 @@ $sottotitoloPagina = 'Percorsi selezionati per scoprire il territorio di Lauco';
 <html lang="it">
 <head>
     <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
-    <link rel="stylesheet" href="assets/css/percorso.css">
+    <link rel="stylesheet" href="/assets/css/percorso.css?v=<?= (int) filemtime(LAUCO_ROOT . '/assets/css/percorso.css') ?>">
 </head>
 <body>
     <div id="myloader">

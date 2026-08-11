@@ -57,6 +57,20 @@
     letter-spacing: .08em;
 }
 
+.itinerary-card-image {
+    display: block;
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 767px) {
+    .itinerary-card-image {
+        height: 240px;
+    }
+}
+
 .percorso-stats-icons {
     padding-top: 50px;
     padding-bottom: 45px;

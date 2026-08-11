@@ -1,0 +1,28 @@
+name: Audit event images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-event-images.yml'
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare image audit bundle
+        run: |
+          mkdir -p audit
+          cp -R uploads/galleria audit/galleria || true
+          cp -R uploads/eventi audit/eventi || true
+          cp -R uploads/luoghi audit/luoghi || true
+          mkdir -p audit/assets
+          for f in assets/img/cronoradima.jpg assets/img/alpini.jpg assets/img/sentieri.webp assets/img/old.jpg assets/img/eventi.jpg; do
+            [ -f "$f" ] && cp "$f" audit/assets/
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lauco-image-audit
+          path: audit
+          retention-days: 1

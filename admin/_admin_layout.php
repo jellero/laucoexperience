@@ -157,11 +157,6 @@ if (!function_exists('admin_page_open')) {
                             <span class="number" id="dashboardMailUnread">…</span>
                             <p id="dashboardMailStatus">Controllo della casella in corso.</p>
                         </a>
-                        <a class="dashboard-card" href="../sitemap.xml" target="_blank" rel="noopener">
-                            <small>SEO · Sitemap</small>
-                            <span class="number">XML</span>
-                            <p>Apri e verifica la sitemap pubblica del sito.</p>
-                        </a>
                     </div>
                 </section>
                 <script>

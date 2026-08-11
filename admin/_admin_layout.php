@@ -156,6 +156,7 @@ if (!function_exists('admin_page_open')) {
                     $newsletterDashboardSummary['available'] = true;
                 } catch (Throwable) {
                 }
+
                 ?>
                 <section class="qr-dashboard-summary" aria-label="Riepilogo dashboard">
                     <div class="dashboard-grid">
@@ -178,8 +179,35 @@ if (!function_exists('admin_page_open')) {
                                     : 'Migrazione newsletter da applicare.' ?>
                             </p>
                         </a>
+                        <a class="dashboard-card" href="posta.php?folder=INBOX">
+                            <small>Posta · nuove email</small>
+                            <span class="number" id="dashboardMailUnread">…</span>
+                            <p id="dashboardMailStatus">Controllo della casella in corso.</p>
+                        </a>
                     </div>
                 </section>
+                <script>
+                (function () {
+                    const unread = document.getElementById('dashboardMailUnread');
+                    const status = document.getElementById('dashboardMailStatus');
+                    if (!unread || !status) return;
+
+                    fetch('posta-count.php', {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
+                        .then((response) => response.json())
+                        .then((payload) => {
+                            if (!payload.success) throw new Error('mailbox unavailable');
+                            const count = Math.max(0, Number.parseInt(payload.unread, 10) || 0);
+                            unread.textContent = String(count);
+                            status.textContent = count === 1
+                                ? '1 email da leggere. Apri la casella.'
+                                : count + ' email da leggere. Apri la casella.';
+                        })
+                        .catch(() => {
+                            unread.textContent = '—';
+                            status.textContent = 'Casella non disponibile o non configurata.';
+                        });
+                })();
+                </script>
             <?php endif; ?>
         <?php
     }

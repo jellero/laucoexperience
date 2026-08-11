@@ -12,6 +12,8 @@ Disallow: /admin/
 Disallow: /login
 Disallow: /crea-account
 Disallow: /api/
+Disallow: /map
+Allow: /mappa
 Allow: /
 
 Sitemap: https://laucoexperience.it/sitemap.xml

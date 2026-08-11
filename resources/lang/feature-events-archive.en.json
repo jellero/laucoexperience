@@ -1,0 +1,12 @@
+{
+  "events.archive.back": "Back to upcoming events",
+  "events.archive.breadcrumb": "Archive",
+  "events.archive.empty": "The event archive is still empty.",
+  "events.archive.hero": "Past Lauco Experience events.",
+  "events.archive.link": "Event archive",
+  "events.archive.subtitle": "Past events, from the most recent to the oldest.",
+  "events.archive.title": "EVENT ARCHIVE",
+  "events.archive.title_case": "Event archive",
+  "events.upcoming.empty": "There are currently no upcoming events published.",
+  "events.upcoming.subtitle": "Upcoming events, from the nearest date to those further ahead."
+}

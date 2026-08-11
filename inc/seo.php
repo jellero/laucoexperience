@@ -106,8 +106,10 @@ if (!function_exists('seo_metadata')) {
             $label = trim((string) ($percorso['titolo'] ?? $label));
             $description = seo_text((string) ($percorso['excerpt'] ?? $percorso['descrizione'] ?? $generic));
             $image = (string) ($percorso['cover_image'] ?: 'assets/img/trip11.jpg');
-            $type = 'article'; $parent = ['/itinerari-piedi', $labels['/itinerari-piedi'] ?? 'Itinerari'];
-            $entity = ['@type'=>'Article','headline'=>$label,'description'=>$description,'image'=>[seo_abs($image)],'publisher'=>['@id'=>seo_base_url().'//#organization']];
+            $type = 'article';
+            $routeParent = (($percorso['tipo'] ?? '') === 'mtb') ? '/itinerari-mtb' : '/itinerari-piedi';
+            $parent = [$routeParent, $labels[$routeParent] ?? 'Itinerari'];
+            $entity = ['@type'=>'Article','headline'=>$label,'description'=>$description,'image'=>[seo_abs($image)],'publisher'=>['@id'=>seo_base_url().'/#organization']];
         } elseif ($path === '/luogo' && is_array($luogo)) {
             $slug = trim((string) ($luogo['slug'] ?? $_GET['slug'] ?? ''));
             $label = trim((string) ($luogo['titolo'] ?? $label));
@@ -135,8 +137,8 @@ if (!function_exists('seo_metadata')) {
         $title = ($path === '/' ? $label : $label . ' | Lauco Experience');
 
         $graph=[
-            ['@type'=>'Organization','@id'=>seo_base_url().'//#organization','name'=>'Lauco Experience','url'=>seo_base_url().'/','logo'=>seo_abs('assets/img/logo.png')],
-            ['@type'=>'WebSite','@id'=>seo_base_url().'//#website','url'=>seo_base_url().'/','name'=>'Lauco Experience','inLanguage'=>$locale,'publisher'=>['@id'=>seo_base_url().'//#organization']],
+            ['@type'=>'Organization','@id'=>seo_base_url().'/#organization','name'=>'Lauco Experience','url'=>seo_base_url().'/','logo'=>seo_abs('assets/img/logo.png')],
+            ['@type'=>'WebSite','@id'=>seo_base_url().'/#website','url'=>seo_base_url().'/','name'=>'Lauco Experience','inLanguage'=>$locale,'publisher'=>['@id'=>seo_base_url().'/#organization']],
         ];
         if ($path !== '/') {
             $items=[['@type'=>'ListItem','position'=>1,'name'=>'Lauco Experience','item'=>seo_url('/',$locale)]];

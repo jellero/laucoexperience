@@ -1,5 +1,6 @@
 <?php
 /** Pagina mappa – punto d’ingresso */
+$printMode = isset($_GET['print']) && (string) $_GET['print'] === '1';
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -17,6 +18,20 @@
 
     <!-- CSS della pagina mappa -->
     <link rel="stylesheet" href="assets/css/mappa.css">
+    <?php if ($printMode): ?>
+    <style>
+        @page { size: A4 landscape; margin: 8mm; }
+        html, body, #main-wrap, #page-content, #map-wrap { width: 100% !important; height: 100% !important; margin: 0 !important; padding: 0 !important; }
+        #header, footer, #footer, #footerf, #myloader { display: none !important; }
+        #page-content { padding-top: 0 !important; }
+        #map-wrap { min-height: 180mm !important; }
+        @media print {
+            #header, footer, #footer, #footerf, #myloader { display: none !important; }
+            #page-content, #map-wrap { min-height: 180mm !important; height: 180mm !important; }
+            .leaflet-control-zoom, .leaflet-control-attribution { display: none !important; }
+        }
+    </style>
+    <?php endif; ?>
 </head>
 <body>
 
@@ -56,5 +71,15 @@
 
     <!-- Script pagina mappa -->
     <script src="assets/js/mappa.js"></script>
+    <?php if ($printMode): ?>
+    <script>
+        window.addEventListener('load', function () {
+            window.setTimeout(function () {
+                window.dispatchEvent(new Event('resize'));
+                window.setTimeout(function () { window.print(); }, 500);
+            }, 2200);
+        });
+    </script>
+    <?php endif; ?>
 </body>
 </html>

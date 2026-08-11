@@ -1,0 +1,12 @@
+{
+  "events.archive.back": "Nazaj na prihajajoče dogodke",
+  "events.archive.breadcrumb": "Arhiv",
+  "events.archive.empty": "Arhiv dogodkov je še prazen.",
+  "events.archive.hero": "Pretekli dogodki Lauco Experience.",
+  "events.archive.link": "Arhiv dogodkov",
+  "events.archive.subtitle": "Zaključeni dogodki, od najnovejših do starejših.",
+  "events.archive.title": "ARHIV DOGODKOV",
+  "events.archive.title_case": "Arhiv dogodkov",
+  "events.upcoming.empty": "Trenutno ni objavljenih prihodnjih dogodkov.",
+  "events.upcoming.subtitle": "Prihajajoči dogodki, od najbližjega datuma proti poznejšim."
+}

@@ -34,7 +34,8 @@ $stmt = $pdo->query("
     SELECT *
     FROM eventi
     WHERE pubblicato = 1
-    ORDER BY ordine ASC, data_evento DESC, created_at DESC
+      AND data_evento >= CURDATE()
+    ORDER BY data_evento ASC, ordine ASC, created_at ASC
     LIMIT 2
 ");
 

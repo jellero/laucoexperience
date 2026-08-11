@@ -16,7 +16,7 @@ final class MobileMapUsabilityTest extends TestCase
         self::assertStringNotContainsString('L.GestureHandling', $script);
     }
 
-    public function testElevationChartsReleasePointerEventsOnMobile(): void
+    public function testElevationChartsAllowVerticalPanWithoutDisablingInteraction(): void
     {
         $mapCss = file_get_contents(dirname(__DIR__, 2) . '/assets/css/mappa.css');
         $routeCss = file_get_contents(dirname(__DIR__, 2) . '/assets/css/percorso.css');
@@ -24,11 +24,19 @@ final class MobileMapUsabilityTest extends TestCase
         self::assertIsString($mapCss);
         self::assertIsString($routeCss);
         self::assertMatchesRegularExpression(
-            '/#elevation \.elevation-control,[\s\S]*?pointer-events:\s*none;/',
+            '/#elevation \.elevation-control \*\s*\{\s*touch-action:\s*pan-y\s*!important;/',
             $mapCss
         );
         self::assertMatchesRegularExpression(
-            '/#percorso-elevation \.elevation-control[\s\S]*?pointer-events:\s*none;/',
+            '/#percorso-elevation \.elevation-control \*\s*\{\s*touch-action:\s*pan-y\s*!important;/',
+            $routeCss
+        );
+        self::assertDoesNotMatchRegularExpression(
+            '/#elevation \.elevation-control[^\{]*\{[^\}]*pointer-events:\s*none;/',
+            $mapCss
+        );
+        self::assertDoesNotMatchRegularExpression(
+            '/#percorso-elevation \.elevation-control[^\{]*\{[^\}]*pointer-events:\s*none;/',
             $routeCss
         );
     }

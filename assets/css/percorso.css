@@ -11,14 +11,11 @@
     background: #fff;
 }
 
-/* Il grafico resta visibile ma su touch lascia scorrere la pagina. */
+/* Lo swipe verticale scorre la pagina; quello sul profilo aggiorna l'indicatore. */
 @media (max-width: 991px) {
-    #percorso-elevation {
-        touch-action: pan-y;
-    }
-
-    #percorso-elevation .elevation-control {
-        pointer-events: none;
+    #percorso-elevation .elevation-control,
+    #percorso-elevation .elevation-control * {
+        touch-action: pan-y !important;
     }
 }
 

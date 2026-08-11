@@ -118,20 +118,10 @@ ul.route-list a{text-decoration:none;font-weight:700;}
   white-space: nowrap;
 }
 
-/* Su mobile il profilo non deve bloccare lo scorrimento della pagina. */
+/* Lo swipe verticale scorre la pagina; quello sul profilo aggiorna l'indicatore. */
 @media (max-width: 991px) {
-  #elevation {
-    touch-action: pan-x pan-y;
-  }
-
   #elevation .elevation-control,
-  #elevation .brush,
-  #elevation .tooltip,
-  #elevation .point,
-  #elevation .mouse-focus-line,
-  #elevation .mouse-focus-label,
-  #elevation .horizontal-drag-rect,
-  #elevation .canvas-plot {
-    pointer-events: none;
+  #elevation .elevation-control * {
+    touch-action: pan-y !important;
   }
 }

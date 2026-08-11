@@ -215,53 +215,6 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
         color: #b00020;
     }
 
-    .site-map-panel {
-        margin-bottom: 24px;
-    }
-
-    .site-map-panel > h2 {
-        margin: 0 0 8px;
-        font-size: 24px;
-    }
-
-    .site-map-panel > p {
-        margin: 0 0 20px;
-        color: #707070;
-    }
-
-    .site-map-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 16px;
-    }
-
-    .site-map-group {
-        border: 1px solid var(--admin-border);
-        background: #fafafa;
-        padding: 18px;
-    }
-
-    .site-map-group h3 {
-        margin: 0 0 12px;
-        font-size: 16px;
-    }
-
-    .site-map-group a {
-        display: block;
-        padding: 7px 0;
-        color: #333;
-        text-decoration: none;
-        border-bottom: 1px solid #e9e9e9;
-    }
-
-    .site-map-group a:last-child {
-        border-bottom: 0;
-    }
-
-    .site-map-group a:hover {
-        text-decoration: underline;
-    }
-
     .dash-main-grid {
         display: grid;
         grid-template-columns: 1.2fr .8fr;
@@ -430,10 +383,6 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
         .dash-main-grid {
             grid-template-columns: 1fr;
         }
-
-        .site-map-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
     }
 
     @media (max-width: 760px) {
@@ -457,10 +406,6 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
         .dash-card {
             min-height: 0;
             padding: 20px;
-        }
-
-        .site-map-grid {
-            grid-template-columns: 1fr;
         }
 
         .dash-panel {
@@ -505,46 +450,6 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
             <a class="btn" href="slider-form.php">Nuova slide</a>
             <a class="btn" href="galleria-form.php">Nuove immagini</a>
             <a class="btn secondary" href="../index.php" target="_blank">Vedi sito</a>
-        </div>
-    </section>
-
-    <section class="dash-panel site-map-panel" aria-labelledby="site-map-title">
-        <h2 id="site-map-title">Sitemap del sito</h2>
-        <p>Apri direttamente le sezioni pubbliche di Lauco Experience.</p>
-        <div class="site-map-grid">
-            <div class="site-map-group">
-                <h3>Principale</h3>
-                <a href="../" target="_blank" rel="noopener">Homepage</a>
-                <a href="../mappa" target="_blank" rel="noopener">Mappa</a>
-                <a href="../segnaletica" target="_blank" rel="noopener">Segnaletica</a>
-                <a href="../consigli" target="_blank" rel="noopener">Consigli</a>
-            </div>
-            <div class="site-map-group">
-                <h3>Itinerari</h3>
-                <a href="../itinerari-piedi" target="_blank" rel="noopener">A piedi</a>
-                <a href="../itinerari-mtb" target="_blank" rel="noopener">Mountain bike</a>
-                <a href="../itinerari-speciali" target="_blank" rel="noopener">Itinerari speciali</a>
-                <a href="../forra" target="_blank" rel="noopener">Forra del Vinadia</a>
-                <a href="../barbecue" target="_blank" rel="noopener">Aree barbecue</a>
-            </div>
-            <div class="site-map-group">
-                <h3>Territorio</h3>
-                <a href="../luoghi" target="_blank" rel="noopener">Luoghi</a>
-                <a href="../frazioni" target="_blank" rel="noopener">Frazioni</a>
-                <a href="../storia" target="_blank" rel="noopener">Storia</a>
-                <a href="../natura" target="_blank" rel="noopener">Natura</a>
-                <a href="../come-arrivare" target="_blank" rel="noopener">Come arrivare</a>
-            </div>
-            <div class="site-map-group">
-                <h3>Informazioni</h3>
-                <a href="../eventi" target="_blank" rel="noopener">Eventi</a>
-                <a href="../eventi/archivio" target="_blank" rel="noopener">Archivio eventi</a>
-                <a href="../gestione-sentieri" target="_blank" rel="noopener">Gestione sentieri</a>
-                <a href="../contatti" target="_blank" rel="noopener">Contatti</a>
-                <a href="../contribuisci" target="_blank" rel="noopener">Contribuisci</a>
-                <a href="../privacy" target="_blank" rel="noopener">Privacy</a>
-                <a href="../cookie" target="_blank" rel="noopener">Cookie</a>
-            </div>
         </div>
     </section>
 

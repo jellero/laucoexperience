@@ -54,6 +54,7 @@ final class RoutingTest extends TestCase
         $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/mappa'));
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('<!DOCTYPE html>', (string) $response->getBody());
+        self::assertStringContainsString('/mappa/pdf', (string) $response->getBody());
 
         $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=map'));
         self::assertSame(302, $response->getStatusCode());
@@ -62,6 +63,33 @@ final class RoutingTest extends TestCase
         $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=non-esiste'));
         self::assertSame(404, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('Set-Cookie'));
+    }
+
+    public function testMapPdfEndpointTracksIntentAndOpensPrintableMap(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $response = $app->handle(
+            (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/mappa/pdf')
+        );
+
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame('/mappa?print=1', $response->getHeaderLine('Location'));
+        self::assertSame('no-store', $response->getHeaderLine('Cache-Control'));
+    }
+
+    public function testOnlyExplicitGpxDownloadGetsAttachmentResponse(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $factory = new ServerRequestFactory();
+        $path = 'https://example.test/gpx/LAUCO_%23_1.gpx';
+
+        $response = $app->handle($factory->createServerRequest('GET', $path));
+        self::assertSame(200, $response->getStatusCode());
+        self::assertSame('', $response->getHeaderLine('Content-Disposition'));
+
+        $response = $app->handle($factory->createServerRequest('GET', $path . '?download=1'));
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringStartsWith('attachment;', $response->getHeaderLine('Content-Disposition'));
     }
 
     public function testLegacyPostKeepsItsBodyAndReachesTheAction(): void

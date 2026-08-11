@@ -12,14 +12,49 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Prepare image audit bundle
+        shell: bash
         run: |
-          mkdir -p audit
-          cp -R uploads/galleria audit/galleria || true
-          cp -R uploads/eventi audit/eventi || true
-          cp -R uploads/luoghi audit/luoghi || true
-          mkdir -p audit/assets
-          for f in assets/img/cronoradima.jpg assets/img/alpini.jpg assets/img/sentieri.webp assets/img/old.jpg assets/img/eventi.jpg; do
-            [ -f "$f" ] && cp "$f" audit/assets/
+          set -euo pipefail
+          mkdir -p audit/project audit/candidates audit/meta
+          cp -R uploads/galleria audit/project/galleria || true
+          cp -R uploads/eventi audit/project/eventi || true
+          cp -R uploads/luoghi audit/project/luoghi || true
+          cp -R assets/img/luoghi audit/project/luoghi-generated || true
+          mkdir -p audit/project/assets
+          for f in assets/img/cronoradima.jpg assets/img/alpini.jpg assets/img/old.jpg assets/img/eventi.jpg; do
+            [ -f "$f" ] && cp "$f" audit/project/assets/
+          done
+
+          curl -fL --retry 3 'https://pagnacco-api.municipiumapp.it/s3/4905/media/acque-vive-cristina-noacco-pagnacco.jpg' -o audit/candidates/acque-vive.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Blood%20donation%20mobile%20unit.jpg' -o audit/candidates/autoemoteca.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Theatrical%20Performance.jpg' -o audit/candidates/teatro.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Monte%20Arvenis.jpg' -o audit/candidates/monte-arvenis.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco-panorama.jpg' -o audit/candidates/lauco-panorama.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco%20%28Udine%29%20-%20panorama.jpg' -o audit/candidates/lauco-storica.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Chiesa%20di%20Avaglio%20di%20Lauco.jpg' -o audit/candidates/avaglio.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rosegg%2C%20Partnerschaft%20Partnerstvo%20Gemellagio%20und%20Partnerst%C3%A4dte%20Bohinj%2C%20Zuglio%2C%20Lauco%20und%20Osoppo.jpg' -o audit/candidates/rosegg-gemellaggio.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rally%20023.jpg' -o audit/candidates/rally.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Choir%20in%20church.jpg' -o audit/candidates/coro.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Torchlight%20procession%20for%20the%20search%20of%20missing%20boy%20Odin%20Andre%20Hagen%20Jacobsen%2018.jpg' -o audit/candidates/fiaccolata.jpg
+          curl -fL --retry 3 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco%20%28UD%29%20-%20frazione%20Trava%20-%20vista%20innevata%20-%202008.jpg' -o audit/candidates/trava-inverno.jpg
+
+          for title in \
+            'File:Blood donation mobile unit.jpg' \
+            'File:Theatrical Performance.jpg' \
+            'File:Monte Arvenis.jpg' \
+            'File:Lauco-panorama.jpg' \
+            'File:Lauco (Udine) - panorama.jpg' \
+            'File:Chiesa di Avaglio di Lauco.jpg' \
+            'File:Rosegg, Partnerschaft Partnerstvo Gemellagio und Partnerstädte Bohinj, Zuglio, Lauco und Osoppo.jpg' \
+            'File:Rally 023.jpg' \
+            'File:Choir in church.jpg' \
+            'File:Torchlight procession for the search of missing boy Odin Andre Hagen Jacobsen 18.jpg' \
+            'File:Lauco (UD) - frazione Trava - vista innevata - 2008.jpg'; do
+              safe=$(printf '%s' "$title" | sha256sum | cut -d' ' -f1)
+              curl -fsS --get 'https://commons.wikimedia.org/w/api.php' \
+                --data-urlencode 'action=query' --data-urlencode 'format=json' \
+                --data-urlencode 'prop=imageinfo' --data-urlencode 'iiprop=url|extmetadata' \
+                --data-urlencode "titles=$title" > "audit/meta/${safe}.json"
           done
       - uses: actions/upload-artifact@v4
         with:

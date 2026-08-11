@@ -63,7 +63,6 @@ $counts = [
     'messaggi_contatti_nuovi' => dash_count($pdo, "SELECT COUNT(*) FROM contatti_messaggi WHERE stato = 'nuovo'"),
     'contributi' => dash_count($pdo, 'SELECT COUNT(*) FROM contributi'),
     'contributi_nuovi' => dash_count($pdo, "SELECT COUNT(*) FROM contributi WHERE stato = 'nuovo'"),
-    'contributi_pubblicati' => dash_count($pdo, "SELECT COUNT(*) FROM contributi WHERE stato = 'pubblicato'"),
     'galleria' => dash_count($pdo, 'SELECT COUNT(*) FROM galleria'),
     'slider' => dash_count($pdo, 'SELECT COUNT(*) FROM home_slider'),
     'segnalazioni' => dash_count($pdo, 'SELECT COUNT(*) FROM segnalazioni_problemi'),
@@ -106,7 +105,37 @@ $latestEventi = dash_rows($pdo, "
     LIMIT 4
 ");
 
-admin_page_open('Dashboard', 'dashboard');
+$dashboardPriorityCards = [
+    [
+        'href' => 'contatti-messaggi.php',
+        'label' => 'Messaggi · nuovi',
+        'number' => (int) $counts['messaggi_contatti_nuovi']['value'],
+        'text' => $counts['messaggi_contatti']['ok']
+            ? (int) $counts['messaggi_contatti']['value'] . ' messaggi totali. Apri i contatti.'
+            : 'Conteggio messaggi non disponibile.',
+        'urgent' => (int) $counts['messaggi_contatti_nuovi']['value'] > 0,
+    ],
+    [
+        'href' => 'segnalazioni.php',
+        'label' => 'Segnalazioni · nuove',
+        'number' => (int) $counts['segnalazioni_nuove']['value'],
+        'text' => $counts['segnalazioni']['ok']
+            ? (int) $counts['segnalazioni']['value'] . ' segnalazioni totali. Gestisci i problemi.'
+            : 'Conteggio segnalazioni non disponibile.',
+        'urgent' => (int) $counts['segnalazioni_nuove']['value'] > 0,
+    ],
+    [
+        'href' => 'contributi.php',
+        'label' => 'Contributi · nuovi',
+        'number' => (int) $counts['contributi_nuovi']['value'],
+        'text' => $counts['contributi']['ok']
+            ? (int) $counts['contributi']['value'] . ' contributi totali. Apri le proposte.'
+            : 'Conteggio contributi non disponibile.',
+        'urgent' => (int) $counts['contributi_nuovi']['value'] > 0,
+    ],
+];
+
+admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
 ?>
 
 <style>
@@ -455,27 +484,6 @@ admin_page_open('Dashboard', 'dashboard');
             </p>
         </a>
 
-        <a class="dash-card <?= (int) $counts['messaggi_contatti_nuovi']['value'] > 0 ? 'urgent' : '' ?>" href="contatti-messaggi.php">
-            <small>Contatti</small>
-            <strong><?= (int) $counts['messaggi_contatti_nuovi']['value'] ?></strong>
-            <h2>Messaggi contatti</h2>
-            <p>
-                <?= (int) $counts['messaggi_contatti']['value'] ?> totali
-                <?= dash_missing($counts['messaggi_contatti']) ?>
-            </p>
-        </a>
-
-        <a class="dash-card <?= (int) $counts['contributi_nuovi']['value'] > 0 ? 'urgent' : '' ?>" href="contributi.php">
-            <small>Partecipazione</small>
-            <strong><?= (int) $counts['contributi_nuovi']['value'] ?></strong>
-            <h2>Contributi ricevuti</h2>
-            <p>
-                <?= (int) $counts['contributi']['value'] ?> totali ·
-                <?= (int) $counts['contributi_pubblicati']['value'] ?> pubblicati
-                <?= dash_missing($counts['contributi']) ?>
-            </p>
-        </a>
-
         <a class="dash-card" href="galleria.php">
             <small>Homepage</small>
             <strong><?= (int) $counts['galleria']['value'] ?></strong>
@@ -488,13 +496,6 @@ admin_page_open('Dashboard', 'dashboard');
             <strong><?= (int) $counts['slider']['value'] ?></strong>
             <h2>Slider</h2>
             <p>Slide principali <?= dash_missing($counts['slider']) ?></p>
-        </a>
-
-        <a class="dash-card <?= (int) $counts['segnalazioni_nuove']['value'] > 0 ? 'urgent' : '' ?>" href="segnalazioni.php">
-            <small>Segnalazioni</small>
-            <strong><?= (int) $counts['segnalazioni_nuove']['value'] ?></strong>
-            <h2>Problemi nuovi</h2>
-            <p><?= (int) $counts['segnalazioni']['value'] ?> totali <?= dash_missing($counts['segnalazioni']) ?></p>
         </a>
 
         <a class="dash-card" href="crea-account.php">

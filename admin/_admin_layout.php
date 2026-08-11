@@ -19,7 +19,10 @@ if (!function_exists('admin_nav_active')) {
 }
 
 if (!function_exists('admin_page_open')) {
-    function admin_page_open(string $title, string $active = ''): void
+    /**
+     * @param list<array{href:string,label:string,number:int,text:string,urgent?:bool}> $dashboardCards
+     */
+    function admin_page_open(string $title, string $active = '', array $dashboardCards = []): void
     {
         $email = admin_current_email();
         ?>
@@ -97,10 +100,12 @@ if (!function_exists('admin_page_open')) {
                 .dashboard-card h2 { margin:0 0 12px; font-size:22px; }
                 .dashboard-card .number { display:block; font-size:34px; font-weight:700; margin-bottom:8px; }
                 .dashboard-card p { margin:0; color:#707070; line-height:1.45; }
+                .dashboard-card.urgent { border-color:var(--admin-danger); }
+                .dashboard-card.urgent .number { color:var(--admin-danger); }
                 .dashboard-columns { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
                 .table-missing { display:inline-block; background:#fff3cd; color:#664d03; padding:3px 6px; font-size:11px; margin-left:5px; }
-                .qr-dashboard-summary { max-width:1280px; margin:24px auto 0; padding:0 22px; }
-                .qr-dashboard-summary .dashboard-card { min-height:132px; }
+                .dashboard-summary { max-width:1280px; margin:24px auto 0; padding:0 22px; }
+                .dashboard-summary .dashboard-card { min-height:132px; }
                 @media(max-width:1100px){.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-columns{grid-template-columns:1fr}}
                 @media(max-width:780px){.admin-shell-mainbar{align-items:flex-start;flex-direction:column}.admin-top-actions{justify-content:flex-start}.wrap{margin:24px auto}.grid{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:1fr}table{display:block;overflow-x:auto;white-space:nowrap}}
             </style>
@@ -137,48 +142,16 @@ if (!function_exists('admin_page_open')) {
                     </nav>
                 </div>
             </header>
-            <?php if ($active === 'dashboard' && isset($GLOBALS['pdo']) && $GLOBALS['pdo'] instanceof PDO): ?>
-                <?php
-                require_once dirname(__DIR__) . '/inc/qr-stats.php';
-                $qrDashboardSummary = qr_stats_summary($GLOBALS['pdo']);
-                $newsletterDashboardSummary = [
-                    'total' => 0,
-                    'active' => 0,
-                    'available' => false,
-                ];
-                try {
-                    $newsletterDashboardSummary['total'] = (int) $GLOBALS['pdo']->query(
-                        'SELECT COUNT(*) FROM newsletter_subscribers'
-                    )->fetchColumn();
-                    $newsletterDashboardSummary['active'] = (int) $GLOBALS['pdo']->query(
-                        "SELECT COUNT(*) FROM newsletter_subscribers WHERE status = 'active'"
-                    )->fetchColumn();
-                    $newsletterDashboardSummary['available'] = true;
-                } catch (Throwable) {
-                }
-
-                ?>
-                <section class="qr-dashboard-summary" aria-label="Riepilogo dashboard">
+            <?php if ($active === 'dashboard'): ?>
+                <section class="dashboard-summary" aria-label="Riepilogo dashboard">
                     <div class="dashboard-grid">
-                        <a class="dashboard-card" href="statistiche-qr.php">
-                            <small>QR mappa · oggi</small>
-                            <span class="number"><?= (int) $qrDashboardSummary['today'] ?></span>
-                            <p>Apri Statistiche per QR, GPX e mappa PDF.</p>
-                        </a>
-                        <a class="dashboard-card" href="statistiche-qr.php">
-                            <small>QR mappa · 30 giorni</small>
-                            <span class="number"><?= (int) $qrDashboardSummary['last30'] ?></span>
-                            <p><?= $qrDashboardSummary['available'] ? 'Conteggio QR attivo.' : 'Migrazione statistiche QR da applicare.' ?></p>
-                        </a>
-                        <a class="dashboard-card" href="newsletter.php">
-                            <small>Newsletter · iscrizioni</small>
-                            <span class="number"><?= (int) $newsletterDashboardSummary['active'] ?></span>
-                            <p>
-                                <?= $newsletterDashboardSummary['available']
-                                    ? (int) $newsletterDashboardSummary['total'] . ' iscritti totali. Gestisci iscrizioni e newsletter.'
-                                    : 'Migrazione newsletter da applicare.' ?>
-                            </p>
-                        </a>
+                        <?php foreach ($dashboardCards as $card): ?>
+                            <a class="dashboard-card<?= !empty($card['urgent']) ? ' urgent' : '' ?>" href="<?= e($card['href']) ?>">
+                                <small><?= e($card['label']) ?></small>
+                                <span class="number"><?= (int) $card['number'] ?></span>
+                                <p><?= e($card['text']) ?></p>
+                            </a>
+                        <?php endforeach; ?>
                         <a class="dashboard-card" href="posta.php?folder=INBOX">
                             <small>Posta · nuove email</small>
                             <span class="number" id="dashboardMailUnread">…</span>

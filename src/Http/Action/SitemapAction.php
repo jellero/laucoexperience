@@ -17,6 +17,7 @@ final class SitemapAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         require_once $this->root . '/inc/env.php';
+        require_once $this->root . '/inc/fractions-content.php';
 
         $baseUrl = rtrim((string) lauco_env('APP_URL', 'https://laucoexperience.it'), '/');
         if (!preg_match('~^https?://~i', $baseUrl)) {
@@ -67,12 +68,23 @@ final class SitemapAction
     /** @return list<string> */
     private function staticPaths(): array
     {
-        return [
+        $paths = [
             '/', '/map', '/segnaletica', '/consigli', '/itinerari-piedi', '/itinerari-mtb',
             '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/luoghi',
-            '/storia', '/natura', '/come-arrivare', '/eventi', '/contatti', '/contribuisci',
-            '/privacy', '/cookie',
+            '/frazioni', '/storia', '/natura', '/come-arrivare', '/eventi', '/eventi/archivio',
+            '/contatti', '/contribuisci', '/privacy', '/cookie',
         ];
+
+        if (function_exists('fractions_items')) {
+            foreach (fractions_items('it') as $fraction) {
+                $slug = trim((string) ($fraction['slug'] ?? ''));
+                if ($slug !== '') {
+                    $paths[] = '/frazioni/' . $slug;
+                }
+            }
+        }
+
+        return array_values(array_unique($paths));
     }
 
     private function connect(): ?PDO

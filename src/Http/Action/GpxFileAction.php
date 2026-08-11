@@ -5,6 +5,7 @@ namespace LaucoExperience\Http\Action;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 final class GpxFileAction
 {
@@ -26,6 +27,19 @@ final class GpxFileAction
             return $this->notFound($response);
         }
 
+        $isExplicitDownload = (string) ($request->getQueryParams()['download'] ?? '') === '1';
+        if ($isExplicitDownload && strtoupper($request->getMethod()) === 'GET') {
+            try {
+                require_once $this->root . '/inc/download-stats.php';
+                $pdo = download_stats_open_pdo();
+                if ($pdo !== null) {
+                    download_track($pdo, 'gpx', basename($filePath), $request->getHeaderLine('User-Agent'));
+                }
+            } catch (Throwable $e) {
+                error_log('GPX download analytics write failed: ' . $e->getMessage());
+            }
+        }
+
         if (strtoupper($request->getMethod()) !== 'HEAD') {
             $content = file_get_contents($filePath);
             if ($content === false) {
@@ -34,12 +48,20 @@ final class GpxFileAction
             $response->getBody()->write($content);
         }
 
-        return $response
+        $response = $response
             ->withHeader('Content-Type', 'application/gpx+xml; charset=utf-8')
             ->withHeader('Content-Length', (string) filesize($filePath))
-            ->withHeader('Content-Disposition', 'attachment; filename="' . str_replace('"', '', basename($filePath)) . '"')
             ->withHeader('Cache-Control', 'public, max-age=300')
             ->withHeader('X-Content-Type-Options', 'nosniff');
+
+        if ($isExplicitDownload) {
+            $response = $response->withHeader(
+                'Content-Disposition',
+                'attachment; filename="' . str_replace('"', '', basename($filePath)) . '"'
+            );
+        }
+
+        return $response;
     }
 
     private function resolveFile(string $filename): ?string

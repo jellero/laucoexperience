@@ -10,6 +10,7 @@ use LaucoExperience\Http\Action\LoginAction;
 use LaucoExperience\Http\Action\LogoutAction;
 use LaucoExperience\Http\Action\NewsletterSubscribeAction;
 use LaucoExperience\Http\Action\QrRedirectAction;
+use LaucoExperience\Http\Action\SitemapAction;
 use LaucoExperience\Http\Middleware\CanonicalUrlMiddleware;
 use LaucoExperience\Localization\HtmlLocalizer;
 use LaucoExperience\Localization\LocaleResolver;
@@ -45,6 +46,7 @@ final class ApplicationFactory
             'newsletter' => new NewsletterSubscribeAction($root, $locales),
             'qr-redirect' => new QrRedirectAction($root),
             'gpx-file' => new GpxFileAction($root),
+            'sitemap' => new SitemapAction($root),
         ];
 
         $definitions = require $root . '/config/routes.php';

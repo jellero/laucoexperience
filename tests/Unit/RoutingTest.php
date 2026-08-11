@@ -78,6 +78,20 @@ final class RoutingTest extends TestCase
         self::assertSame('slim-4', $payload['framework'] ?? null);
     }
 
+    public function testSitemapIsAvailableAsXml(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'https://example.test/sitemap.xml');
+        $response = $app->handle($request);
+        $body = (string) $response->getBody();
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringStartsWith('application/xml', $response->getHeaderLine('Content-Type'));
+        self::assertStringContainsString('<urlset', $body);
+        self::assertStringContainsString('<loc>https://', $body);
+        self::assertStringContainsString('hreflang="en"', $body);
+    }
+
     public function testUnknownPageUsesTheOrganized404View(): void
     {
         $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';

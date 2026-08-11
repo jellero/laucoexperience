@@ -28,6 +28,7 @@ return [
     ['name' => 'report', 'methods' => ['GET', 'POST'], 'paths' => ['/segnala-problema', '/segnala-problema.php'], 'handler' => 'page', 'template' => 'segnala-problema.php', 'script' => 'segnala-problema.php'],
     ['name' => 'privacy', 'methods' => ['GET'], 'paths' => ['/privacy', '/privacy.php'], 'handler' => 'page', 'template' => 'privacy.php', 'script' => 'privacy.php'],
     ['name' => 'cookies', 'methods' => ['GET'], 'paths' => ['/cookie', '/cookie.php'], 'handler' => 'page', 'template' => 'cookie.php', 'script' => 'cookie.php'],
+    ['name' => 'sitemap', 'methods' => ['GET'], 'paths' => ['/sitemap.xml'], 'handler' => 'sitemap'],
     ['name' => 'login', 'methods' => ['GET', 'POST'], 'paths' => ['/login', '/login.php'], 'handler' => 'login', 'template' => 'login.php'],
     ['name' => 'logout', 'methods' => ['GET', 'POST'], 'paths' => ['/logout', '/logout.php'], 'handler' => 'logout'],
     ['name' => 'account.setup', 'methods' => ['GET', 'POST'], 'paths' => ['/crea-account', '/crea-account.php'], 'handler' => 'account-setup', 'template' => 'crea-account.php'],

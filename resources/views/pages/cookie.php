@@ -1,85 +1,59 @@
 <?php
+require_once LAUCO_ROOT . '/inc/translations.php';
+$locale = content_language_from_request();
+$copy = [
+'it'=>[
+ 'title'=>'Cookie Policy','subtitle'=>'Cookie tecnici, preferenze e Google Analytics','intro'=>'Questa pagina descrive gli strumenti di memorizzazione e misurazione usati da Lauco Experience. Google Analytics è disattivato per impostazione predefinita e viene caricato solo dopo una scelta esplicita dell’utente.',
+ 'sections'=>[
+  ['Cookie e strumenti necessari','Il sito usa solo le funzionalità tecniche necessarie al funzionamento. La preferenza relativa agli analytics viene salvata nel localStorage del browser con la chiave lauco_consent_v1, così il sito può ricordare la scelta senza attivare Google Analytics.'],
+  ['Google Analytics 4','Se accetti la misurazione statistica, viene caricato Google Analytics 4 con identificativo G-NCKVWM2EQ0. Prima del consenso analytics_storage, ad_storage, ad_user_data e ad_personalization sono impostati su denied. Dopo l’accettazione viene concesso soltanto analytics_storage; le funzioni pubblicitarie restano disabilitate. Google Signals e la personalizzazione pubblicitaria sono disabilitati.'],
+  ['Cookie Analytics','Con il consenso, Google Analytics può impostare cookie come _ga e _ga_<container-id>. La durata predefinita indicata da Google per questi cookie è fino a 2 anni, salvo limiti del browser o cancellazione anticipata.'],
+  ['Revoca e modifica della scelta','Puoi modificare la scelta in qualsiasi momento tramite il pulsante “Gestisci cookie”. La revoca disabilita nuovamente Google Analytics e il sito tenta di rimuovere i cookie _ga accessibili dal dominio.'],
+  ['Statistiche QR','Le statistiche aggregate dei QR code restano elaborate lato server e non richiedono cookie analytics né l’attivazione di Google Analytics.'],
+ ],
+ 'manage'=>'Gestisci cookie','updated'=>'Ultimo aggiornamento: 11 agosto 2026',
+],
+'en'=>[
+ 'title'=>'Cookie Policy','subtitle'=>'Technical storage, preferences and Google Analytics','intro'=>'This page describes the storage and measurement tools used by Lauco Experience. Google Analytics is disabled by default and is loaded only after the user makes an explicit choice.',
+ 'sections'=>[
+  ['Necessary tools','The website uses only the technical functions required to operate. The analytics preference is stored in browser localStorage under the key lauco_consent_v1, allowing the website to remember the choice without activating Google Analytics.'],
+  ['Google Analytics 4','If you accept statistical measurement, Google Analytics 4 is loaded with measurement ID G-NCKVWM2EQ0. Before consent, analytics_storage, ad_storage, ad_user_data and ad_personalization are denied. After acceptance only analytics_storage is granted; advertising functions remain disabled. Google Signals and ad personalisation are disabled.'],
+  ['Analytics cookies','With consent, Google Analytics may set cookies such as _ga and _ga_<container-id>. Google states a default lifetime of up to 2 years, subject to browser limits or earlier deletion.'],
+  ['Withdraw or change consent','You can change your choice at any time using “Manage cookies”. Withdrawal disables Google Analytics again and the website attempts to remove accessible _ga cookies.'],
+  ['QR statistics','Aggregated QR-code statistics remain server-side and do not require analytics cookies or Google Analytics.'],
+ ],
+ 'manage'=>'Manage cookies','updated'=>'Last updated: 11 August 2026',
+],
+'de'=>[
+ 'title'=>'Cookie-Richtlinie','subtitle'=>'Technische Speicherung, Einstellungen und Google Analytics','intro'=>'Diese Seite beschreibt die von Lauco Experience verwendeten Speicher- und Messwerkzeuge. Google Analytics ist standardmäßig deaktiviert und wird erst nach einer ausdrücklichen Auswahl geladen.',
+ 'sections'=>[
+  ['Erforderliche Funktionen','Die Website verwendet nur die für den Betrieb erforderlichen technischen Funktionen. Die Analytics-Einstellung wird im localStorage des Browsers unter lauco_consent_v1 gespeichert, damit die Auswahl ohne Aktivierung von Google Analytics gemerkt werden kann.'],
+  ['Google Analytics 4','Bei Zustimmung wird Google Analytics 4 mit der Mess-ID G-NCKVWM2EQ0 geladen. Vor der Zustimmung stehen analytics_storage, ad_storage, ad_user_data und ad_personalization auf denied. Danach wird nur analytics_storage freigegeben; Werbefunktionen, Google Signals und Anzeigenpersonalisierung bleiben deaktiviert.'],
+  ['Analytics-Cookies','Mit Zustimmung kann Google Analytics Cookies wie _ga und _ga_<container-id> setzen. Google nennt eine Standarddauer von bis zu 2 Jahren, vorbehaltlich Browsergrenzen oder früherer Löschung.'],
+  ['Einwilligung ändern','Die Auswahl kann jederzeit über „Cookies verwalten“ geändert werden. Ein Widerruf deaktiviert Google Analytics erneut und die Website versucht, zugängliche _ga-Cookies zu entfernen.'],
+  ['QR-Statistiken','Aggregierte QR-Statistiken werden serverseitig verarbeitet und benötigen weder Analytics-Cookies noch Google Analytics.'],
+ ],
+ 'manage'=>'Cookies verwalten','updated'=>'Letzte Aktualisierung: 11. August 2026',
+],
+'sl'=>[
+ 'title'=>'Pravilnik o piškotkih','subtitle'=>'Tehnično shranjevanje, nastavitve in Google Analytics','intro'=>'Ta stran opisuje orodja za shranjevanje in merjenje, ki jih uporablja Lauco Experience. Google Analytics je privzeto izklopljen in se naloži šele po izrecni izbiri uporabnika.',
+ 'sections'=>[
+  ['Nujne funkcije','Spletno mesto uporablja le tehnične funkcije, potrebne za delovanje. Nastavitev analitike je shranjena v localStorage brskalnika pod ključem lauco_consent_v1, zato si spletno mesto zapomni izbiro brez aktiviranja storitve Google Analytics.'],
+  ['Google Analytics 4','Če dovolite statistično merjenje, se naloži Google Analytics 4 z ID G-NCKVWM2EQ0. Pred soglasjem so analytics_storage, ad_storage, ad_user_data in ad_personalization nastavljeni na denied. Po sprejetju je dovoljen le analytics_storage; oglaševalske funkcije, Google Signals in personalizacija oglasov ostanejo izključeni.'],
+  ['Analitični piškotki','Po soglasju lahko Google Analytics nastavi piškotke, kot sta _ga in _ga_<container-id>. Google navaja privzeto trajanje do 2 let, ob upoštevanju omejitev brskalnika ali predčasnega izbrisa.'],
+  ['Sprememba ali preklic','Izbiro lahko kadar koli spremenite z gumbom »Upravljanje piškotkov«. Preklic znova onemogoči Google Analytics in spletno mesto poskusi odstraniti dostopne piškotke _ga.'],
+  ['Statistika QR','Združena statistika kod QR se obdeluje na strežniku in ne potrebuje analitičnih piškotkov ali Google Analytics.'],
+ ],
+ 'manage'=>'Upravljanje piškotkov','updated'=>'Zadnja posodobitev: 11. avgust 2026',
+],
+];
+$c=$copy[$locale] ?? $copy['it'];
 ?>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
-    <style>
-        .institutional-page .lead-text{font-size:18px;line-height:1.75;color:#555;margin-bottom:32px}
-        .institutional-page .info-card{background:#fff;padding:28px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04);min-height:220px}
-        .institutional-page .info-card h3,.institutional-page .info-card h4{margin-top:0;margin-bottom:14px}
-        .institutional-page .info-card p,.institutional-page .info-card li{color:#666;line-height:1.75}
-        .institutional-page .callout{background:#f7f7f7;padding:28px;margin:28px 0;border-left:4px solid #222}
-        .institutional-page .callout p:last-child{margin-bottom:0}
-        .institutional-page .simple-table{width:100%;background:#fff;margin:20px 0 30px;border-collapse:collapse;box-shadow:0 10px 30px rgba(0,0,0,.06)}
-        .institutional-page .simple-table th,.institutional-page .simple-table td{padding:15px 18px;border-bottom:1px solid #eee;vertical-align:top;line-height:1.55}
-        .institutional-page .simple-table th{width:28%;color:#222;font-weight:700;background:#fafafa}
-        .institutional-page .small-note{font-size:13px;color:#777;line-height:1.65}
-        @media(max-width:767px){.institutional-page .info-card{min-height:auto;padding:22px}.institutional-page .simple-table th,.institutional-page .simple-table td{display:block;width:100%}}
-    </style>
-</head>
-<body>
-    <div id="myloader"><span class="loader"><div class="inner-loader"></div></span></div>
-    <div id="main-wrap" class="full-width">
-        <?php require LAUCO_VIEW_PATH . '/partials/menu.php'; ?>
-        <div id="page-content" class="header-static">
-            <div id="flexslider" class="fullpage-wrap small">
-                <ul class="slides">
-                    <li style="background-image:url(assets/img/trip9.jpg)">
-                        <div class="container text text-center">
-                            <h1 class="white margin-bottom-small">Cookie</h1>
-                            <p class="heading white">Informazioni sui cookie tecnici e sugli strumenti di misurazione.</p>
-                        </div>
-                        <div class="gradient dark"></div>
-                    </li>
-                    <ol class="breadcrumb"><li><a href="/">Home</a></li><li class="active">Cookie</li></ol>
-                </ul>
-            </div>
-
-            <div id="page-wrap" class="content-section fullpage-wrap institutional-page">
-                <div class="container text">
-                    <div class="row margin-null">
-                        <div class="col-md-12 padding-leftright-null">
-                            <h2 class="margin-bottom-null title line left">Cookie policy</h2>
-                            <p class="heading left grey margin-bottom">Informazioni sull’uso di cookie e strumenti tecnici del sito.</p>
-                            <p class="lead-text">Lauco Experience usa strumenti tecnici necessari al funzionamento e alla sicurezza. La nuova misurazione dei QR territoriali è effettuata lato server con contatori aggregati e non installa cookie analitici.</p>
-                            <div class="callout">
-                                <p><strong>Titolare:</strong> Comune di Lauco, Via Capoluogo 104, 33029 Lauco (UD).</p>
-                                <p><strong>Contatti:</strong> <a href="mailto:protocollo@comune.lauco.ud.it">protocollo@comune.lauco.ud.it</a> · <a href="mailto:comune.lauco@certgov.fvg.it">comune.lauco@certgov.fvg.it</a></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row padding-onlytop-md"><div class="col-md-12">
-                        <table class="simple-table"><tbody>
-                            <tr><th>Cookie tecnici</th><td>Possono essere utilizzati per il corretto funzionamento del sito, la gestione della sessione, la lingua, la sicurezza e l’invio dei moduli.</td></tr>
-                            <tr><th>Statistiche QR</th><td>Il redirect dei QR territoriali incrementa un contatore aggregato per giorno e codice QR. Questa funzione non imposta cookie, non usa identificativi lato client e non conserva nel database statistico IP, user agent, posizione o identificativi del visitatore.</td></tr>
-                            <tr><th>Cookie analitici</th><td>La funzione QR non utilizza cookie analitici. Non risultano integrati in questa funzione strumenti di profilazione o analytics di terze parti.</td></tr>
-                            <tr><th>Cookie di profilazione</th><td>Il sito non è progettato per utilizzare cookie di profilazione pubblicitaria o tracciamento comportamentale.</td></tr>
-                            <tr><th>Contenuti esterni</th><td>Eventuali mappe, video, font, widget o servizi di terze parti possono avere regole proprie. La loro integrazione deve essere valutata separatamente e indicata in questa pagina.</td></tr>
-                            <tr><th>Gestione dal browser</th><td>L’utente può cancellare o bloccare i cookie tramite le impostazioni del browser. La disabilitazione dei cookie tecnici può compromettere alcune funzionalità.</td></tr>
-                        </tbody></table>
-                    </div></div>
-
-                    <div class="row padding-onlytop-md">
-                        <div class="col-md-6"><div class="info-card">
-                            <h3>QR senza cookie di tracciamento</h3>
-                            <p>La scansione porta prima a un endpoint interno che incrementa soltanto il totale del relativo QR per la giornata e poi reindirizza alla destinazione autorizzata. Non viene creato un profilo, una sessione analytics o una cronologia individuale delle scansioni.</p>
-                        </div></div>
-                        <div class="col-md-6"><div class="info-card">
-                            <h3>Aggiornamenti</h3>
-                            <p>Se in futuro saranno aggiunti strumenti di analytics, mappe esterne, video incorporati o servizi di marketing, questa pagina dovrà essere aggiornata e dovranno essere rivalutati gli eventuali requisiti di consenso.</p>
-                        </div></div>
-                    </div>
-
-                    <div class="row padding-onlytop-md"><div class="col-md-12">
-                        <p class="small-note">Ultimo aggiornamento: agosto 2026. La classificazione dei cookie deve essere verificata ogni volta che vengono aggiunti script, plugin o servizi esterni al sito.</p>
-                    </div></div>
-                </div>
-            </div>
-        </div>
-        <?php require LAUCO_VIEW_PATH . '/partials/footer.php'; ?>
-    </div>
-    <?php require LAUCO_VIEW_PATH . '/partials/scripts.php'; ?>
-</body>
-</html>
+<!DOCTYPE html><html lang="<?= htmlspecialchars($locale, ENT_QUOTES, 'UTF-8') ?>"><head><?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
+<style>.policy-page .lead{font-size:18px;line-height:1.75;color:#555}.policy-card{background:#fff;padding:28px;margin:0 0 22px;box-shadow:0 10px 30px rgba(0,0,0,.06)}.policy-card h3{margin-top:0}.policy-card p{color:#666;line-height:1.75}.policy-note{font-size:13px;color:#777;margin-top:30px}</style></head><body>
+<div id="myloader"><span class="loader"><div class="inner-loader"></div></span></div><div id="main-wrap" class="full-width"><?php require LAUCO_VIEW_PATH . '/partials/menu.php'; ?>
+<div id="page-content" class="header-static"><div id="flexslider" class="fullpage-wrap small"><ul class="slides"><li style="background-image:url(assets/img/contact.jpg)"><div class="container text text-center"><h1 class="white margin-bottom-small"><?= htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8') ?></h1><p class="heading white"><?= htmlspecialchars($c['subtitle'], ENT_QUOTES, 'UTF-8') ?></p></div><div class="gradient dark"></div></li></ul></div>
+<div id="page-wrap" class="content-section fullpage-wrap policy-page"><div class="container text"><p class="lead"><?= htmlspecialchars($c['intro'], ENT_QUOTES, 'UTF-8') ?></p>
+<?php foreach ($c['sections'] as [$heading,$text]): ?><section class="policy-card"><h3><?= htmlspecialchars($heading, ENT_QUOTES, 'UTF-8') ?></h3><p><?= htmlspecialchars($text, ENT_QUOTES, 'UTF-8') ?></p></section><?php endforeach; ?>
+<p><button type="button" class="btn-alt small" onclick="window.LaucoAnalytics && window.LaucoAnalytics.reopen()"><?= htmlspecialchars($c['manage'], ENT_QUOTES, 'UTF-8') ?></button></p><p class="policy-note"><?= htmlspecialchars($c['updated'], ENT_QUOTES, 'UTF-8') ?></p></div></div></div>
+<?php require LAUCO_VIEW_PATH . '/partials/footer.php'; ?></div><?php require LAUCO_VIEW_PATH . '/partials/scripts.php'; ?></body></html>

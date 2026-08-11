@@ -1,83 +1,71 @@
 <?php
+require_once LAUCO_ROOT . '/inc/translations.php';
+$locale = content_language_from_request();
+$copy = [
+'it'=>[
+ 'title'=>'Privacy Policy','subtitle'=>'Informazioni sul trattamento dei dati personali','intro'=>'Lauco Experience tratta i dati personali in relazione alle funzionalità del sito, ai moduli inviati dagli utenti e, solo previo consenso, alla misurazione statistica tramite Google Analytics.',
+ 'sections'=>[
+  ['Titolare del trattamento','Il titolare del trattamento è il Comune di Lauco. Per richieste relative alla protezione dei dati puoi utilizzare i contatti istituzionali pubblicati dal Comune e i canali indicati nella pagina Contatti.'],
+  ['Dati inviati tramite i moduli','I moduli del sito possono trattare nome, indirizzo email, eventuale telefono, contenuto del messaggio o della segnalazione, allegati e dati tecnici come indirizzo IP e user agent. I dati sono utilizzati per gestire la richiesta, la segnalazione o il contributo inviato.'],
+  ['Newsletter','L’indirizzo email fornito per la newsletter è utilizzato per gestire l’iscrizione e l’invio delle comunicazioni richieste. Le preferenze e lo stato dell’iscrizione sono conservati nel sistema del sito.'],
+  ['Google Analytics','Google Analytics 4 viene caricato soltanto dopo il consenso dell’utente. Senza consenso il tag Analytics non viene caricato. Il consenso può essere modificato o revocato in qualsiasi momento tramite “Gestisci cookie”. Quando attivo, Analytics può elaborare informazioni relative alla visita, al dispositivo e alla sessione secondo le impostazioni applicate dal sito. Le funzioni pubblicitarie restano disabilitate.'],
+  ['Statistiche QR','Le statistiche relative ai QR code sono raccolte in forma tecnica e aggregata lato server, senza cookie analytics. Sono utilizzate per comprendere l’utilizzo dei contenuti territoriali e dei punti informativi.'],
+  ['Base giuridica e conservazione','I dati dei moduli sono trattati per gestire le richieste e le funzioni istituzionali o di servizio collegate al progetto; Google Analytics è invece basato sul consenso. I dati sono conservati per il tempo necessario alle finalità per cui sono stati raccolti e agli eventuali obblighi applicabili.'],
+  ['Destinatari e trasferimenti','I dati possono essere trattati da fornitori tecnici che supportano il funzionamento del sito. Quando Google Analytics è attivo, dati di utilizzo sono trattati anche tramite i servizi Google; Google dichiara che i propri prodotti Analytics possono comportare trasferimenti internazionali e descrive i relativi meccanismi di garanzia.'],
+  ['Diritti','Nei casi previsti dalla normativa puoi chiedere accesso, rettifica, cancellazione, limitazione, opposizione e, ove applicabile, portabilità dei dati; puoi inoltre revocare il consenso senza pregiudicare la liceità del trattamento precedente alla revoca.'],
+ ],
+ 'cookie'=>'Consulta la Cookie Policy','updated'=>'Ultimo aggiornamento: 11 agosto 2026',
+],
+'en'=>[
+ 'title'=>'Privacy Policy','subtitle'=>'Information on personal data processing','intro'=>'Lauco Experience processes personal data in connection with website functions, forms submitted by users and, only after consent, statistical measurement through Google Analytics.',
+ 'sections'=>[
+  ['Data controller','The data controller is the Municipality of Lauco. For data-protection requests, use the institutional contact details published by the Municipality and the channels listed on the Contact page.'],
+  ['Data submitted through forms','Website forms may process name, email address, optional telephone number, message or report content, attachments and technical data such as IP address and user agent. Data are used to manage the submitted request, report or contribution.'],
+  ['Newsletter','The email address provided for the newsletter is used to manage the subscription and send the requested communications. Subscription status and preferences are stored in the website system.'],
+  ['Google Analytics','Google Analytics 4 is loaded only after user consent. Without consent the Analytics tag is not loaded. Consent can be changed or withdrawn at any time through “Manage cookies”. When active, Analytics may process information about the visit, device and session under the settings applied by the website. Advertising functions remain disabled.'],
+  ['QR statistics','QR-code statistics are collected in technical, aggregated form on the server without analytics cookies and are used to understand use of territorial content and information points.'],
+  ['Legal basis and retention','Form data are processed to handle requests and public-service functions connected with the project; Google Analytics is based on consent. Data are retained only as long as necessary for the purposes for which they were collected and for applicable obligations.'],
+  ['Recipients and transfers','Data may be processed by technical providers supporting the website. When Google Analytics is active, usage data are also processed through Google services; Google states that Analytics products may involve international transfers and describes the safeguards it uses.'],
+  ['Your rights','Where provided by law, you may request access, rectification, erasure, restriction, objection and, where applicable, portability. You may also withdraw consent without affecting processing carried out before withdrawal.'],
+ ],
+ 'cookie'=>'Read the Cookie Policy','updated'=>'Last updated: 11 August 2026',
+],
+'de'=>[
+ 'title'=>'Datenschutz','subtitle'=>'Informationen zur Verarbeitung personenbezogener Daten','intro'=>'Lauco Experience verarbeitet personenbezogene Daten im Zusammenhang mit Website-Funktionen, von Nutzern übermittelten Formularen und – nur nach Einwilligung – der statistischen Messung mit Google Analytics.',
+ 'sections'=>[
+  ['Verantwortlicher','Verantwortlicher für die Datenverarbeitung ist die Gemeinde Lauco. Für Datenschutzanfragen verwenden Sie die institutionellen Kontaktdaten der Gemeinde und die auf der Kontaktseite angegebenen Kanäle.'],
+  ['Formulardaten','Formulare können Name, E-Mail-Adresse, optional Telefonnummer, Inhalt von Nachricht oder Meldung, Anhänge sowie technische Daten wie IP-Adresse und User Agent verarbeiten. Die Daten dienen der Bearbeitung der Anfrage, Meldung oder des Beitrags.'],
+  ['Newsletter','Die für den Newsletter angegebene E-Mail-Adresse wird zur Verwaltung der Anmeldung und zum Versand der angeforderten Mitteilungen verwendet. Status und Einstellungen der Anmeldung werden im System gespeichert.'],
+  ['Google Analytics','Google Analytics 4 wird nur nach Einwilligung geladen. Ohne Einwilligung wird das Analytics-Tag nicht geladen. Die Einwilligung kann jederzeit über „Cookies verwalten“ geändert oder widerrufen werden. Werbefunktionen bleiben deaktiviert.'],
+  ['QR-Statistiken','QR-Statistiken werden technisch und aggregiert serverseitig ohne Analytics-Cookies erfasst.'],
+  ['Rechtsgrundlage und Speicherung','Formulardaten werden zur Bearbeitung von Anfragen und projektbezogenen öffentlichen Dienstleistungen verarbeitet; Google Analytics basiert auf Einwilligung. Daten werden nur so lange gespeichert, wie dies für die jeweiligen Zwecke und Pflichten erforderlich ist.'],
+  ['Empfänger und Übermittlungen','Technische Dienstleister können Daten zur Unterstützung der Website verarbeiten. Bei aktivem Google Analytics werden Nutzungsdaten auch über Google-Dienste verarbeitet; Google weist darauf hin, dass Analytics-Produkte internationale Übermittlungen beinhalten können, und beschreibt entsprechende Garantien.'],
+  ['Rechte','Soweit gesetzlich vorgesehen, bestehen Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und gegebenenfalls Datenübertragbarkeit. Eine Einwilligung kann jederzeit widerrufen werden.'],
+ ],
+ 'cookie'=>'Cookie-Richtlinie lesen','updated'=>'Letzte Aktualisierung: 11. August 2026',
+],
+'sl'=>[
+ 'title'=>'Pravilnik o zasebnosti','subtitle'=>'Informacije o obdelavi osebnih podatkov','intro'=>'Lauco Experience obdeluje osebne podatke v povezavi s funkcijami spletnega mesta, obrazci uporabnikov in – samo po soglasju – statističnim merjenjem prek Google Analytics.',
+ 'sections'=>[
+  ['Upravljavec','Upravljavec osebnih podatkov je Občina Lauco. Za zahteve v zvezi z varstvom podatkov uporabite uradne kontaktne podatke občine in kanale na strani Kontakt.'],
+  ['Podatki iz obrazcev','Obrazci lahko obdelujejo ime, e-poštni naslov, neobvezno telefonsko številko, vsebino sporočila ali prijave, priloge ter tehnične podatke, kot sta IP-naslov in user agent. Podatki se uporabljajo za obravnavo poslane zahteve, prijave ali prispevka.'],
+  ['E-novice','E-poštni naslov za e-novice se uporablja za upravljanje prijave in pošiljanje zahtevanih obvestil. Stanje in nastavitve prijave se hranijo v sistemu spletnega mesta.'],
+  ['Google Analytics','Google Analytics 4 se naloži samo po soglasju uporabnika. Brez soglasja se oznaka Analytics ne naloži. Soglasje lahko kadar koli spremenite ali prekličete z možnostjo »Upravljanje piškotkov«. Oglaševalske funkcije ostanejo izključene.'],
+  ['Statistika QR','Statistika kod QR se zbira tehnično in združeno na strežniku brez analitičnih piškotkov.'],
+  ['Pravna podlaga in hramba','Podatki iz obrazcev se obdelujejo za obravnavo zahtev in storitev, povezanih s projektom; Google Analytics temelji na soglasju. Podatki se hranijo le toliko časa, kolikor je potrebno za namen in veljavne obveznosti.'],
+  ['Prejemniki in prenosi','Podatke lahko obdelujejo tehnični ponudniki, ki podpirajo delovanje spletnega mesta. Ko je Google Analytics aktiven, se podatki o uporabi obdelujejo tudi prek Googlovih storitev; Google navaja, da lahko izdelki Analytics vključujejo mednarodne prenose in opisuje uporabljena jamstva.'],
+  ['Pravice','Kjer zakon to določa, lahko zahtevate dostop, popravek, izbris, omejitev, ugovor in po potrebi prenosljivost. Soglasje lahko kadar koli prekličete.'],
+ ],
+ 'cookie'=>'Preberite pravilnik o piškotkih','updated'=>'Zadnja posodobitev: 11. avgust 2026',
+],
+];
+$c=$copy[$locale] ?? $copy['it'];
 ?>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
-    <style>
-        .institutional-page .lead-text{font-size:18px;line-height:1.75;color:#555;margin-bottom:32px}
-        .institutional-page .info-card{background:#fff;padding:28px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04);min-height:220px}
-        .institutional-page .info-card h3,.institutional-page .info-card h4{margin-top:0;margin-bottom:14px}
-        .institutional-page .info-card p,.institutional-page .info-card li{color:#666;line-height:1.75}
-        .institutional-page .callout{background:#f7f7f7;padding:28px;margin:28px 0;border-left:4px solid #222}
-        .institutional-page .callout p:last-child{margin-bottom:0}
-        .institutional-page .simple-table{width:100%;background:#fff;margin:20px 0 30px;border-collapse:collapse;box-shadow:0 10px 30px rgba(0,0,0,.06)}
-        .institutional-page .simple-table th,.institutional-page .simple-table td{padding:15px 18px;border-bottom:1px solid #eee;vertical-align:top;line-height:1.55}
-        .institutional-page .simple-table th{width:28%;color:#222;font-weight:700;background:#fafafa}
-        .institutional-page .small-note{font-size:13px;color:#777;line-height:1.65}
-        @media(max-width:767px){.institutional-page .info-card{min-height:auto;padding:22px}.institutional-page .simple-table th,.institutional-page .simple-table td{display:block;width:100%}}
-    </style>
-</head>
-<body>
-    <div id="myloader"><span class="loader"><div class="inner-loader"></div></span></div>
-    <div id="main-wrap" class="full-width">
-        <?php require LAUCO_VIEW_PATH . '/partials/menu.php'; ?>
-        <div id="page-content" class="header-static">
-            <div id="flexslider" class="fullpage-wrap small">
-                <ul class="slides">
-                    <li style="background-image:url(assets/img/trip8.jpg)">
-                        <div class="container text text-center">
-                            <h1 class="white margin-bottom-small">Privacy</h1>
-                            <p class="heading white">Informativa sul trattamento dei dati personali del sito Lauco Experience.</p>
-                        </div>
-                        <div class="gradient dark"></div>
-                    </li>
-                    <ol class="breadcrumb"><li><a href="/">Home</a></li><li class="active">Privacy</li></ol>
-                </ul>
-            </div>
-
-            <div id="page-wrap" class="content-section fullpage-wrap institutional-page">
-                <div class="container text">
-                    <div class="row margin-null">
-                        <div class="col-md-12 padding-leftright-null">
-                            <h2 class="margin-bottom-null title line left">Informativa privacy</h2>
-                            <p class="heading left grey margin-bottom">Informazioni essenziali sul trattamento dei dati personali.</p>
-                            <p class="lead-text">Questa informativa descrive in modo sintetico come vengono trattati i dati raccolti attraverso Lauco Experience, compresi i moduli del sito e la misurazione aggregata dei QR territoriali.</p>
-                            <div class="callout">
-                                <p><strong>Titolare del trattamento:</strong> Comune di Lauco, Via Capoluogo 104, 33029 Lauco (UD).</p>
-                                <p><strong>Email:</strong> <a href="mailto:protocollo@comune.lauco.ud.it">protocollo@comune.lauco.ud.it</a> · <strong>PEC:</strong> <a href="mailto:comune.lauco@certgov.fvg.it">comune.lauco@certgov.fvg.it</a></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row padding-onlytop-md">
-                        <div class="col-md-12">
-                            <table class="simple-table"><tbody>
-                                <tr><th>Dati trattati nei moduli</th><td>Nome, email, contenuto del messaggio, eventuali dati tecnici collegati all’invio, indirizzo IP, user agent e informazioni volontariamente comunicate dall’utente.</td></tr>
-                                <tr><th>Finalità dei moduli</th><td>Rispondere alle richieste, gestire segnalazioni, valutare contributi, aggiornare le informazioni del progetto e garantire il corretto funzionamento del sito.</td></tr>
-                                <tr><th>Statistiche QR</th><td>Per i QR territoriali il database statistico conserva esclusivamente la data, il codice del QR e il numero aggregato di scansioni della giornata. Non salva nel sistema statistico indirizzo IP, user agent, geolocalizzazione, identificativi del dispositivo o identificativi del visitatore.</td></tr>
-                                <tr><th>Finalità statistiche QR</th><td>Misurare in forma aggregata quali punti informativi vengono consultati e migliorare segnaletica, contenuti e servizio. I contatori non sono progettati per ricostruire il percorso del singolo visitatore né per effettuare profilazione.</td></tr>
-                                <tr><th>Base giuridica</th><td>Esecuzione di attività istituzionali, gestione delle richieste dell’interessato, adempimento di obblighi di legge e legittima gestione tecnica del sito.</td></tr>
-                                <tr><th>Conferimento</th><td>Il conferimento dei dati tramite modulo è facoltativo, ma necessario per ricevere una risposta o permettere la gestione della segnalazione.</td></tr>
-                                <tr><th>Conservazione</th><td>I dati dei moduli sono conservati per il tempo necessario alla gestione della richiesta e secondo la normativa applicabile alla documentazione amministrativa. Le statistiche QR restano aggregate per giorno e codice.</td></tr>
-                                <tr><th>Destinatari</th><td>I dati possono essere trattati da personale autorizzato, fornitori tecnici del sito e soggetti che supportano il Comune nella gestione dei servizi digitali.</td></tr>
-                                <tr><th>Trasferimenti</th><td>Non sono previsti trasferimenti volontari verso Paesi extra UE, salvo eventuali servizi tecnici di terze parti impostati nel rispetto della normativa applicabile.</td></tr>
-                                <tr><th>Diritti</th><td>L’interessato può chiedere accesso, rettifica, cancellazione, limitazione, opposizione e, ove applicabile, portabilità dei dati, contattando il Comune di Lauco.</td></tr>
-                                <tr><th>Reclamo</th><td>L’interessato può proporre reclamo all’Autorità Garante per la protezione dei dati personali secondo le modalità indicate sul sito dell’Autorità.</td></tr>
-                            </tbody></table>
-
-                            <div class="info-card">
-                                <h3>Misurazione QR privacy by design</h3>
-                                <p>Il redirect dei QR incrementa direttamente un contatore giornaliero associato al codice. Non viene creata una riga per ogni visita e il componente non legge né imposta cookie analitici. Gli eventuali log tecnici generali dell’infrastruttura web restano distinti da questa funzione statistica.</p>
-                            </div>
-                            <p class="small-note">La presente pagina è una informativa operativa per il sito tematico Lauco Experience. Per gli aspetti generali di privacy, note legali e protezione dei dati si rinvia anche alle informazioni pubblicate sul sito istituzionale del Comune di Lauco.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php require LAUCO_VIEW_PATH . '/partials/footer.php'; ?>
-    </div>
-    <?php require LAUCO_VIEW_PATH . '/partials/scripts.php'; ?>
-</body>
-</html>
+<!DOCTYPE html><html lang="<?= htmlspecialchars($locale, ENT_QUOTES, 'UTF-8') ?>"><head><?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
+<style>.policy-page .lead{font-size:18px;line-height:1.75;color:#555}.policy-card{background:#fff;padding:28px;margin:0 0 22px;box-shadow:0 10px 30px rgba(0,0,0,.06)}.policy-card h3{margin-top:0}.policy-card p{color:#666;line-height:1.75}.policy-note{font-size:13px;color:#777;margin-top:30px}</style></head><body>
+<div id="myloader"><span class="loader"><div class="inner-loader"></div></span></div><div id="main-wrap" class="full-width"><?php require LAUCO_VIEW_PATH . '/partials/menu.php'; ?>
+<div id="page-content" class="header-static"><div id="flexslider" class="fullpage-wrap small"><ul class="slides"><li style="background-image:url(assets/img/contact.jpg)"><div class="container text text-center"><h1 class="white margin-bottom-small"><?= htmlspecialchars($c['title'], ENT_QUOTES, 'UTF-8') ?></h1><p class="heading white"><?= htmlspecialchars($c['subtitle'], ENT_QUOTES, 'UTF-8') ?></p></div><div class="gradient dark"></div></li></ul></div>
+<div id="page-wrap" class="content-section fullpage-wrap policy-page"><div class="container text"><p class="lead"><?= htmlspecialchars($c['intro'], ENT_QUOTES, 'UTF-8') ?></p>
+<?php foreach ($c['sections'] as [$heading,$text]): ?><section class="policy-card"><h3><?= htmlspecialchars($heading, ENT_QUOTES, 'UTF-8') ?></h3><p><?= htmlspecialchars($text, ENT_QUOTES, 'UTF-8') ?></p></section><?php endforeach; ?>
+<p><a class="btn-alt small" href="<?= htmlspecialchars(content_language_url($locale, '/cookie'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($c['cookie'], ENT_QUOTES, 'UTF-8') ?></a></p><p class="policy-note"><?= htmlspecialchars($c['updated'], ENT_QUOTES, 'UTF-8') ?></p></div></div></div>
+<?php require LAUCO_VIEW_PATH . '/partials/footer.php'; ?></div><?php require LAUCO_VIEW_PATH . '/partials/scripts.php'; ?></body></html>

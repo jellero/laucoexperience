@@ -22,3 +22,5 @@
 
 <!-- Template main -->
 <script src="assets/js/main.js"></script>
+
+<?php require LAUCO_VIEW_PATH . '/partials/consent.php'; ?>

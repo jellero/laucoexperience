@@ -30,6 +30,7 @@ $hero = $isDetail ? (string) ($item['hero'] ?? $hub['hero'] ?? 'assets/img/radim
 <!DOCTYPE html>
 <html lang="<?= htmlspecialchars($locale, ENT_QUOTES, 'UTF-8') ?>">
 <head>
+    <base href="/">
     <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
     <style>
         .fractions-page .lead-text{font-size:18px;line-height:1.8;color:#555;margin-bottom:36px}

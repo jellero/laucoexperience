@@ -1,0 +1,42 @@
+name: Audit event candidates fast
+
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-event-candidates-fast.yml'
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download candidate images
+        shell: bash
+        run: |
+          set -u
+          mkdir -p audit/candidates audit/local
+          get() { curl -fL --max-time 25 --retry 1 "$1" -o "$2" || rm -f "$2"; }
+          cp -R assets/img/luoghi audit/local/luoghi 2>/dev/null || true
+          cp uploads/luoghi/chiesa-trava-20260610213911-b2a7c5.jpg audit/local/trava.jpg
+          cp uploads/luoghi/terrazza-20260610214112-b51f01.jpg audit/local/piattaforma.jpg
+          cp assets/img/cronoradima.jpg audit/local/cronoradima.jpg
+          cp assets/img/alpini.jpg audit/local/maina.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Blood%20donation%20mobile%20unit.jpg?width=1200' audit/candidates/autoemoteca.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Theatrical%20Performance.jpg?width=1200' audit/candidates/teatro.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Monte%20Arvenis.jpg?width=1200' audit/candidates/monte-arvenis.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco-panorama.jpg?width=1200' audit/candidates/lauco-panorama.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Chiesa%20di%20Avaglio%20di%20Lauco.jpg?width=1200' audit/candidates/avaglio.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rosegg%2C%20Partnerschaft%20Partnerstvo%20Gemellagio%20und%20Partnerst%C3%A4dte%20Bohinj%2C%20Zuglio%2C%20Lauco%20und%20Osoppo.jpg?width=1200' audit/candidates/rosegg-gemellaggio.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Rally%20023.jpg?width=1200' audit/candidates/rally.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Choir%20in%20church.jpg?width=1200' audit/candidates/coro.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Torchlight%20procession%20for%20the%20search%20of%20missing%20boy%20Odin%20Andre%20Hagen%20Jacobsen%2018.jpg?width=1200' audit/candidates/fiaccolata.jpg
+          get 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Lauco%20%28UD%29%20-%20frazione%20Trava%20-%20vista%20innevata%20-%202008.jpg?width=1200' audit/candidates/trava-inverno.jpg
+          get 'https://pagnacco-api.municipiumapp.it/s3/4905/media/acque-vive-cristina-noacco-pagnacco.jpg' audit/candidates/acque-vive.jpg
+          file audit/candidates/* audit/local/* 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lauco-event-candidates-fast
+          path: audit
+          retention-days: 1

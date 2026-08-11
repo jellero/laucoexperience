@@ -2,7 +2,6 @@
 require_once LAUCO_ROOT . '/inc/db.php';
 
 $slides = [];
-$animationClass = 'flex-animation no-opacity';
 
 try {
     $stmt = $pdo->query("
@@ -52,8 +51,8 @@ function slider_title_html(string $title): string
         <?php if (!$slides): ?>
             <li style="background-image:url(assets/img/old.jpg)">
                 <div class="text container">
-                    <h1 class="white flex-animation no-opacity">Lauco<br> Experience</h1>
-                    <h2 class="white flex-animation no-opacity">Lauco</h2>
+                    <h1 class="white flex-animation animated fadeInUp">Lauco<br> Experience</h1>
+                    <h2 class="white flex-animation animated fadeInUp">Lauco</h2>
                 </div>
                 <div class="gradient dark"></div>
             </li>
@@ -64,6 +63,9 @@ function slider_title_html(string $title): string
                 $url = slider_url($slide);
                 $hasLink = $url !== '#';
                 $buttonLabel = $slide['button_label'] ?: 'info';
+                $animationClass = $index === 0
+                    ? 'flex-animation animated fadeInUp'
+                    : 'flex-animation no-opacity';
             ?>
 
             <li style="background-image:url(<?= e($slide['image_path']) ?>)">

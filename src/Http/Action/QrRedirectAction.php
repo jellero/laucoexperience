@@ -19,6 +19,13 @@ final class QrRedirectAction
 
         $query = $request->getQueryParams();
         $code = trim((string) ($query['c'] ?? ''));
+        $path = rtrim($request->getUri()->getPath(), '/') ?: '/';
+
+        // /map è l'URL stampato nel QR fisico: deve essere tracciato senza query string.
+        if ($code === '' && in_array($path, ['/map', '/map.php'], true)) {
+            $code = 'map';
+        }
+
         $definition = $code !== '' ? qr_definition($code) : null;
         if ($definition === null) {
             $response->getBody()->write('QR non riconosciuto.');

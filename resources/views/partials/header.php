@@ -8,6 +8,37 @@ foreach (['percorso', 'luogo', 'evento'] as $seoEntityVariable) {
     }
 }
 $seo = seo_metadata();
+
+// /map è riservato al QR tracciato; /mappa è la pagina pubblica indicizzabile.
+if (seo_path() === '/mappa') {
+    $mapTitle = match (content_language_from_request()) {
+        'en' => 'Trail map',
+        'de' => 'Wanderkarte',
+        'sl' => 'Zemljevid poti',
+        default => 'Mappa dei sentieri',
+    };
+    $mapDescription = match (content_language_from_request()) {
+        'en' => 'Interactive map of Lauco trails with GPX tracks, elevation profiles and useful information about the local hiking network.',
+        'de' => 'Interaktive Karte der Wege von Lauco mit GPX-Tracks, Höhenprofilen und Informationen zum örtlichen Wegenetz.',
+        'sl' => 'Interaktivni zemljevid poti v Laucu z GPX-sledmi, višinskimi profili in informacijami o lokalni pohodniški mreži.',
+        default => 'Mappa interattiva dei sentieri di Lauco con tracce GPX, profili altimetrici e informazioni utili per conoscere la rete escursionistica locale.',
+    };
+    $seo['title'] = $mapTitle . ' | Lauco Experience';
+    $seo['description'] = $mapDescription;
+
+    if (isset($seo['json_ld']['@graph']) && is_array($seo['json_ld']['@graph'])) {
+        foreach ($seo['json_ld']['@graph'] as &$seoGraphNode) {
+            if (($seoGraphNode['@type'] ?? null) !== 'BreadcrumbList' || !isset($seoGraphNode['itemListElement']) || !is_array($seoGraphNode['itemListElement'])) {
+                continue;
+            }
+            $lastIndex = array_key_last($seoGraphNode['itemListElement']);
+            if ($lastIndex !== null && is_array($seoGraphNode['itemListElement'][$lastIndex])) {
+                $seoGraphNode['itemListElement'][$lastIndex]['name'] = $mapTitle;
+            }
+        }
+        unset($seoGraphNode);
+    }
+}
 ?>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">

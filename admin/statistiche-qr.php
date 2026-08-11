@@ -8,10 +8,42 @@ $summary = qr_stats_summary($pdo);
 $top = qr_stats_top($pdo, 30);
 $daily = qr_stats_daily($pdo, 30);
 $registry = qr_registry();
+$detailAvailable = qr_scan_log_available($pdo);
+$recent = $detailAvailable ? qr_stats_recent($pdo, 100) : [];
+$retentionDays = qr_scan_log_retention_days();
+$gpxDownloads = [];
+
+try {
+    $stmt = $pdo->query(
+        "SELECT titolo, gpx_file FROM percorsi "
+        . "WHERE pubblicato = 1 AND gpx_file IS NOT NULL AND TRIM(gpx_file) <> '' "
+        . "ORDER BY ordine ASC, titolo ASC"
+    );
+    foreach ($stmt->fetchAll() ?: [] as $row) {
+        $filename = basename(trim((string) ($row['gpx_file'] ?? '')));
+        if ($filename === '' || !preg_match('/\.gpx$/i', $filename)) {
+            continue;
+        }
+        $gpxDownloads[] = [
+            'title' => trim((string) ($row['titolo'] ?? '')) ?: $filename,
+            'filename' => $filename,
+        ];
+    }
+} catch (Throwable $e) {
+    $gpxDownloads = [];
+}
+
 $maxDaily = 1;
 foreach ($daily as $row) {
     $maxDaily = max($maxDaily, (int) $row['scans']);
 }
+
+$deviceLabels = [
+    'mobile' => 'Mobile',
+    'tablet' => 'Tablet',
+    'desktop' => 'Desktop',
+    'unknown' => 'Non riconosciuto',
+];
 
 admin_page_open('Statistiche QR', 'qr-stats');
 ?>
@@ -24,6 +56,12 @@ admin_page_open('Statistiche QR', 'qr-stats');
     <?php if (!$summary['available']): ?>
         <div class="error">
             La tabella delle statistiche QR non è ancora disponibile. Applica la migrazione <code>20260808_qr_analytics.sql</code> prima di pubblicare il QR tracciato.
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$detailAvailable): ?>
+        <div class="error">
+            Il dettaglio con data/ora, IP e dispositivo sarà disponibile dopo l'applicazione della nuova migrazione <code>20260811_qr_scan_details.sql</code>.
         </div>
     <?php endif; ?>
 
@@ -53,7 +91,7 @@ admin_page_open('Statistiche QR', 'qr-stats');
     <section class="dashboard-columns">
         <div class="admin-card">
             <h2>QR ufficiale</h2>
-            <p class="hint">Il QR usa <code>/map</code>, registra una scansione e reindirizza alla mappa pubblica.</p>
+            <p class="hint">Il QR usa <code>/map</code>, registra la scansione e reindirizza alla mappa pubblica.</p>
             <table>
                 <thead><tr><th>QR</th><th>30 giorni</th><th>Totale</th></tr></thead>
                 <tbody>
@@ -97,6 +135,57 @@ admin_page_open('Statistiche QR', 'qr-stats');
     </section>
 
     <section class="admin-card" style="margin-top:22px">
+        <h2>Ultime scansioni</h2>
+        <p class="hint">Dettaglio delle ultime 100 scansioni del QR mappa. IP, user agent e classificazione del dispositivo vengono conservati per <?= (int) $retentionDays ?> giorni.</p>
+        <?php if (!$detailAvailable): ?>
+            <p>Dettaglio non ancora disponibile: applicare la migrazione indicata sopra.</p>
+        <?php elseif ($recent === []): ?>
+            <p>Nessuna scansione dettagliata registrata.</p>
+        <?php else: ?>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>Data e ora</th><th>IP</th><th>Dispositivo</th><th>User agent</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($recent as $scan): ?>
+                        <tr>
+                            <td style="white-space:nowrap"><?= e($scan['scanned_at']) ?></td>
+                            <td><code><?= e($scan['ip_address'] !== '' ? $scan['ip_address'] : '-') ?></code></td>
+                            <td><?= e($deviceLabels[$scan['device_type']] ?? ucfirst($scan['device_type'])) ?></td>
+                            <td style="max-width:520px;word-break:break-word"><small><?= e($scan['user_agent'] !== '' ? $scan['user_agent'] : '-') ?></small></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </section>
+
+    <section class="admin-card" style="margin-top:22px">
+        <h2>Download mappa e GPX</h2>
+        <p class="hint">La mappa PDF usa la vista di stampa della mappa pubblica; dal dialogo del browser scegli “Salva come PDF”. Le tracce GPX sono quelle dei percorsi pubblicati.</p>
+        <p>
+            <a class="btn" href="../mappa?print=1" target="_blank" rel="noopener noreferrer">Mappa PDF / stampa</a>
+            <a class="btn secondary" href="../mappa" target="_blank" rel="noopener noreferrer">Apri mappa</a>
+        </p>
+        <?php if ($gpxDownloads === []): ?>
+            <p>Nessuna traccia GPX pubblicata disponibile.</p>
+        <?php else: ?>
+            <table>
+                <thead><tr><th>Percorso</th><th>File</th><th>Download</th></tr></thead>
+                <tbody>
+                <?php foreach ($gpxDownloads as $gpx): ?>
+                    <tr>
+                        <td><?= e($gpx['title']) ?></td>
+                        <td><code><?= e($gpx['filename']) ?></code></td>
+                        <td><a class="btn secondary" href="../gpx/<?= e(rawurlencode($gpx['filename'])) ?>">Scarica GPX</a></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </section>
+
+    <section class="admin-card" style="margin-top:22px">
         <h2>URL del QR</h2>
         <p class="hint">Il QR fisico deve continuare a contenere <code>/map</code>. Il menu del sito usa invece <code>/mappa</code>.</p>
         <table>
@@ -117,13 +206,13 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Come funziona</h2>
-        <p><strong>QR fisico:</strong> <code>/map</code> → registra una scansione anonima → redirect a <code>/mappa</code>.</p>
+        <p><strong>QR fisico:</strong> <code>/map</code> → registra data/ora, IP e dati tecnici del dispositivo → redirect a <code>/mappa</code>.</p>
         <p><strong>Menu e link:</strong> <code>/mappa</code> → apertura diretta della mappa → nessuna registrazione nelle statistiche QR.</p>
     </section>
 
     <section class="admin-card" style="margin-top:22px">
-        <h2>Privacy by design</h2>
-        <p>La misurazione QR non salva indirizzi IP, user agent, geolocalizzazione, identificativi del dispositivo o cookie analitici. I dati sono aggregati direttamente per <strong>giorno + codice QR</strong>.</p>
+        <h2>Dati e conservazione</h2>
+        <p>Il log QR registra <strong>data e ora, indirizzo IP, user agent e classe dispositivo</strong>. Non usa cookie analitici e non salva la geolocalizzazione. I dettagli vengono conservati per <?= (int) $retentionDays ?> giorni; i conteggi aggregati giornalieri restano disponibili per le statistiche storiche.</p>
         <p><a class="btn secondary" href="../privacy" target="_blank">Privacy</a> <a class="btn secondary" href="../cookie" target="_blank">Cookie</a></p>
     </section>
 </main>

@@ -20,9 +20,11 @@ final class MobileMapUsabilityTest extends TestCase
     {
         $mapCss = file_get_contents(dirname(__DIR__, 2) . '/assets/css/mappa.css');
         $routeCss = file_get_contents(dirname(__DIR__, 2) . '/assets/css/percorso.css');
+        $routeView = file_get_contents(dirname(__DIR__, 2) . '/resources/views/pages/percorso.php');
 
         self::assertIsString($mapCss);
         self::assertIsString($routeCss);
+        self::assertIsString($routeView);
         self::assertMatchesRegularExpression(
             '/#elevation \.elevation-control \*\s*\{\s*touch-action:\s*pan-y\s*!important;/',
             $mapCss
@@ -43,5 +45,7 @@ final class MobileMapUsabilityTest extends TestCase
             '/#percorso-elevation \.tooltip\s*\{[^\}]*opacity:\s*1\s*!important;/',
             $routeCss
         );
+        self::assertStringContainsString('/assets/css/percorso.css?v=', $routeView);
+        self::assertStringContainsString('/assets/js/percorso-map.js?v=', $routeView);
     }
 }

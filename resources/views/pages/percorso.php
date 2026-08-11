@@ -112,6 +112,8 @@ $simili = $stmt->fetchAll();
 
 $cover = $percorso['cover_image'] ?: 'assets/img/trip11.jpg';
 $tipoLabel = $percorso['tipo'] === 'mtb' ? 'MTB' : 'A piedi';
+$percorsoCssVersion = (string) (filemtime(LAUCO_ROOT . '/assets/css/percorso.css') ?: 1);
+$percorsoJsVersion = (string) (filemtime(LAUCO_ROOT . '/assets/js/percorso-map.js') ?: 1);
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -121,7 +123,7 @@ $tipoLabel = $percorso['tipo'] === 'mtb' ? 'MTB' : 'A piedi';
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css">
     <link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation@2.5.2/dist/leaflet-elevation.min.css">
-    <link rel="stylesheet" href="assets/css/percorso.css">
+    <link rel="stylesheet" href="/assets/css/percorso.css?v=<?= e($percorsoCssVersion) ?>">
 
     <style>
         .zcl{
@@ -425,6 +427,6 @@ $tipoLabel = $percorso['tipo'] === 'mtb' ? 'MTB' : 'A piedi';
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
     <script src="https://unpkg.com/d3@6.5.0/dist/d3.min.js"></script>
     <script src="https://unpkg.com/@raruto/leaflet-elevation@2.5.2/dist/leaflet-elevation.min.js"></script>
-    <script src="assets/js/percorso-map.js"></script>
+    <script src="/assets/js/percorso-map.js?v=<?= e($percorsoJsVersion) ?>"></script>
 </body>
 </html>

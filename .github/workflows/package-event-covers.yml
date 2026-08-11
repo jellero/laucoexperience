@@ -1,0 +1,30 @@
+name: Package event covers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/img/eventi/**'
+      - 'resources/media/eventi/README.txt'
+      - 'migrations/20260811_zzz_eventi_cover_editoriali_2026.sql'
+      - '.github/workflows/package-event-covers.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare package
+        run: |
+          mkdir -p dist/lauco-eventi-cover
+          cp assets/img/eventi/* dist/lauco-eventi-cover/
+          cp resources/media/eventi/README.txt dist/lauco-eventi-cover/README.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lauco-eventi-cover
+          path: dist/lauco-eventi-cover/
+          if-no-files-found: error
+          retention-days: 30

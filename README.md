@@ -26,6 +26,10 @@ Le credenziali restano esclusivamente nel file locale `.env`; `.env` e i dump co
 
 Per il deploy da hosting condiviso, caricare `tools/deploy-web.php` nel document root con il nome `deploy.php`: conserva automaticamente `.env`, upload e cataloghi aggiornati, installa le dipendenze, applica le migrazioni additive e mantiene le release precedenti per il rollback.
 
+## Posta nel backoffice
+
+La voce `Posta` usa la sessione amministrativa esistente per leggere via IMAP e inviare via SMTP dalla casella condivisa. Host, porte e utente hanno valori predefiniti in `.env.example`; sul server è sufficiente impostare `MAIL_PASSWORD`, oppure le due variabili separate `MAIL_IMAP_PASSWORD` e `MAIL_SMTP_PASSWORD`. Le credenziali non vanno mai inserite nel repository.
+
 ## Architettura
 
 ```text

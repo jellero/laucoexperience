@@ -48,6 +48,11 @@ $printMode = isset($_GET['print']) && (string) $_GET['print'] === '1';
 
         <!-- Page Content -->
         <div id="page-content" class="header-static footer-fixed">
+            <?php if (!$printMode): ?>
+                <div class="container" style="padding-top:24px;text-align:right">
+                    <a class="btn-alt small" href="/mappa/pdf" target="_blank" rel="noopener">Scarica mappa PDF</a>
+                </div>
+            <?php endif; ?>
             <div id="map-wrap" class="content-section fullpage-wrap">
                 <?php require LAUCO_VIEW_PATH . '/sections/map.php'; ?>
             </div>

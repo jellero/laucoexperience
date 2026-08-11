@@ -22,6 +22,7 @@ return [
     ['name' => 'territory.nature', 'methods' => ['GET'], 'paths' => ['/natura', '/natura.php'], 'handler' => 'page', 'template' => 'natura.php', 'script' => 'natura.php'],
     ['name' => 'territory.arrive', 'methods' => ['GET'], 'paths' => ['/come-arrivare', '/come-arrivare.php'], 'handler' => 'page', 'template' => 'come-arrivare.php', 'script' => 'come-arrivare.php'],
     ['name' => 'events', 'methods' => ['GET'], 'paths' => ['/eventi', '/eventi.php'], 'handler' => 'page', 'template' => 'eventi.php', 'script' => 'eventi.php'],
+    ['name' => 'events.archive', 'methods' => ['GET'], 'paths' => ['/eventi/archivio', '/archivio-eventi', '/eventi-archivio.php'], 'handler' => 'page', 'template' => 'eventi-archivio.php', 'script' => 'eventi-archivio.php'],
     ['name' => 'events.detail', 'methods' => ['GET'], 'paths' => ['/evento', '/evento.php'], 'handler' => 'page', 'template' => 'evento.php', 'script' => 'evento.php'],
     ['name' => 'contact', 'methods' => ['GET'], 'paths' => ['/contatti', '/contatti.php'], 'handler' => 'page', 'template' => 'contatti.php', 'script' => 'contatti.php'],
     ['name' => 'contribute', 'methods' => ['GET', 'POST'], 'paths' => ['/contribuisci', '/contribuisci.php'], 'handler' => 'page', 'template' => 'contribuisci.php', 'script' => 'contribuisci.php'],

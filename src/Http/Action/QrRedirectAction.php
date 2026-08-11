@@ -39,7 +39,10 @@ final class QrRedirectAction
             try {
                 $pdo = qr_stats_open_pdo();
                 if ($pdo !== null) {
-                    qr_track_scan($pdo, $code);
+                    $server = $request->getServerParams();
+                    $ipAddress = trim((string) ($server['REMOTE_ADDR'] ?? ''));
+                    $userAgent = $request->getHeaderLine('User-Agent');
+                    qr_track_scan($pdo, $code, $ipAddress, $userAgent);
                 }
             } catch (Throwable $e) {
                 error_log('QR analytics write failed: ' . $e->getMessage());

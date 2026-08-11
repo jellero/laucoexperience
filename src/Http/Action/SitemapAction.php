@@ -72,7 +72,7 @@ final class SitemapAction
             '/', '/mappa', '/segnaletica', '/consigli', '/itinerari-piedi', '/itinerari-mtb',
             '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/luoghi',
             '/frazioni', '/storia', '/natura', '/come-arrivare', '/eventi', '/eventi/archivio',
-            '/contatti', '/contribuisci', '/privacy', '/cookie',
+            '/contatti', '/contribuisci', '/segnala-problema', '/privacy', '/cookie',
         ];
 
         if (function_exists('fractions_items')) {

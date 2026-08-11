@@ -128,6 +128,24 @@ final class RoutingTest extends TestCase
         self::assertStringContainsString('/mappa', $body);
         self::assertStringNotContainsString('<loc>https://laucoexperience.it/map</loc>', $body);
         self::assertStringContainsString('hreflang="en"', $body);
+        self::assertStringContainsString('hreflang="de"', $body);
+        self::assertStringContainsString('hreflang="sl"', $body);
+        self::assertStringContainsString('hreflang="x-default"', $body);
+
+        $canonicalPaths = [
+            '/', '/mappa', '/segnaletica', '/consigli', '/itinerari-piedi', '/itinerari-mtb',
+            '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/luoghi',
+            '/frazioni', '/storia', '/natura', '/come-arrivare', '/eventi', '/eventi/archivio',
+            '/contatti', '/contribuisci', '/segnala-problema', '/privacy', '/cookie',
+        ];
+        foreach ($canonicalPaths as $path) {
+            $url = 'https://laucoexperience.it' . ($path === '/' ? '/' : $path);
+            self::assertStringContainsString('<loc>' . $url . '</loc>', $body, 'URL mancante nella sitemap: ' . $url);
+        }
+
+        self::assertStringNotContainsString('<loc>https://laucoexperience.it/login', $body);
+        self::assertStringNotContainsString('<loc>https://laucoexperience.it/admin', $body);
+        self::assertStringNotContainsString('.php</loc>', $body);
     }
 
     public function testUnknownPageUsesTheOrganized404View(): void

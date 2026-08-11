@@ -44,7 +44,7 @@ if (!function_exists('isCurrent')) {
                         <li class="submenu">
                             <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php']) ? 'active-item' : '' ?>">Mappa</a>
                             <ul class="sub-menu">
-                                <li><a href="/map">Mappa dei sentieri</a></li>
+                                <li><a href="/mappa">Mappa dei sentieri</a></li>
                                 <li><a href="/segnaletica">Segnaletica</a></li>
                                 <li><a href="/consigli">Consigli escursionistici</a></li>
                             </ul>

@@ -47,6 +47,7 @@ $hero = $eventi[0]['cover_image'] ?? 'assets/img/old.jpg';
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <base href="/">
     <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
 
     <style>

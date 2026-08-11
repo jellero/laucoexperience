@@ -25,6 +25,65 @@ $deviceLabels = [
     'unknown' => 'Non riconosciuto',
 ];
 
+function stats_gpx_catalog(PDO $pdo): array
+{
+    try {
+        $rows = $pdo->query(
+            "SELECT id, titolo, gpx_file FROM percorsi WHERE gpx_file IS NOT NULL AND gpx_file <> ''"
+        )->fetchAll() ?: [];
+    } catch (Throwable $e) {
+        return [];
+    }
+
+    $catalog = [];
+    foreach ($rows as $row) {
+        $filename = basename(str_replace('\\', '/', (string) ($row['gpx_file'] ?? '')));
+        if ($filename === '') {
+            continue;
+        }
+
+        $catalog[$filename] = [
+            'id' => (int) ($row['id'] ?? 0),
+            'titolo' => trim((string) ($row['titolo'] ?? '')),
+        ];
+    }
+
+    return $catalog;
+}
+
+function stats_gpx_resource(array $catalog, string $resourceKey): array
+{
+    $filename = basename(str_replace('\\', '/', trim($resourceKey)));
+
+    if ($filename !== '' && isset($catalog[$filename])) {
+        $item = $catalog[$filename];
+        return [
+            'filename' => $filename,
+            'label' => $item['titolo'] !== '' ? $item['titolo'] : $filename,
+            'percorso_id' => (int) $item['id'],
+            'linked' => true,
+        ];
+    }
+
+    if (preg_match('/#_([^\.]+)\.gpx$/i', $filename, $matches)) {
+        return [
+            'filename' => $filename,
+            'label' => 'Traccia mappa ' . trim($matches[1]),
+            'percorso_id' => 0,
+            'linked' => false,
+        ];
+    }
+
+    return [
+        'filename' => $filename !== '' ? $filename : $resourceKey,
+        'label' => $filename !== '' ? $filename : $resourceKey,
+        'percorso_id' => 0,
+        'linked' => false,
+    ];
+}
+
+$gpxCatalog = stats_gpx_catalog($pdo);
+
 function stats_bar_rows(array $rows, string $dateKey, string $valueKey): void
 {
     if ($rows === []) {
@@ -127,17 +186,25 @@ admin_page_open('Statistiche', 'qr-stats');
     </section>
 
     <section class="admin-card" style="margin-top:22px">
-        <h2>GPX più scaricati</h2>
-        <p class="hint">La classifica conta soltanto i click di download; le richieste usate dalla mappa per visualizzare una traccia sono escluse.</p>
+        <h2>Itinerari GPX più scaricati</h2>
+        <p class="hint">La classifica conta soltanto i click di download. Quando il GPX appartiene a un itinerario del backoffice viene mostrato il nome dell'itinerario; il nome tecnico del file resta visibile solo come riferimento.</p>
         <?php if ($gpxTop === []): ?>
             <p>Nessun download GPX registrato.</p>
         <?php else: ?>
             <table>
-                <thead><tr><th>File GPX</th><th>30 giorni</th><th>Totale</th></tr></thead>
+                <thead><tr><th>Itinerario</th><th>File GPX</th><th>30 giorni</th><th>Totale</th></tr></thead>
                 <tbody>
                 <?php foreach ($gpxTop as $row): ?>
+                    <?php $gpxResource = stats_gpx_resource($gpxCatalog, (string) $row['resource_key']); ?>
                     <tr>
-                        <td><code><?= e($row['resource_key']) ?></code></td>
+                        <td>
+                            <?php if ($gpxResource['linked'] && $gpxResource['percorso_id'] > 0): ?>
+                                <a href="percorso-form.php?id=<?= (int) $gpxResource['percorso_id'] ?>"><strong><?= e($gpxResource['label']) ?></strong></a>
+                            <?php else: ?>
+                                <strong><?= e($gpxResource['label']) ?></strong>
+                            <?php endif; ?>
+                        </td>
+                        <td><code><?= e($gpxResource['filename']) ?></code></td>
                         <td><?= (int) $row['period_downloads'] ?></td>
                         <td><?= (int) $row['total_downloads'] ?></td>
                     </tr>
@@ -149,7 +216,7 @@ admin_page_open('Statistiche', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Ultimi scaricamenti</h2>
-        <p class="hint">Data/ora e tipo di dispositivo. L'indirizzo IP non viene raccolto.</p>
+        <p class="hint">Data/ora e tipo di dispositivo. Per i GPX collegati al backoffice viene mostrato l'itinerario invece del solo nome tecnico del file. L'indirizzo IP non viene raccolto.</p>
         <?php if (!$downloadDetailAvailable): ?>
             <p>Dettaglio non ancora disponibile.</p>
         <?php elseif ($downloadRecent === []): ?>
@@ -163,7 +230,20 @@ admin_page_open('Statistiche', 'qr-stats');
                         <tr>
                             <td style="white-space:nowrap"><?= e($row['downloaded_at']) ?></td>
                             <td><?= $row['download_type'] === 'map_pdf' ? 'Mappa PDF' : 'GPX' ?></td>
-                            <td><code><?= e($row['resource_key']) ?></code></td>
+                            <td>
+                                <?php if ($row['download_type'] === 'gpx'): ?>
+                                    <?php $gpxResource = stats_gpx_resource($gpxCatalog, (string) $row['resource_key']); ?>
+                                    <?php if ($gpxResource['linked'] && $gpxResource['percorso_id'] > 0): ?>
+                                        <a href="percorso-form.php?id=<?= (int) $gpxResource['percorso_id'] ?>"><strong><?= e($gpxResource['label']) ?></strong></a><br>
+                                        <small><code><?= e($gpxResource['filename']) ?></code></small>
+                                    <?php else: ?>
+                                        <strong><?= e($gpxResource['label']) ?></strong><br>
+                                        <small><code><?= e($gpxResource['filename']) ?></code></small>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <strong>Mappa Lauco Experience</strong>
+                                <?php endif; ?>
+                            </td>
                             <td><?= e($deviceLabels[$row['device_type']] ?? ucfirst($row['device_type'])) ?></td>
                         </tr>
                     <?php endforeach; ?>

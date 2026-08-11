@@ -17,13 +17,13 @@ admin_page_open('Statistiche QR', 'qr-stats');
 ?>
 <main class="wrap">
     <section class="page-title">
-        <h1>Statistiche QR</h1>
-        <p>Scansioni aggregate e anonime dei QR territoriali. Il sistema registra soltanto data, codice QR e contatore giornaliero.</p>
+        <h1>Statistiche QR mappa</h1>
+        <p>Qui vengono conteggiati soltanto gli accessi alla mappa provenienti dal QR fisico. I click dal menu e i link diretti a <code>/map</code> non vengono registrati da questo sistema.</p>
     </section>
 
     <?php if (!$summary['available']): ?>
         <div class="error">
-            La tabella delle statistiche QR non è ancora disponibile. Applica la migrazione <code>20260808_qr_analytics.sql</code> prima di pubblicare i QR tracciati.
+            La tabella delle statistiche QR non è ancora disponibile. Applica la migrazione <code>20260808_qr_analytics.sql</code> prima di pubblicare il QR tracciato.
         </div>
     <?php endif; ?>
 
@@ -31,29 +31,29 @@ admin_page_open('Statistiche QR', 'qr-stats');
         <div class="dashboard-card">
             <small>Oggi</small>
             <span class="number"><?= (int) $summary['today'] ?></span>
-            <p>scansioni QR aggregate</p>
+            <p>accessi da QR</p>
         </div>
         <div class="dashboard-card">
             <small>Ultimi 30 giorni</small>
             <span class="number"><?= (int) $summary['last30'] ?></span>
-            <p>scansioni complessive</p>
+            <p>accessi da QR</p>
         </div>
         <div class="dashboard-card">
             <small>Totale storico</small>
             <span class="number"><?= (int) $summary['total'] ?></span>
-            <p>dal momento dell’attivazione</p>
+            <p>accessi da QR attivo</p>
         </div>
         <div class="dashboard-card">
-            <small>QR registrati</small>
+            <small>QR attivi</small>
             <span class="number"><?= count($registry) ?></span>
-            <p>codici con destinazione autorizzata</p>
+            <p>QR ufficiale della mappa</p>
         </div>
     </section>
 
     <section class="dashboard-columns">
         <div class="admin-card">
-            <h2>QR più consultati</h2>
-            <p class="hint">Classifica degli ultimi 30 giorni e totale storico.</p>
+            <h2>QR ufficiale</h2>
+            <p class="hint">Il QR usa un URL tracciato e viene poi reindirizzato alla stessa mappa aperta dal menu.</p>
             <table>
                 <thead><tr><th>QR</th><th>30 giorni</th><th>Totale</th></tr></thead>
                 <tbody>
@@ -77,7 +77,7 @@ admin_page_open('Statistiche QR', 'qr-stats');
 
         <div class="admin-card">
             <h2>Andamento 30 giorni</h2>
-            <p class="hint">Una riga per giorno: non vengono conservati eventi individuali.</p>
+            <p class="hint">Sono incluse solo le scansioni del QR attivo; gli accessi diretti alla mappa restano fuori da questo conteggio.</p>
             <?php if ($daily === []): ?>
                 <p>Nessuna scansione registrata.</p>
             <?php else: ?>
@@ -97,10 +97,10 @@ admin_page_open('Statistiche QR', 'qr-stats');
     </section>
 
     <section class="admin-card" style="margin-top:22px">
-        <h2>QR disponibili</h2>
-        <p class="hint">Usa questi URL nei QR fisici. Aprire l’URL di tracciamento incrementa il contatore; per i test usa direttamente la destinazione.</p>
+        <h2>URL del QR</h2>
+        <p class="hint">Nel QR fisico usa esclusivamente l’URL tracciato. Menu e normali collegamenti del sito devono invece continuare a puntare direttamente a <code>/map</code>.</p>
         <table>
-            <thead><tr><th>Etichetta</th><th>Codice</th><th>URL QR</th><th>Destinazione</th></tr></thead>
+            <thead><tr><th>Etichetta</th><th>Codice</th><th>URL da codificare nel QR</th><th>Destinazione finale</th></tr></thead>
             <tbody>
             <?php foreach ($registry as $code => $definition): ?>
                 <tr>
@@ -115,8 +115,14 @@ admin_page_open('Statistiche QR', 'qr-stats');
     </section>
 
     <section class="admin-card" style="margin-top:22px">
+        <h2>Come funziona</h2>
+        <p><strong>QR fisico:</strong> <code>/qr?c=map</code> → registra una scansione anonima → redirect a <code>/map</code>.</p>
+        <p><strong>Menu e link:</strong> <code>/map</code> → apertura diretta della mappa → nessuna registrazione nelle statistiche QR.</p>
+    </section>
+
+    <section class="admin-card" style="margin-top:22px">
         <h2>Privacy by design</h2>
-        <p>La misurazione QR non salva indirizzi IP, user agent, geolocalizzazione, identificativi del dispositivo o cookie analitici. I dati sono aggregati direttamente per <strong>giorno + codice QR</strong> e servono soltanto a capire quali punti informativi vengono consultati e a migliorare il servizio.</p>
+        <p>La misurazione QR non salva indirizzi IP, user agent, geolocalizzazione, identificativi del dispositivo o cookie analitici. I dati sono aggregati direttamente per <strong>giorno + codice QR</strong>.</p>
         <p><a class="btn secondary" href="../privacy" target="_blank">Privacy</a> <a class="btn secondary" href="../cookie" target="_blank">Cookie</a></p>
     </section>
 </main>

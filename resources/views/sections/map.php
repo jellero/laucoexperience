@@ -64,6 +64,9 @@ window.GPX_ROUTES = <?= json_encode($routes, JSON_UNESCAPED_UNICODE | JSON_UNESC
                         Visualizza il percorso più vicino
                     </button>
                     <button class="btn btn-secondary" id="btnFallback">Vai all'elenco percorsi</button>
+                    <?php if (empty($printMode)): ?>
+                        <a class="btn btn-secondary" href="/mappa/pdf" target="_blank" rel="noopener">Scarica mappa PDF</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -158,7 +158,7 @@ $seo = seo_metadata();
 </script>
 
 <!-- Bootstrap -->
-<link rel="stylesheet" href="assets/css/bootstrap/bootstrap.css">
+<link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="assets/css/bootstrap/bootstrap-theme.min.css">
 
 <!-- Template CSS -->

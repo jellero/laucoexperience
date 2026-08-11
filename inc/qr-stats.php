@@ -13,6 +13,34 @@ function qr_registry(): array
     return is_array($registry) ? $registry : [];
 }
 
+/** @return list<string> */
+function qr_stats_active_codes(): array
+{
+    return array_values(array_map('strval', array_keys(qr_registry())));
+}
+
+/** @return array{sql:string,params:array<string,string>} */
+function qr_stats_active_filter(string $prefix = 'qr'): array
+{
+    $codes = qr_stats_active_codes();
+    if ($codes === []) {
+        return ['sql' => '1 = 0', 'params' => []];
+    }
+
+    $placeholders = [];
+    $params = [];
+    foreach ($codes as $index => $code) {
+        $name = ':' . $prefix . $index;
+        $placeholders[] = $name;
+        $params[$name] = $code;
+    }
+
+    return [
+        'sql' => 'qr_code IN (' . implode(', ', $placeholders) . ')',
+        'params' => $params,
+    ];
+}
+
 /** @return array{label:string,area:string,destination:string}|null */
 function qr_definition(string $code): ?array
 {
@@ -86,13 +114,16 @@ function qr_stats_summary(PDO $pdo): array
         return ['available' => false, 'today' => 0, 'last30' => 0, 'total' => 0];
     }
 
-    $row = $pdo->query(
+    $filter = qr_stats_active_filter('summary_qr');
+    $stmt = $pdo->prepare(
         'SELECT '
         . 'COALESCE(SUM(CASE WHEN scan_date = CURRENT_DATE THEN scans ELSE 0 END), 0) AS today, '
         . 'COALESCE(SUM(CASE WHEN scan_date >= DATE_SUB(CURRENT_DATE, INTERVAL 29 DAY) THEN scans ELSE 0 END), 0) AS last30, '
         . 'COALESCE(SUM(scans), 0) AS total '
-        . 'FROM qr_scan_daily'
-    )->fetch();
+        . 'FROM qr_scan_daily WHERE ' . $filter['sql']
+    );
+    $stmt->execute($filter['params']);
+    $row = $stmt->fetch() ?: [];
 
     return [
         'available' => true,
@@ -111,12 +142,16 @@ function qr_stats_top(PDO $pdo, int $days = 30): array
 
     $days = max(1, min(3650, $days));
     $offset = $days - 1;
+    $filter = qr_stats_active_filter('top_qr');
     $sql = 'SELECT qr_code, '
         . 'SUM(CASE WHEN scan_date >= DATE_SUB(CURRENT_DATE, INTERVAL ' . $offset . ' DAY) THEN scans ELSE 0 END) AS period_scans, '
         . 'SUM(scans) AS total_scans '
-        . 'FROM qr_scan_daily GROUP BY qr_code ORDER BY period_scans DESC, total_scans DESC, qr_code ASC';
+        . 'FROM qr_scan_daily WHERE ' . $filter['sql'] . ' '
+        . 'GROUP BY qr_code ORDER BY period_scans DESC, total_scans DESC, qr_code ASC';
 
-    $rows = $pdo->query($sql)->fetchAll();
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($filter['params']);
+    $rows = $stmt->fetchAll();
     return array_map(static fn (array $row): array => [
         'qr_code' => (string) $row['qr_code'],
         'period_scans' => (int) $row['period_scans'],
@@ -133,10 +168,15 @@ function qr_stats_daily(PDO $pdo, int $days = 30): array
 
     $days = max(1, min(3650, $days));
     $offset = $days - 1;
+    $filter = qr_stats_active_filter('daily_qr');
     $sql = 'SELECT scan_date, SUM(scans) AS scans FROM qr_scan_daily '
         . 'WHERE scan_date >= DATE_SUB(CURRENT_DATE, INTERVAL ' . $offset . ' DAY) '
+        . 'AND ' . $filter['sql'] . ' '
         . 'GROUP BY scan_date ORDER BY scan_date ASC';
-    $rows = $pdo->query($sql)->fetchAll();
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($filter['params']);
+    $rows = $stmt->fetchAll();
 
     return array_map(static fn (array $row): array => [
         'scan_date' => (string) $row['scan_date'],

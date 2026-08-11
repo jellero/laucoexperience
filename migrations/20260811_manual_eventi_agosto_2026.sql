@@ -1,5 +1,5 @@
--- Inserimento manuale degli eventi futuri 2026 verificati dal calendario ufficiale del Comune di Lauco.
--- Festa del Miele di Alta Montagna esclusa intenzionalmente: già presente nel CMS.
+-- Inserimento manuale degli eventi futuri 2026 verificati da fonti pubbliche.
+-- Festa del Miele di Montagna esclusa intenzionalmente: già presente nel CMS.
 
 INSERT INTO `eventi` (
   `titolo`,
@@ -14,30 +14,37 @@ INSERT INTO `eventi` (
   `pubblicato`
 )
 SELECT
-  'San Rocco - S. Messa e festeggiamenti',
-  'san-rocco-2026',
-  '2026-08-16',
+  'Sagra di San Rocco',
+  'sagra-di-san-rocco-2026',
+  '2026-08-14',
   'Lauco',
   'Tradizioni, Eventi',
-  'Il 16 agosto 2026 a Lauco: S. Messa alle 11.15, processione e festeggiamenti per San Rocco.',
-  'San Rocco a Lauco: S. Messa alle ore 11.15, processione e festeggiamenti.',
+  'Dal 14 al 18 agosto 2026 torna a Lauco la Sagra di San Rocco.',
+  'Dal 14 al 18 agosto 2026 Lauco ospita la Sagra di San Rocco, appuntamento della tradizione locale dedicato al patrono del paese.',
   'assets/img/eventi.jpg',
   0,
   1
 WHERE NOT EXISTS (
-  SELECT 1 FROM `eventi`
-  WHERE `slug` = 'san-rocco-2026'
-     OR (`titolo` LIKE 'San Rocco%' AND `data_evento` = '2026-08-16')
+  SELECT 1
+  FROM `eventi`
+  WHERE `slug` = 'sagra-di-san-rocco-2026'
+     OR (`titolo` = 'Sagra di San Rocco' AND `data_evento` = '2026-08-14')
 );
 
 SET @san_rocco_2026_id := (
-  SELECT `id` FROM `eventi`
-  WHERE `slug` = 'san-rocco-2026'
-     OR (`titolo` LIKE 'San Rocco%' AND `data_evento` = '2026-08-16')
-  ORDER BY `id` ASC LIMIT 1
+  SELECT `id`
+  FROM `eventi`
+  WHERE `slug` = 'sagra-di-san-rocco-2026'
+     OR (`titolo` = 'Sagra di San Rocco' AND `data_evento` = '2026-08-14')
+  ORDER BY `id` ASC
+  LIMIT 1
 );
 
 INSERT INTO `eventi_fonti` (`evento_id`, `source_key`, `source_url`)
-SELECT @san_rocco_2026_id, 'manual_comune_lauco', 'https://www.comune.lauco.ud.it/'
+SELECT
+  @san_rocco_2026_id,
+  'manual_proloco',
+  'https://prolocoregionefvg.it/eventi-delle-associate/sagra-di-san-rocco-3/'
 WHERE @san_rocco_2026_id IS NOT NULL
-ON DUPLICATE KEY UPDATE `source_url` = VALUES(`source_url`);
+ON DUPLICATE KEY UPDATE
+  `source_url` = VALUES(`source_url`);

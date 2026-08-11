@@ -5,6 +5,7 @@ return [
     'map' => [
         'label' => 'Mappa dei sentieri',
         'area' => 'Territorio di Lauco',
-        'destination' => '/map',
+        'entry' => '/map',
+        'destination' => '/mappa',
     ],
 ];

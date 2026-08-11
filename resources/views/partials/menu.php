@@ -53,9 +53,10 @@ if (!function_exists('isCurrent')) {
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>">Luoghi</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','frazioni.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>">Luoghi</a>
                             <ul class="sub-menu">
                                 <li><a href="/luoghi">Luoghi</a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/frazioni'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(match ($currentLanguage) { 'en' => 'Villages and hamlets', 'de' => 'Fraktionen und Weiler', 'sl' => 'Vasi in zaselki', default => 'Frazioni e borgate' }, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/storia'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['history'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/natura'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['nature'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/come-arrivare'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['arrive'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>

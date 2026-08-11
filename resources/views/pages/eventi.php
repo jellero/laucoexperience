@@ -30,12 +30,16 @@ function eventi_page_categories(?string $category): array
     return array_slice($items, 0, 3);
 }
 
-$stmt = $pdo->query("
+$today = (new DateTimeImmutable('today'))->format('Y-m-d');
+$stmt = $pdo->prepare("
     SELECT *
     FROM eventi
     WHERE pubblicato = 1
-    ORDER BY ordine ASC, data_evento DESC, created_at DESC
+      AND data_evento IS NOT NULL
+      AND data_evento >= :today
+    ORDER BY data_evento ASC, ordine ASC, created_at ASC
 ");
+$stmt->execute(['today' => $today]);
 
 $eventi = $stmt->fetchAll();
 $hero = $eventi[0]['cover_image'] ?? 'assets/img/old.jpg';
@@ -157,6 +161,12 @@ $hero = $eventi[0]['cover_image'] ?? 'assets/img/old.jpg';
             box-shadow: 0 10px 34px rgba(0,0,0,.08);
         }
 
+        .eventi-archive-link {
+            clear: both;
+            padding-top: 18px;
+            text-align: center;
+        }
+
         @media (max-width: 991px) {
             .eventi-card {
                 height: auto;
@@ -223,14 +233,14 @@ $hero = $eventi[0]['cover_image'] ?? 'assets/img/old.jpg';
                         <div class="col-md-12 padding-leftright-null text padding-bottom-null text-center">
                             <h2 class="margin-bottom-null title line center">EVENTI</h2>
                             <p class="heading center grey margin-bottom-null">
-                                Ogni evento è un’occasione per vivere il territorio e sentirsi parte di qualcosa di più grande.
+                                I prossimi appuntamenti, dal più vicino a quelli più avanti nel tempo.
                             </p>
                         </div>
 
                         <div class="col-md-12 eventi-grid">
                             <?php if (!$eventi): ?>
                                 <div class="eventi-empty text-center">
-                                    <p class="margin-bottom-null">Al momento non ci sono eventi pubblicati.</p>
+                                    <p class="margin-bottom-null">Al momento non ci sono eventi futuri pubblicati.</p>
                                 </div>
                             <?php endif; ?>
 
@@ -272,6 +282,10 @@ $hero = $eventi[0]['cover_image'] ?? 'assets/img/old.jpg';
                                     </article>
                                 </div>
                             <?php endforeach; ?>
+
+                            <div class="eventi-archive-link">
+                                <a href="/eventi/archivio" class="btn-alt small margin-null">Archivio eventi</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -54,7 +54,7 @@ final class RoutingTest extends TestCase
         $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/mappa'));
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('<!DOCTYPE html>', (string) $response->getBody());
-        self::assertStringContainsString('/mappa/pdf', (string) $response->getBody());
+        self::assertStringContainsString('/assets/pdf/laucoexperience.pdf', (string) $response->getBody());
 
         $response = $app->handle($factory->createServerRequest('GET', 'https://example.test/qr?c=map'));
         self::assertSame(302, $response->getStatusCode());

@@ -9,12 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var options = {
         zoomControl: true,
-        scrollWheelZoom: false
+        scrollWheelZoom: false,
+        gestureHandling: true
     };
-
-    if (L.Map && L.Map.addInitHook && L.GestureHandling) {
-        options.gestureHandling = true;
-    }
 
     var map = L.map(mapEl, options).setView([45.5, 10.5], 10);
 

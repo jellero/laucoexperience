@@ -125,7 +125,7 @@ if (!function_exists('admin_page_open')) {
                         <a href="galleria.php"<?= admin_nav_active($active, 'galleria') ?>>Galleria</a>
                         <a href="slider.php"<?= admin_nav_active($active, 'slider') ?>>Slider</a>
                         <a href="luoghi.php"<?= admin_nav_active($active, 'luoghi') ?>>Luoghi</a>
-                        <a href="statistiche-qr.php"<?= admin_nav_active($active, 'qr-stats') ?>>Statistiche QR</a>
+                        <a href="statistiche-qr.php"<?= admin_nav_active($active, 'qr-stats') ?>>Statistiche</a>
                         <a href="traduzioni-contenuti.php"<?= admin_nav_active($active, 'traduzioni') ?>>Traduzioni</a>
                         <a href="testi-sito.php"<?= admin_nav_active($active, 'testi-sito') ?>>Testi sito</a>
                         <a href="contatti-messaggi.php"<?= admin_nav_active($active, 'messaggi') ?>>Messaggi</a>
@@ -159,14 +159,14 @@ if (!function_exists('admin_page_open')) {
                 <section class="qr-dashboard-summary" aria-label="Riepilogo dashboard">
                     <div class="dashboard-grid">
                         <a class="dashboard-card" href="statistiche-qr.php">
-                            <small>QR territoriali · oggi</small>
+                            <small>QR mappa · oggi</small>
                             <span class="number"><?= (int) $qrDashboardSummary['today'] ?></span>
-                            <p>Scansioni aggregate. Apri la dashboard QR per dettaglio e andamento.</p>
+                            <p>Apri Statistiche per QR, GPX e mappa PDF.</p>
                         </a>
                         <a class="dashboard-card" href="statistiche-qr.php">
-                            <small>QR territoriali · 30 giorni</small>
+                            <small>QR mappa · 30 giorni</small>
                             <span class="number"><?= (int) $qrDashboardSummary['last30'] ?></span>
-                            <p><?= $qrDashboardSummary['available'] ? 'Statistiche privacy-first attive.' : 'Migrazione statistiche QR da applicare.' ?></p>
+                            <p><?= $qrDashboardSummary['available'] ? 'Conteggio QR attivo.' : 'Migrazione statistiche QR da applicare.' ?></p>
                         </a>
                         <a class="dashboard-card" href="newsletter.php">
                             <small>Newsletter · iscrizioni</small>

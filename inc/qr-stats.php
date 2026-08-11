@@ -117,7 +117,7 @@ function qr_scan_log_available(PDO $pdo): bool
     }
 }
 
-function qr_track_scan(PDO $pdo, string $code, string $ipAddress = '', string $userAgent = ''): void
+function qr_track_scan(PDO $pdo, string $code, string $userAgent = ''): void
 {
     if (qr_definition($code) === null) {
         return;
@@ -133,17 +133,15 @@ function qr_track_scan(PDO $pdo, string $code, string $ipAddress = '', string $u
         return;
     }
 
-    $ipAddress = filter_var($ipAddress, FILTER_VALIDATE_IP) !== false ? $ipAddress : '';
     $userAgent = trim($userAgent);
     $userAgent = function_exists('mb_substr') ? mb_substr($userAgent, 0, 512) : substr($userAgent, 0, 512);
 
     $detail = $pdo->prepare(
-        'INSERT INTO qr_scan_log (qr_code, scanned_at, ip_address, user_agent, device_type) '
-        . 'VALUES (:qr_code, CURRENT_TIMESTAMP, :ip_address, :user_agent, :device_type)'
+        'INSERT INTO qr_scan_log (qr_code, scanned_at, user_agent, device_type) '
+        . 'VALUES (:qr_code, CURRENT_TIMESTAMP, :user_agent, :device_type)'
     );
     $detail->execute([
         'qr_code' => $code,
-        'ip_address' => $ipAddress,
         'user_agent' => $userAgent,
         'device_type' => qr_device_type($userAgent),
     ]);
@@ -241,7 +239,7 @@ function qr_stats_daily(PDO $pdo, int $days = 30): array
     ], $rows ?: []);
 }
 
-/** @return list<array{id:int,qr_code:string,scanned_at:string,ip_address:string,user_agent:string,device_type:string}> */
+/** @return list<array{id:int,qr_code:string,scanned_at:string,user_agent:string,device_type:string}> */
 function qr_stats_recent(PDO $pdo, int $limit = 100): array
 {
     if (!qr_scan_log_available($pdo)) {
@@ -250,7 +248,7 @@ function qr_stats_recent(PDO $pdo, int $limit = 100): array
 
     $limit = max(1, min(500, $limit));
     $filter = qr_stats_active_filter('recent_qr');
-    $sql = 'SELECT id, qr_code, scanned_at, ip_address, user_agent, device_type '
+    $sql = 'SELECT id, qr_code, scanned_at, user_agent, device_type '
         . 'FROM qr_scan_log WHERE ' . $filter['sql'] . ' '
         . 'ORDER BY scanned_at DESC, id DESC LIMIT ' . $limit;
     $stmt = $pdo->prepare($sql);
@@ -261,7 +259,6 @@ function qr_stats_recent(PDO $pdo, int $limit = 100): array
         'id' => (int) ($row['id'] ?? 0),
         'qr_code' => (string) ($row['qr_code'] ?? ''),
         'scanned_at' => (string) ($row['scanned_at'] ?? ''),
-        'ip_address' => (string) ($row['ip_address'] ?? ''),
         'user_agent' => (string) ($row['user_agent'] ?? ''),
         'device_type' => (string) ($row['device_type'] ?? 'unknown'),
     ], $rows);

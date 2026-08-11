@@ -5,6 +5,18 @@ require_once LAUCO_ROOT . '/inc/territory-content.php';
 $currentLanguage = content_language_from_request();
 $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
 $territoryNav = territory_navigation();
+$participateLabel = match ($currentLanguage) {
+    'en' => 'Participate',
+    'de' => 'Mitmachen',
+    'sl' => 'Sodelujte',
+    default => 'Partecipa',
+};
+$fractionsLabel = match ($currentLanguage) {
+    'en' => 'Villages and hamlets',
+    'de' => 'Fraktionen und Weiler',
+    'sl' => 'Vasi in zaselki',
+    default => 'Frazioni e borgate',
+};
 if (!function_exists('isCurrent')) {
     function isCurrent($pages): bool {
         $current = basename((string) ($_SERVER['PHP_SELF'] ?? ''));
@@ -28,43 +40,48 @@ if (!function_exists('isCurrent')) {
                 <div class="menu-holder">
                     <ul>
                         <li><a href="/" class="<?= isCurrent('index.php') ? 'active-item' : '' ?>">Home</a></li>
+
                         <li class="submenu">
                             <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php']) ? 'active-item' : '' ?>">Mappa</a>
                             <ul class="sub-menu">
-                                <li><a href="/map">Mappa</a></li>
-                                <li><a href="/segnaletica">Info segnaletica</a></li>
+                                <li><a href="/map">Mappa dei sentieri</a></li>
+                                <li><a href="/segnaletica">Segnaletica</a></li>
                                 <li><a href="/consigli">Consigli escursionistici</a></li>
                             </ul>
                         </li>
+
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['itinerari-piedi.php','itinerari-mtb.php']) ? 'active-item' : '' ?>">Itinerari</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['itinerari-piedi.php','itinerari-mtb.php','itinerari-speciali.php']) ? 'active-item' : '' ?>">Itinerari</a>
                             <ul class="sub-menu">
                                 <li><a href="/itinerari-piedi">A piedi</a></li>
                                 <li><a href="/itinerari-mtb">In MTB</a></li>
+                                <li><a href="/itinerari-speciali">Itinerari speciali</a></li>
                             </ul>
                         </li>
-                        <li><a href="/itinerari-speciali" class="<?= isCurrent('itinerari-speciali.php') ? 'active-item' : '' ?>">Speciali</a></li>
+
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['gestione-sentieri.php','contribuisci.php','segnala-problema.php']) ? 'active-item' : '' ?>">Patrimonio</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','frazioni.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars((string) ($territoryNav['territory'] ?? 'Territorio'), ENT_QUOTES, 'UTF-8') ?></a>
+                            <ul class="sub-menu">
+                                <li><a href="/luoghi">Luoghi</a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/frazioni'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($fractionsLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/storia'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['history'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/natura'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['nature'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
+                                <li><a href="/forra">Forra del Vinadia</a></li>
+                                <li><a href="/barbecue">Aree barbecue</a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/come-arrivare'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['arrive'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
+                            </ul>
+                        </li>
+
+                        <li class="submenu">
+                            <a href="javascript:void(0)" class="<?= isCurrent(['gestione-sentieri.php','contribuisci.php','segnala-problema.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">
                                 <li><a href="/gestione-sentieri">Gestione sentieri</a></li>
                                 <li><a href="/contribuisci">Contribuisci</a></li>
                                 <li><a href="/segnala-problema">Segnala problema</a></li>
                             </ul>
                         </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','frazioni.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>">Luoghi</a>
-                            <ul class="sub-menu">
-                                <li><a href="/luoghi">Luoghi</a></li>
-                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/frazioni'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(match ($currentLanguage) { 'en' => 'Villages and hamlets', 'de' => 'Fraktionen und Weiler', 'sl' => 'Vasi in zaselki', default => 'Frazioni e borgate' }, ENT_QUOTES, 'UTF-8') ?></a></li>
-                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/storia'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['history'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
-                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/natura'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['nature'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
-                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/come-arrivare'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($territoryNav['arrive'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a></li>
-                                <li><a href="/forra">Forra del Vinadia</a></li>
-                                <li><a href="/barbecue">Aree barbecue</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="/eventi" class="<?= isCurrent(['eventi.php','evento.php']) ? 'active-item' : '' ?>">Eventi</a></li>
+
+                        <li><a href="/eventi" class="<?= isCurrent(['eventi.php','evento.php','eventi-archivio.php']) ? 'active-item' : '' ?>">Eventi</a></li>
                         <li><a href="/contatti" class="<?= isCurrent('contatti.php') ? 'active-item' : '' ?>">Contatti</a></li>
                         <li class="submenu"><a><?= htmlspecialchars($languageCodes[$currentLanguage], ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">

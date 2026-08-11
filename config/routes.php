@@ -18,6 +18,8 @@ return [
     ['name' => 'trail.management', 'methods' => ['GET'], 'paths' => ['/gestione-sentieri', '/gestione-sentieri.php'], 'handler' => 'page', 'template' => 'gestione-sentieri.php', 'script' => 'gestione-sentieri.php'],
     ['name' => 'places', 'methods' => ['GET'], 'paths' => ['/luoghi', '/luoghi.php'], 'handler' => 'page', 'template' => 'luoghi.php', 'script' => 'luoghi.php'],
     ['name' => 'places.detail', 'methods' => ['GET'], 'paths' => ['/luogo', '/luogo.php'], 'handler' => 'page', 'template' => 'luogo.php', 'script' => 'luogo.php'],
+    ['name' => 'territory.fractions', 'methods' => ['GET'], 'paths' => ['/frazioni'], 'handler' => 'page', 'template' => 'frazioni.php', 'script' => 'frazioni.php'],
+    ['name' => 'territory.fractions.detail', 'methods' => ['GET'], 'paths' => ['/frazioni/{slug:[a-z0-9-]+}'], 'handler' => 'page', 'template' => 'frazioni.php', 'script' => 'frazioni.php'],
     ['name' => 'territory.history', 'methods' => ['GET'], 'paths' => ['/storia', '/storia.php'], 'handler' => 'page', 'template' => 'storia.php', 'script' => 'storia.php'],
     ['name' => 'territory.nature', 'methods' => ['GET'], 'paths' => ['/natura', '/natura.php'], 'handler' => 'page', 'template' => 'natura.php', 'script' => 'natura.php'],
     ['name' => 'territory.arrive', 'methods' => ['GET'], 'paths' => ['/come-arrivare', '/come-arrivare.php'], 'handler' => 'page', 'template' => 'come-arrivare.php', 'script' => 'come-arrivare.php'],

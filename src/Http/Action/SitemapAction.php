@@ -69,7 +69,7 @@ final class SitemapAction
     private function staticPaths(): array
     {
         $paths = [
-            '/', '/map', '/segnaletica', '/consigli', '/itinerari-piedi', '/itinerari-mtb',
+            '/', '/mappa', '/segnaletica', '/consigli', '/itinerari-piedi', '/itinerari-mtb',
             '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/luoghi',
             '/frazioni', '/storia', '/natura', '/come-arrivare', '/eventi', '/eventi/archivio',
             '/contatti', '/contribuisci', '/privacy', '/cookie',

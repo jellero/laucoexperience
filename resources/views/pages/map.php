@@ -18,6 +18,49 @@ $printMode = isset($_GET['print']) && (string) $_GET['print'] === '1';
 
     <!-- CSS della pagina mappa -->
     <link rel="stylesheet" href="assets/css/mappa.css">
+    <?php if (!$printMode): ?>
+    <style>
+        .map-pdf-action {
+            position: relative;
+            z-index: 1100;
+            padding: 118px 15px 22px;
+            text-align: center;
+            background: #fff;
+        }
+        .map-pdf-action a {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 13px 22px !important;
+            background: #222 !important;
+            color: #fff !important;
+            border: 2px solid #222 !important;
+            border-radius: 4px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.18);
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-decoration: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .map-pdf-action a:hover,
+        .map-pdf-action a:focus {
+            background: #fff !important;
+            color: #222 !important;
+        }
+        @media (max-width: 767px) {
+            .map-pdf-action {
+                padding-top: 96px;
+            }
+            .map-pdf-action a {
+                width: 100%;
+                max-width: 420px;
+            }
+        }
+    </style>
+    <?php endif; ?>
     <?php if ($printMode): ?>
     <style>
         @page { size: A4 landscape; margin: 8mm; }
@@ -49,8 +92,8 @@ $printMode = isset($_GET['print']) && (string) $_GET['print'] === '1';
         <!-- Page Content -->
         <div id="page-content" class="header-static footer-fixed">
             <?php if (!$printMode): ?>
-                <div class="container" style="padding-top:24px;text-align:right">
-                    <a class="btn-alt small" href="/mappa/pdf" target="_blank" rel="noopener">Scarica mappa PDF</a>
+                <div class="map-pdf-action">
+                    <a href="/mappa/pdf" target="_blank" rel="noopener">Scarica mappa PDF</a>
                 </div>
             <?php endif; ?>
             <div id="map-wrap" class="content-section fullpage-wrap">

@@ -58,7 +58,6 @@ $consentCopy = $consentCopies[$consentLocale] ?? $consentCopies['it'];
         </div>
     </div>
 </div>
-<button id="lauco-consent-manage" class="lauco-consent-manage" type="button" hidden><?= htmlspecialchars($consentCopy['manage'], ENT_QUOTES, 'UTF-8') ?></button>
 
 <style>
 .lauco-consent{position:fixed;z-index:10050;left:20px;right:20px;bottom:20px;max-width:980px;margin:0 auto;background:#fff;color:#222;border:1px solid rgba(0,0,0,.12);box-shadow:0 18px 55px rgba(0,0,0,.22)}
@@ -70,26 +69,48 @@ $consentCopy = $consentCopies[$consentLocale] ?? $consentCopies['it'];
 .lauco-consent__actions{display:flex;gap:10px;flex:0 0 auto}
 .lauco-consent__button{border:1px solid #222;background:#222;color:#fff;padding:11px 16px;font-size:13px;font-weight:700;cursor:pointer}
 .lauco-consent__button--secondary{background:#fff;color:#222}
-.lauco-consent-manage{position:fixed;z-index:10040;right:14px;bottom:14px;border:1px solid rgba(0,0,0,.18);background:#fff;color:#333;padding:7px 10px;font-size:11px;box-shadow:0 5px 18px rgba(0,0,0,.12);cursor:pointer}
-@media(max-width:767px){.lauco-consent{left:10px;right:10px;bottom:10px}.lauco-consent__inner{display:block;padding:18px}.lauco-consent__actions{margin-top:15px;display:grid;grid-template-columns:1fr 1fr}.lauco-consent__button{width:100%}.lauco-consent-manage{right:10px;bottom:10px}}
+.lauco-consent-footer-button{border:0;background:transparent;padding:0;color:inherit;font:inherit;line-height:inherit;cursor:pointer;text-align:left}
+.lauco-consent-footer-button:hover,.lauco-consent-footer-button:focus{text-decoration:underline;outline-offset:2px}
+@media(max-width:767px){.lauco-consent{left:10px;right:10px;bottom:10px}.lauco-consent__inner{display:block;padding:18px}.lauco-consent__actions{margin-top:15px;display:grid;grid-template-columns:1fr 1fr}.lauco-consent__button{width:100%}}
 </style>
 <script>
 (function () {
     'use strict';
     var banner = document.getElementById('lauco-consent');
-    var manage = document.getElementById('lauco-consent-manage');
-    if (!banner || !manage || !window.LaucoAnalytics) {
+    if (!banner || !window.LaucoAnalytics) {
         return;
     }
 
     function openBanner() {
         banner.hidden = false;
-        manage.hidden = true;
     }
 
     function closeBanner() {
         banner.hidden = true;
-        manage.hidden = false;
+    }
+
+    function installFooterManageLink() {
+        var list = document.querySelector('footer .useful-links');
+        var footer = document.querySelector('footer');
+        if (!footer || footer.querySelector('[data-lauco-consent-manage]')) {
+            return;
+        }
+
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'lauco-consent-footer-button';
+        button.setAttribute('data-lauco-consent-manage', 'true');
+        button.textContent = <?= json_encode($consentCopy['manage'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        button.addEventListener('click', openBanner);
+
+        if (list) {
+            var item = document.createElement('li');
+            item.appendChild(button);
+            list.appendChild(item);
+            return;
+        }
+
+        footer.appendChild(button);
     }
 
     banner.addEventListener('click', function (event) {
@@ -101,8 +122,8 @@ $consentCopy = $consentCopies[$consentLocale] ?? $consentCopies['it'];
         closeBanner();
     });
 
-    manage.addEventListener('click', openBanner);
     window.addEventListener('lauco:consent-open', openBanner);
+    installFooterManageLink();
 
     var choice = window.LaucoAnalytics.getChoice();
     if (choice) {

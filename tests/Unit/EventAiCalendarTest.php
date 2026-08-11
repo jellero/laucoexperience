@@ -21,6 +21,19 @@ final class EventAiCalendarTest extends TestCase
         self::assertSame([$pdf], $documents);
     }
 
+    public function testCalendarFileInputUsesOnlyFileUrl(): void
+    {
+        $pdf = 'https://www.comune.lauco.ud.it/media/files/030047/attachment/Locandina_Eventi_Lauco_2026_30x60_colore.pdf';
+        $input = \event_ai_calendar_file_input($pdf);
+
+        self::assertSame([
+            'type' => 'input_file',
+            'file_url' => $pdf,
+        ], $input);
+        self::assertArrayNotHasKey('filename', $input);
+        self::assertArrayNotHasKey('file_id', $input);
+    }
+
     public function testOfficialCalendarPdfCanBackAnEventWithoutDedicatedWebPage(): void
     {
         $pdf = 'https://www.comune.lauco.ud.it/media/files/030047/attachment/Locandina_Eventi_Lauco_2026_30x60_colore.pdf';

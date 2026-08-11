@@ -6,6 +6,12 @@ require_once LAUCO_ROOT . '/inc/territory-content.php';
 $pageKey = isset($territoryPageKey) && is_string($territoryPageKey) ? $territoryPageKey : '';
 $page = territory_content($pageKey);
 $common = territory_content('common');
+$fractionsLabel = match (territory_locale()) {
+    'en' => 'Villages and hamlets',
+    'de' => 'Fraktionen und Weiler',
+    'sl' => 'Vasi in zaselki',
+    default => 'Frazioni e borgate',
+};
 
 if ($page === []) {
     http_response_code(404);
@@ -99,6 +105,7 @@ $hero = (string) ($page['hero'] ?? 'assets/img/trip4.jpg');
 
                             <div class="related-links">
                                 <a class="btn-alt small" href="<?= htmlspecialchars(content_language_url(territory_locale(), '/luoghi'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($common['places'] ?? 'Luoghi'), ENT_QUOTES, 'UTF-8') ?></a>
+                                <a class="btn-alt small" href="<?= htmlspecialchars(content_language_url(territory_locale(), '/frazioni'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($fractionsLabel, ENT_QUOTES, 'UTF-8') ?></a>
                                 <?php if ($pageKey !== 'history'): ?><a class="btn-alt small" href="<?= htmlspecialchars(content_language_url(territory_locale(), '/storia'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($common['history'] ?? 'Storia'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
                                 <?php if ($pageKey !== 'nature'): ?><a class="btn-alt small" href="<?= htmlspecialchars(content_language_url(territory_locale(), '/natura'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($common['nature'] ?? 'Natura'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
                                 <?php if ($pageKey !== 'arrive'): ?><a class="btn-alt small" href="<?= htmlspecialchars(content_language_url(territory_locale(), '/come-arrivare'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($common['arrive'] ?? 'Come arrivare'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>

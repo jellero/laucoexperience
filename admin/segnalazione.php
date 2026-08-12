@@ -131,11 +131,16 @@ $msg = trim($_GET['msg'] ?? '');
 
     <div class="actions">
         <a class="btn secondary" href="segnalazioni.php">Torna alle segnalazioni</a>
+        <?php if (!empty($s['email'])): ?>
+            <a class="btn" href="posta-scrivi.php?<?= e(http_build_query(['report_id' => (int) $s['id']])) ?>">Rispondi via email</a>
+        <?php endif; ?>
+        <?php if (admin_can('admin.all')): ?>
         <a
             class="btn danger"
             href="segnalazione-delete.php?id=<?= (int) $s['id'] ?>&_csrf_token=<?= e(csrf_token()) ?>"
             onclick="return confirm('Eliminare definitivamente questa segnalazione?');"
         >Elimina</a>
+        <?php endif; ?>
     </div>
 
     <div class="detail-grid">

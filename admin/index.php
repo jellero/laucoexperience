@@ -3,6 +3,10 @@ require_once __DIR__ . '/../inc/auth.php';
 require_admin();
 require_once __DIR__ . '/_admin_layout.php';
 
+$isAdmin = admin_can('admin.all');
+$canCommunications = admin_can('communications.respond');
+$canWhatsApp = admin_can('whatsapp.manage');
+
 function dash_count(PDO $pdo, string $sql): array
 {
     try {
@@ -107,7 +111,7 @@ $latestEventi = dash_rows($pdo, "
     LIMIT 4
 ");
 
-$dashboardPriorityCards = [
+$dashboardPriorityCards = $canCommunications ? [
     [
         'href' => 'contatti-messaggi.php',
         'label' => 'Messaggi · nuovi',
@@ -135,7 +139,18 @@ $dashboardPriorityCards = [
             : 'Conteggio contributi non disponibile.',
         'urgent' => (int) $counts['contributi_nuovi']['value'] > 0,
     ],
-];
+] : [];
+
+if ($canWhatsApp && !$isAdmin) {
+    $whatsAppUnread = dash_count($pdo, 'SELECT COALESCE(SUM(non_letti), 0) FROM whatsapp_conversazioni');
+    $dashboardPriorityCards[] = [
+        'href' => 'volontariato.php?view=chat',
+        'label' => 'WhatsApp · da leggere',
+        'number' => (int) $whatsAppUnread['value'],
+        'text' => 'Apri le conversazioni WhatsApp e rispondi dal backoffice.',
+        'urgent' => (int) $whatsAppUnread['value'] > 0,
+    ];
+}
 
 admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
 ?>
@@ -442,9 +457,15 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
     <section class="hero-admin dash-hero">
         <div>
             <h1>Dashboard</h1>
-            <p>Pannello unico per gestire contenuti, itinerari, homepage e segnalazioni.</p>
+            <p>
+                <?php if ($isAdmin): ?>Gestione completa del sito, delle comunicazioni e degli utenti.
+                <?php elseif ($canCommunications): ?>Leggi e rispondi a messaggi, email, segnalazioni e contributi.
+                <?php else: ?>Gestisci gruppi, inviti e conversazioni WhatsApp.
+                <?php endif; ?>
+            </p>
         </div>
 
+        <?php if ($isAdmin): ?>
         <div class="dash-hero-actions">
             <a class="btn" href="percorso-form.php">Nuovo percorso</a>
             <a class="btn" href="evento-form.php">Nuovo evento</a>
@@ -453,8 +474,10 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
             <a class="btn" href="galleria-form.php">Nuove immagini</a>
             <a class="btn secondary" href="../index.php" target="_blank">Vedi sito</a>
         </div>
+        <?php endif; ?>
     </section>
 
+    <?php if ($isAdmin): ?>
     <section class="dash-cards">
         <a class="dash-card" href="percorsi.php">
             <small>Percorsi</small>
@@ -510,11 +533,28 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
         <a class="dash-card" href="crea-account.php">
             <small>Sicurezza</small>
             <strong><?= (int) $counts['utenti']['value'] ?></strong>
-            <h2>Account admin</h2>
-            <p>Gestione accessi backoffice <?= dash_missing($counts['utenti']) ?></p>
+            <h2>Utenti e permessi</h2>
+            <p>Gestione ruoli e accessi backoffice <?= dash_missing($counts['utenti']) ?></p>
         </a>
     </section>
+    <?php elseif ($canWhatsApp): ?>
+        <section class="dash-cards">
+            <a class="dash-card" href="volontariato.php?view=chat">
+                <small>Comunicazioni</small>
+                <strong><?= (int) ($dashboardPriorityCards[0]['number'] ?? 0) ?></strong>
+                <h2>Chat WhatsApp</h2>
+                <p>Leggi e rispondi alle conversazioni.</p>
+            </a>
+            <a class="dash-card" href="volontariato.php?view=gruppi">
+                <small>WhatsApp</small>
+                <strong><?= (int) $counts['volontari']['value'] ?></strong>
+                <h2>Gruppi e inviti</h2>
+                <p>Gestisci i gruppi e invita i volontari.</p>
+            </a>
+        </section>
+    <?php endif; ?>
 
+    <?php if ($canCommunications): ?>
     <section class="">
         <div class="dash-panel">
             <div class="dash-panel-head">
@@ -545,8 +585,11 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
 
         
     </section>
+    <?php endif; ?>
 
+    <?php if ($canCommunications || $isAdmin): ?>
     <section class="dash-mobile-stack">
+        <?php if ($canCommunications): ?>
         <div class="dash-panel">
             <div class="dash-panel-head">
                 <h2>Ultimi contributi <?= dash_missing($latestContributi) ?></h2>
@@ -600,7 +643,9 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
                 </div>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
 
+        <?php if ($isAdmin): ?>
         <div class="dash-panel">
             <div class="dash-panel-head">
                 <h2>Ultimi percorsi <?= dash_missing($latestPercorsi) ?></h2>
@@ -658,7 +703,9 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
                 </div>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
     </section>
+    <?php endif; ?>
 </main>
 
 <?php admin_page_close(); ?>

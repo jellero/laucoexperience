@@ -14,6 +14,9 @@ verify_csrf();
 $folderPath = trim((string) ($_POST['folder'] ?? 'INBOX')) ?: 'INBOX';
 $uid = (int) ($_POST['uid'] ?? 0);
 $action = trim((string) ($_POST['action'] ?? ''));
+if ($action === 'delete') {
+    require_admin_permission('admin.all');
+}
 
 try {
     $client = backoffice_mail_client();

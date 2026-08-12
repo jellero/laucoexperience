@@ -63,6 +63,7 @@ admin_mail_styles();
                 <input type="hidden" name="action" value="unread">
                 <button class="btn secondary" type="submit">Segna da leggere</button>
             </form>
+            <?php if (admin_can('admin.all')): ?>
             <form method="post" action="posta-azione.php" class="inline" onsubmit="return confirm(<?= e(json_encode($isTrashFolder ? 'Eliminare definitivamente questa email? L\'operazione non è reversibile.' : 'Spostare questa email nel Cestino?', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>)">
                 <input type="hidden" name="_csrf_token" value="<?= e(csrf_token()) ?>">
                 <input type="hidden" name="folder" value="<?= e($selectedFolder) ?>">
@@ -70,6 +71,7 @@ admin_mail_styles();
                 <input type="hidden" name="action" value="delete">
                 <button class="btn danger" type="submit"><?= $isTrashFolder ? 'Elimina definitivamente' : 'Elimina' ?></button>
             </form>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 

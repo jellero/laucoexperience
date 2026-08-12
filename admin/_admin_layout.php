@@ -11,6 +11,13 @@ if (!function_exists('admin_current_email')) {
     }
 }
 
+if (!function_exists('admin_current_role_label')) {
+    function admin_current_role_label(): string
+    {
+        return admin_role_label(admin_role());
+    }
+}
+
 if (!function_exists('admin_nav_active')) {
     function admin_nav_active(string $current, string $item): string
     {
@@ -25,6 +32,7 @@ if (!function_exists('admin_page_open')) {
     function admin_page_open(string $title, string $active = '', array $dashboardCards = []): void
     {
         $email = admin_current_email();
+        $roleLabel = admin_current_role_label();
         ?>
         <!DOCTYPE html>
         <html lang="it">
@@ -52,6 +60,7 @@ if (!function_exists('admin_page_open')) {
                 .admin-brand { display:flex; flex-direction:column; gap:2px; min-width:210px; }
                 .admin-brand strong { font-size:17px; letter-spacing:.02em; }
                 .admin-brand span { font-size:12px; color:rgba(255,255,255,.72); }
+                .admin-role { display:inline-block; margin-top:4px; width:max-content; padding:4px 7px; background:rgba(255,255,255,.12); color:#fff!important; font-size:10px!important; text-transform:uppercase; letter-spacing:.06em; }
                 .admin-top-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
                 .admin-top-actions a { display:inline-block; color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,.25); padding:8px 10px; font-size:12px; line-height:1; opacity:.95; }
                 .admin-top-actions a:hover { background:#fff; color:#222; opacity:1; }
@@ -116,6 +125,7 @@ if (!function_exists('admin_page_open')) {
                     <div class="admin-brand">
                         <strong>Backoffice Lauco Experience</strong>
                         <span><?= e($email) ?></span>
+                        <span class="admin-role"><?= e($roleLabel) ?></span>
                     </div>
                     <div class="admin-top-actions">
                         <a href="../index.php" target="_blank">Vedi sito</a>
@@ -125,21 +135,31 @@ if (!function_exists('admin_page_open')) {
                 <div class="admin-nav-wrap">
                     <nav class="admin-nav">
                         <a href="index.php"<?= admin_nav_active($active, 'dashboard') ?>>Dashboard</a>
-                        <a href="percorsi.php"<?= admin_nav_active($active, 'percorsi') ?>>Itinerari</a>
-                        <a href="eventi.php"<?= admin_nav_active($active, 'eventi') ?>>Eventi</a>
-                        <a href="galleria.php"<?= admin_nav_active($active, 'galleria') ?>>Galleria</a>
-                        <a href="slider.php"<?= admin_nav_active($active, 'slider') ?>>Slider</a>
-                        <a href="luoghi.php"<?= admin_nav_active($active, 'luoghi') ?>>Luoghi</a>
-                        <a href="statistiche-qr.php"<?= admin_nav_active($active, 'qr-stats') ?>>Statistiche</a>
-                        <a href="traduzioni-contenuti.php"<?= admin_nav_active($active, 'traduzioni') ?>>Traduzioni</a>
-                        <a href="testi-sito.php"<?= admin_nav_active($active, 'testi-sito') ?>>Testi sito</a>
-                        <a href="contatti-messaggi.php"<?= admin_nav_active($active, 'messaggi') ?>>Messaggi</a>
-                        <a href="posta.php"<?= admin_nav_active($active, 'posta') ?>>Posta</a>
-                        <a href="newsletter.php"<?= admin_nav_active($active, 'newsletter') ?>>Newsletter</a>
-                        <a href="volontariato.php"<?= admin_nav_active($active, 'volontariato') ?>>Volontariato</a>
-                        <a href="contributi.php"<?= admin_nav_active($active, 'contributi') ?>>Contributi</a>
-                        <a href="segnalazioni.php"<?= admin_nav_active($active, 'segnalazioni') ?>>Segnalazioni</a>
-                        <a href="crea-account.php"<?= admin_nav_active($active, 'account') ?>>Account</a>
+                        <?php if (admin_can('admin.all')): ?>
+                            <a href="percorsi.php"<?= admin_nav_active($active, 'percorsi') ?>>Itinerari</a>
+                            <a href="eventi.php"<?= admin_nav_active($active, 'eventi') ?>>Eventi</a>
+                            <a href="galleria.php"<?= admin_nav_active($active, 'galleria') ?>>Galleria</a>
+                            <a href="slider.php"<?= admin_nav_active($active, 'slider') ?>>Slider</a>
+                            <a href="luoghi.php"<?= admin_nav_active($active, 'luoghi') ?>>Luoghi</a>
+                            <a href="statistiche-qr.php"<?= admin_nav_active($active, 'qr-stats') ?>>Statistiche</a>
+                            <a href="traduzioni-contenuti.php"<?= admin_nav_active($active, 'traduzioni') ?>>Traduzioni</a>
+                            <a href="testi-sito.php"<?= admin_nav_active($active, 'testi-sito') ?>>Testi sito</a>
+                        <?php endif; ?>
+                        <?php if (admin_can('communications.respond')): ?>
+                            <a href="contatti-messaggi.php"<?= admin_nav_active($active, 'messaggi') ?>>Messaggi</a>
+                            <a href="posta.php"<?= admin_nav_active($active, 'posta') ?>>Posta</a>
+                            <a href="contributi.php"<?= admin_nav_active($active, 'contributi') ?>>Contributi</a>
+                            <a href="segnalazioni.php"<?= admin_nav_active($active, 'segnalazioni') ?>>Segnalazioni</a>
+                        <?php endif; ?>
+                        <?php if (admin_can('admin.all')): ?>
+                            <a href="newsletter.php"<?= admin_nav_active($active, 'newsletter') ?>>Newsletter</a>
+                        <?php endif; ?>
+                        <?php if (admin_can('whatsapp.manage')): ?>
+                            <a href="volontariato.php<?= admin_role() === 'whatsapp' ? '?view=chat' : '' ?>"<?= admin_nav_active($active, 'volontariato') ?>><?= admin_role() === 'whatsapp' ? 'WhatsApp' : 'Volontariato' ?></a>
+                        <?php endif; ?>
+                        <?php if (admin_can('admin.all')): ?>
+                            <a href="crea-account.php"<?= admin_nav_active($active, 'account') ?>>Utenti</a>
+                        <?php endif; ?>
                     </nav>
                 </div>
             </header>
@@ -153,13 +173,16 @@ if (!function_exists('admin_page_open')) {
                                 <p><?= e($card['text']) ?></p>
                             </a>
                         <?php endforeach; ?>
+                        <?php if (admin_can('communications.respond')): ?>
                         <a class="dashboard-card" href="posta.php?folder=INBOX">
                             <small>Posta · nuove email</small>
                             <span class="number" id="dashboardMailUnread">…</span>
                             <p id="dashboardMailStatus">Controllo della casella in corso.</p>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </section>
+                <?php if (admin_can('communications.respond')): ?>
                 <script>
                 (function () {
                     const unread = document.getElementById('dashboardMailUnread');
@@ -182,6 +205,7 @@ if (!function_exists('admin_page_open')) {
                         });
                 })();
                 </script>
+                <?php endif; ?>
             <?php endif; ?>
         <?php
     }

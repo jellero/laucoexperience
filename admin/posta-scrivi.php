@@ -10,6 +10,8 @@ require_once __DIR__ . '/_mail_ui.php';
 $folderPath = trim((string) ($_GET['folder'] ?? $_POST['folder'] ?? 'INBOX')) ?: 'INBOX';
 $replyUid = (int) ($_GET['reply_uid'] ?? $_POST['reply_uid'] ?? 0);
 $contactId = (int) ($_GET['contact_id'] ?? $_POST['contact_id'] ?? 0);
+$contributionId = (int) ($_GET['contribution_id'] ?? $_POST['contribution_id'] ?? 0);
+$reportId = (int) ($_GET['report_id'] ?? $_POST['report_id'] ?? 0);
 $to = mb_substr(trim((string) ($_GET['to'] ?? $_POST['to'] ?? '')), 0, 1000);
 $cc = mb_substr(trim((string) ($_POST['cc'] ?? '')), 0, 1000);
 $bcc = mb_substr(trim((string) ($_POST['bcc'] ?? '')), 0, 1000);
@@ -18,6 +20,12 @@ $htmlBody = trim((string) ($_POST['html_body'] ?? ''));
 $originalMessageId = trim((string) ($_POST['original_message_id'] ?? ''));
 $originalReferences = trim((string) ($_POST['original_references'] ?? ''));
 $error = '';
+$replyOnly = admin_role() === 'collaboratore';
+$isReply = $replyUid > 0 || $contactId > 0 || $contributionId > 0 || $reportId > 0;
+
+if ($replyOnly && !$isReply) {
+    admin_access_denied('Il ruolo Collaboratore può rispondere alle comunicazioni ricevute, ma non iniziare una nuova email.');
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $replyUid > 0) {
     try {
@@ -60,9 +68,68 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $contactId > 0) {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $contributionId > 0) {
+    $stmt = $pdo->prepare('SELECT email, titolo FROM contributi WHERE id = :id LIMIT 1');
+    $stmt->execute(['id' => $contributionId]);
+    $contribution = $stmt->fetch();
+    if (is_array($contribution) && filter_var($contribution['email'] ?? null, FILTER_VALIDATE_EMAIL)) {
+        $to = (string) $contribution['email'];
+        $subject = 'Re: Contributo — ' . (string) $contribution['titolo'];
+    } else {
+        $contributionId = 0;
+        $error = 'Il contributo non ha un indirizzo email valido.';
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $reportId > 0) {
+    $stmt = $pdo->prepare('SELECT email, titolo FROM segnalazioni_problemi WHERE id = :id LIMIT 1');
+    $stmt->execute(['id' => $reportId]);
+    $report = $stmt->fetch();
+    if (is_array($report) && filter_var($report['email'] ?? null, FILTER_VALIDATE_EMAIL)) {
+        $to = (string) $report['email'];
+        $subject = 'Re: Segnalazione — ' . (string) $report['titolo'];
+    } else {
+        $reportId = 0;
+        $error = 'La segnalazione non ha un indirizzo email valido.';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     try {
+        if ($replyOnly) {
+            if ($contactId > 0) {
+                $stmt = $pdo->prepare('SELECT email FROM contatti_messaggi WHERE id = :id LIMIT 1');
+                $stmt->execute(['id' => $contactId]);
+                $to = (string) $stmt->fetchColumn();
+            } elseif ($contributionId > 0) {
+                $stmt = $pdo->prepare('SELECT email FROM contributi WHERE id = :id LIMIT 1');
+                $stmt->execute(['id' => $contributionId]);
+                $to = (string) $stmt->fetchColumn();
+            } elseif ($reportId > 0) {
+                $stmt = $pdo->prepare('SELECT email FROM segnalazioni_problemi WHERE id = :id LIMIT 1');
+                $stmt->execute(['id' => $reportId]);
+                $to = (string) $stmt->fetchColumn();
+            } elseif ($replyUid > 0) {
+                $client = backoffice_mail_client();
+                $folder = backoffice_mail_folder($folderPath, $client);
+                $original = backoffice_mail_message($folder, $replyUid, false);
+                $data = backoffice_mail_message_data($original);
+                $recipient = $data['reply_to'][0] ?? $data['from'][0] ?? null;
+                $to = is_array($recipient) ? (string) $recipient['full'] : '';
+                $originalMessageId = (string) $data['message_id'];
+                $references = backoffice_mail_attribute_first($original->getReferences());
+                $originalReferences = trim(is_scalar($references) ? (string) $references : '');
+            }
+            $replyRecipients = backoffice_mail_parse_recipients($to);
+            if (count($replyRecipients) !== 1) {
+                throw new RuntimeException('Il destinatario della risposta non è valido.');
+            }
+            $to = $replyRecipients[0]->toString();
+            $cc = '';
+            $bcc = '';
+        }
+
         $htmlBody = newsletter_sanitize_editor_html($htmlBody);
         $plainBody = backoffice_mail_html_to_text($htmlBody);
         if ($plainBody === '' && !preg_match('/<img\b/i', $htmlBody)) {
@@ -98,6 +165,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("UPDATE contatti_messaggi SET stato = 'risposto' WHERE id = :id");
             $stmt->execute(['id' => $contactId]);
         }
+        if ($contributionId > 0) {
+            $stmt = $pdo->prepare("UPDATE contributi SET stato = IF(stato IN ('nuovo','letto'), 'valutato', stato) WHERE id = :id");
+            $stmt->execute(['id' => $contributionId]);
+        }
+        if ($reportId > 0) {
+            $stmt = $pdo->prepare("UPDATE segnalazioni_problemi SET stato = IF(stato = 'nuova', 'in_lavorazione', stato) WHERE id = :id");
+            $stmt->execute(['id' => $reportId]);
+        }
 
         header('Location: posta.php?sent=1');
         exit;
@@ -108,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $htmlBody = newsletter_sanitize_editor_html($htmlBody);
 
-admin_page_open($replyUid > 0 || $contactId > 0 ? 'Rispondi' : 'Scrivi email', 'posta');
+admin_page_open($isReply ? 'Rispondi' : 'Scrivi email', 'posta');
 admin_mail_styles();
 ?>
 <style>
@@ -125,7 +200,7 @@ admin_mail_styles();
 </style>
 <main class="wrap">
     <section class="hero-admin">
-        <h1><?= $replyUid > 0 || $contactId > 0 ? 'Rispondi' : 'Scrivi email' ?></h1>
+        <h1><?= $isReply ? 'Rispondi' : 'Scrivi email' ?></h1>
         <p>Il messaggio verrà inviato da info@laucoexperience.it.</p>
     </section>
 
@@ -142,6 +217,8 @@ admin_mail_styles();
         <input type="hidden" name="folder" value="<?= e($folderPath) ?>">
         <input type="hidden" name="reply_uid" value="<?= $replyUid ?>">
         <input type="hidden" name="contact_id" value="<?= $contactId ?>">
+        <input type="hidden" name="contribution_id" value="<?= $contributionId ?>">
+        <input type="hidden" name="report_id" value="<?= $reportId ?>">
         <input type="hidden" name="original_message_id" value="<?= e($originalMessageId) ?>">
         <input type="hidden" name="original_references" value="<?= e($originalReferences) ?>">
         <textarea name="html_body" id="mailHtmlBody" hidden><?= e($htmlBody) ?></textarea>
@@ -149,8 +226,9 @@ admin_mail_styles();
         <div class="mail-compose-grid">
             <div class="full">
                 <label for="mail-to">A</label>
-                <input id="mail-to" type="text" name="to" value="<?= e($to) ?>" required autocomplete="off" placeholder="nome@esempio.it">
+                <input id="mail-to" type="text" name="to" value="<?= e($to) ?>" required autocomplete="off" placeholder="nome@esempio.it" <?= $replyOnly ? 'readonly' : '' ?>>
             </div>
+            <?php if (!$replyOnly): ?>
             <div>
                 <label for="mail-cc">CC</label>
                 <input id="mail-cc" type="text" name="cc" value="<?= e($cc) ?>" autocomplete="off">
@@ -159,6 +237,7 @@ admin_mail_styles();
                 <label for="mail-bcc">CCN</label>
                 <input id="mail-bcc" type="text" name="bcc" value="<?= e($bcc) ?>" autocomplete="off">
             </div>
+            <?php endif; ?>
             <div class="full">
                 <label for="mail-subject">Oggetto</label>
                 <input id="mail-subject" type="text" name="subject" maxlength="255" value="<?= e($subject) ?>" required>

@@ -44,7 +44,8 @@
             font-weight: 700;
         }
 
-        input {
+        input,
+        select {
             width: 100%;
             padding: 12px;
             border: 1px solid #d7d7d7;
@@ -131,10 +132,12 @@
     <main class="wrap">
         <section class="box">
             <h1>Crea account admin</h1>
-            <p class="small">Questa pagina permette di creare più account per il backoffice.</p>
+            <p class="small">Questa pagina permette di creare gli account e assegnare i permessi del backoffice.</p>
 
             <div class="alert alert-warning">
-                Attenzione: chiunque possa aprire questa pagina può creare un account admin.
+                <?= ($existingCount ?? 0) === 0
+                    ? 'Il primo account viene creato come Amministratore.'
+                    : 'Solo un Amministratore autenticato può creare altri accessi.' ?>
             </div>
 
             <?php if ($error): ?>
@@ -160,6 +163,17 @@
                 <label for="password_confirm">Ripeti password</label>
                 <input type="password" id="password_confirm" name="password_confirm" required autocomplete="new-password" minlength="12">
 
+                <?php if (($existingCount ?? 0) > 0): ?>
+                    <label for="ruolo">Ruolo</label>
+                    <select id="ruolo" name="ruolo" required>
+                        <?php foreach (admin_roles() as $roleKey => $definition): ?>
+                            <option value="<?= e($roleKey) ?>" <?= $roleKey === 'collaboratore' ? 'selected' : '' ?>>
+                                <?= e($definition['label']) ?> — <?= e($definition['description']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php endif; ?>
+
                 <button type="submit">Crea account</button>
                 <a class="btn secondary" href="/login">Vai al login</a>
             </form>
@@ -176,6 +190,7 @@
                         <tr>
                             <th>Nome</th>
                             <th>Email</th>
+                            <th>Ruolo</th>
                             <th>Creato il</th>
                         </tr>
                     </thead>
@@ -184,6 +199,7 @@
                             <tr>
                                 <td><?= e($utente['nome']) ?></td>
                                 <td><?= e($utente['email']) ?></td>
+                                <td><?= e(admin_role_label((string) ($utente['ruolo'] ?? 'admin'))) ?></td>
                                 <td><?= e($utente['created_at']) ?></td>
                             </tr>
                         <?php endforeach; ?>

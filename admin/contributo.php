@@ -111,6 +111,9 @@ admin_page_open('Dettaglio contributo', 'contributi');
 
     <div class="actions">
         <a class="btn secondary" href="contributi.php">Torna ai contributi</a>
+        <?php if (!empty($c['email'])): ?>
+            <a class="btn" href="posta-scrivi.php?<?= e(http_build_query(['contribution_id' => (int) $c['id']])) ?>">Rispondi via email</a>
+        <?php endif; ?>
     </div>
 
     <div class="detail-grid">

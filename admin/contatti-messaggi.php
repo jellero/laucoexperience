@@ -34,7 +34,7 @@ $messaggi = $stmt->fetchAll();
 
 $msg = trim($_GET['msg'] ?? '');
 
-admin_page_open('Messaggi contatti', '');
+admin_page_open('Messaggi contatti', 'messaggi');
 ?>
 <style>
     .contact-admin-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }

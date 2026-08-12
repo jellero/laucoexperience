@@ -99,7 +99,9 @@ if (!function_exists('admin_mail_sidebar')) {
     {
         ?>
         <aside class="mail-sidebar">
-            <a class="btn" href="posta-scrivi.php">Scrivi email</a>
+            <?php if (admin_can('admin.all')): ?>
+                <a class="btn" href="posta-scrivi.php">Scrivi email</a>
+            <?php endif; ?>
             <nav class="mail-folders" aria-label="Cartelle di posta">
                 <?php foreach ($folders as $folder): ?>
                     <a class="mail-folder<?= $folder->path === $selected ? ' active' : '' ?>" href="<?= e(admin_mail_folder_url($folder->path)) ?>" title="<?= e($folder->full_name) ?>">

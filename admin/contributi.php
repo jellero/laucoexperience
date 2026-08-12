@@ -137,7 +137,9 @@ admin_page_open('Contributi', 'contributi');
 
                     <div class="contributo-actions">
                         <a class="mini-btn" href="contributo.php?id=<?= (int) $contributo['id'] ?>">Apri</a>
-                        <a class="mini-btn danger" href="contributo-delete.php?id=<?= (int) $contributo['id'] ?>&_csrf_token=<?= e(csrf_token()) ?>" onclick="return confirm('Eliminare definitivamente questo contributo?');">Elimina</a>
+                        <?php if (admin_can('admin.all')): ?>
+                            <a class="mini-btn danger" href="contributo-delete.php?id=<?= (int) $contributo['id'] ?>&_csrf_token=<?= e(csrf_token()) ?>" onclick="return confirm('Eliminare definitivamente questo contributo?');">Elimina</a>
+                        <?php endif; ?>
                     </div>
                 </article>
             <?php endforeach; ?>

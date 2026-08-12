@@ -31,6 +31,25 @@ final class AccountSetupAction
         if ($existingCount > 0 && !current_admin()) {
             return $response->withHeader('Location', '/login')->withStatus(302);
         }
+        if ($existingCount > 0) {
+            $current = current_admin();
+            $role = 'admin';
+            try {
+                $roleStatement = $connection->prepare('SELECT ruolo FROM utenti WHERE id = :id LIMIT 1');
+                $roleStatement->execute(['id' => (int) ($current['id'] ?? 0)]);
+                $storedRole = $roleStatement->fetchColumn();
+                $role = $storedRole === false ? 'collaboratore' : admin_normalize_role((string) $storedRole);
+            } catch (Throwable $exception) {
+                $message = strtolower($exception->getMessage());
+                if (!str_contains($message, 'unknown column') && !str_contains($message, 'no such column')) {
+                    throw $exception;
+                }
+            }
+            if ($role !== 'admin') {
+                $response->getBody()->write('Accesso non consentito.');
+                return $response->withStatus(403)->withHeader('Content-Type', 'text/plain; charset=UTF-8');
+            }
+        }
 
         $setupToken = $_SESSION['_setup_csrf_token'] ?? null;
         if (!is_string($setupToken) || $setupToken === '') {
@@ -47,6 +66,7 @@ final class AccountSetupAction
             $email = trim((string) ($data['email'] ?? ''));
             $password = (string) ($data['password'] ?? '');
             $confirmation = (string) ($data['password_confirm'] ?? '');
+            $role = $existingCount === 0 ? 'admin' : (string) ($data['ruolo'] ?? 'collaboratore');
 
             if ($submittedToken === '' || !hash_equals($setupToken, $submittedToken)) {
                 $error = 'Token di sicurezza non valido.';
@@ -58,6 +78,8 @@ final class AccountSetupAction
                 $error = 'La password deve avere almeno 12 caratteri.';
             } elseif ($password !== $confirmation) {
                 $error = 'Le due password non coincidono.';
+            } elseif (!array_key_exists($role, admin_roles())) {
+                $error = 'Seleziona un ruolo valido.';
             } else {
                 try {
                     $statement = $connection->prepare('SELECT id FROM utenti WHERE LOWER(email) = LOWER(:email) LIMIT 1');
@@ -65,13 +87,14 @@ final class AccountSetupAction
                     if ($statement->fetch()) {
                         $error = 'Esiste già un account con questa email.';
                     } else {
-                        $statement = $connection->prepare('INSERT INTO utenti (nome, email, password_hash) VALUES (:nome, :email, :password_hash)');
+                        $statement = $connection->prepare('INSERT INTO utenti (nome, email, password_hash, ruolo) VALUES (:nome, :email, :password_hash, :ruolo)');
                         $statement->execute([
                             'nome' => $name,
                             'email' => $email,
                             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                            'ruolo' => $role,
                         ]);
-                        $success = 'Account admin creato correttamente.';
+                        $success = 'Account creato correttamente.';
                         $setupToken = bin2hex(random_bytes(32));
                         $_SESSION['_setup_csrf_token'] = $setupToken;
                     }
@@ -82,12 +105,13 @@ final class AccountSetupAction
             }
         }
 
-        $users = $connection->query('SELECT id, nome, email, created_at FROM utenti ORDER BY created_at DESC, id DESC')->fetchAll();
+        $users = $connection->query('SELECT id, nome, email, ruolo, created_at FROM utenti ORDER BY created_at DESC, id DESC')->fetchAll();
         return $this->pages->render($request, $response, 'crea-account.php', 'crea-account.php', [
             'error' => $error,
             'success' => $success,
             'setupToken' => $setupToken,
             'utenti' => $users,
+            'existingCount' => $existingCount,
         ]);
     }
 }

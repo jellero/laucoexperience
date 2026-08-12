@@ -59,7 +59,7 @@ if ($m['stato'] === 'nuovo') {
 
 $msg = trim($_GET['msg'] ?? '');
 
-admin_page_open('Messaggio contatto', '');
+admin_page_open('Messaggio contatto', 'messaggi');
 ?>
 <style>
     .message-detail-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:22px; }
@@ -84,7 +84,9 @@ admin_page_open('Messaggio contatto', '');
     <div class="actions">
         <a class="btn secondary" href="contatti-messaggi.php">Torna ai messaggi</a>
         <a class="btn" href="posta-scrivi.php?<?= e(http_build_query(['contact_id' => (int) $m['id']])) ?>">Rispondi dal backoffice</a>
-        <a class="btn danger" href="contatto-messaggio-delete.php?id=<?= (int) $m['id'] ?>&_csrf_token=<?= e(csrf_token()) ?>" onclick="return confirm('Eliminare definitivamente questo messaggio?');">Elimina</a>
+        <?php if (admin_can('admin.all')): ?>
+            <a class="btn danger" href="contatto-messaggio-delete.php?id=<?= (int) $m['id'] ?>&_csrf_token=<?= e(csrf_token()) ?>" onclick="return confirm('Eliminare definitivamente questo messaggio?');">Elimina</a>
+        <?php endif; ?>
     </div>
 
     <div class="message-detail-grid">

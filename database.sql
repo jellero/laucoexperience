@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `utenti` (
   `nome` VARCHAR(120) NOT NULL,
   `email` VARCHAR(190) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
+  `ruolo` ENUM('admin','collaboratore','whatsapp') NOT NULL DEFAULT 'admin',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_utenti_email` (`email`)

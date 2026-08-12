@@ -45,7 +45,7 @@ final class AccountSetupAction
                     throw $exception;
                 }
             }
-            if ($role !== 'admin') {
+            if (!admin_role_can($role, 'admin.all')) {
                 $response->getBody()->write('Accesso non consentito.');
                 return $response->withStatus(403)->withHeader('Content-Type', 'text/plain; charset=UTF-8');
             }
@@ -66,7 +66,10 @@ final class AccountSetupAction
             $email = trim((string) ($data['email'] ?? ''));
             $password = (string) ($data['password'] ?? '');
             $confirmation = (string) ($data['password_confirm'] ?? '');
-            $role = $existingCount === 0 ? 'admin' : (string) ($data['ruolo'] ?? 'collaboratore');
+            $selectedRoles = $existingCount === 0
+                ? ['admin']
+                : admin_filter_roles($data['ruoli'] ?? []);
+            $role = admin_roles_value($selectedRoles);
 
             if ($submittedToken === '' || !hash_equals($setupToken, $submittedToken)) {
                 $error = 'Token di sicurezza non valido.';
@@ -78,8 +81,8 @@ final class AccountSetupAction
                 $error = 'La password deve avere almeno 12 caratteri.';
             } elseif ($password !== $confirmation) {
                 $error = 'Le due password non coincidono.';
-            } elseif (!array_key_exists($role, admin_roles())) {
-                $error = 'Seleziona un ruolo valido.';
+            } elseif ($role === '') {
+                $error = 'Seleziona almeno un permesso.';
             } else {
                 try {
                     $statement = $connection->prepare('SELECT id FROM utenti WHERE LOWER(email) = LOWER(:email) LIMIT 1');

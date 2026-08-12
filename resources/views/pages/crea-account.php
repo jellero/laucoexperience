@@ -113,6 +113,33 @@
             background: #fafafa;
         }
 
+        .permission-options {
+            display: grid;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .permission-option {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin: 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            background: #fafafa;
+        }
+
+        .permission-option input {
+            width: auto;
+            margin-top: 3px;
+            padding: 0;
+        }
+
+        .permission-option strong,
+        .permission-option small {
+            display: block;
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 15px;
@@ -164,14 +191,16 @@
                 <input type="password" id="password_confirm" name="password_confirm" required autocomplete="new-password" minlength="12">
 
                 <?php if (($existingCount ?? 0) > 0): ?>
-                    <label for="ruolo">Ruolo</label>
-                    <select id="ruolo" name="ruolo" required>
+                    <p style="font-weight:700;margin:18px 0 6px;">Ruoli e permessi</p>
+                    <div class="permission-options">
                         <?php foreach (admin_roles() as $roleKey => $definition): ?>
-                            <option value="<?= e($roleKey) ?>" <?= $roleKey === 'collaboratore' ? 'selected' : '' ?>>
-                                <?= e($definition['label']) ?> — <?= e($definition['description']) ?>
-                            </option>
+                            <label class="permission-option">
+                                <input type="checkbox" name="ruoli[]" value="<?= e($roleKey) ?>" <?= $roleKey === 'collaboratore' ? 'checked' : '' ?>>
+                                <span><strong><?= e($definition['label']) ?></strong><small><?= e($definition['description']) ?></small></span>
+                            </label>
                         <?php endforeach; ?>
-                    </select>
+                    </div>
+                    <p class="small">Collaboratore e Operatore WhatsApp possono essere selezionati insieme.</p>
                 <?php endif; ?>
 
                 <button type="submit">Crea account</button>
@@ -180,7 +209,7 @@
         </section>
 
         <section class="box">
-            <h2>Account admin esistenti</h2>
+            <h2>Account backoffice esistenti</h2>
 
             <?php if (!$utenti): ?>
                 <p>Nessun account presente.</p>
@@ -190,7 +219,7 @@
                         <tr>
                             <th>Nome</th>
                             <th>Email</th>
-                            <th>Ruolo</th>
+                            <th>Ruoli</th>
                             <th>Creato il</th>
                         </tr>
                     </thead>

@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $allowedViews = admin_whatsapp_allowed_views(admin_role());
-$defaultView = admin_role() === 'whatsapp' ? 'chat' : 'overview';
+$defaultView = admin_can('admin.all') ? 'overview' : 'chat';
 $view=(string)($_GET['view']??$defaultView);
 if(!in_array($view,$allowedViews,true))$view=$defaultView;
 $flash=$_SESSION['volunteer_flash']??null;unset($_SESSION['volunteer_flash']);
@@ -152,13 +152,13 @@ $selectedConversation=null;$messages=[];if($moduleReady&&(int)($_GET['conversati
 $selectedActivity=null;if($moduleReady&&(int)($_GET['activity_id']??0)>0){$stmt=$pdo->prepare('SELECT * FROM volontari_attivita WHERE id=:id');$stmt->execute(['id'=>(int)$_GET['activity_id']]);$selectedActivity=$stmt->fetch()?:null;}
 $allRoutes=$moduleReady?$pdo->query('SELECT id,titolo FROM percorsi WHERE pubblicato=1 ORDER BY titolo')->fetchAll():[];
 
-admin_page_open(admin_role() === 'whatsapp' ? 'Gestione WhatsApp' : 'Volontariato e territorio','volontariato');
+admin_page_open(admin_can('admin.all') ? 'Volontariato e territorio' : 'Gestione WhatsApp','volontariato');
 ?>
 <style>
 .vol-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}.vol-tabs a{padding:11px 14px;background:#fff;text-decoration:none;border:1px solid #ddd;font-weight:700;font-size:13px}.vol-tabs a.active{background:#222;color:#fff}.vol-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:22px}.vol-stat{background:#fff;box-shadow:var(--admin-shadow);padding:22px}.vol-stat strong{display:block;font-size:32px;margin-top:6px}.vol-two{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.vol-stack{display:grid;gap:16px}.vol-card{background:#fff;box-shadow:var(--admin-shadow);padding:22px}.vol-card h2,.vol-card h3{margin-top:0}.vol-badge{display:inline-block;padding:5px 8px;background:#eee;font-size:12px;font-weight:700}.vol-badge.attivo,.vol-badge.entrato,.vol-badge.inviato,.vol-badge.verificato{background:#d1e7dd;color:#0f5132}.vol-badge.errore,.vol-badge.fallito,.vol-badge.non_percorribile{background:#f8d7da;color:#842029}.vol-badge.attenzione,.vol-badge.configurazione_mancante,.vol-badge.in_coda{background:#fff3cd;color:#664d03}.vol-readiness{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.vol-ready{padding:14px;background:#f8d7da;color:#842029}.vol-ready.ok{background:#d1e7dd;color:#0f5132}.vol-chat{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px}.vol-conversations{background:#fff;max-height:680px;overflow:auto}.vol-conversation{display:block;padding:15px;border-bottom:1px solid #eee;text-decoration:none}.vol-conversation.active{background:#222;color:#fff}.vol-message-list{display:flex;flex-direction:column;gap:10px;max-height:500px;overflow:auto;padding:15px;background:#f4f4f4}.vol-message{max-width:80%;padding:11px 13px;background:#fff;align-self:flex-start;white-space:pre-wrap}.vol-message.uscita{background:#d7f0df;align-self:flex-end}.vol-progress{height:8px;background:#eee;margin-top:9px}.vol-progress span{display:block;height:100%;background:#222}.vol-table-wrap{overflow:auto}.vol-trail-form{min-width:830px;display:grid;grid-template-columns:1.2fr 170px 1fr 180px 150px auto;gap:8px;align-items:end;padding:12px 0;border-bottom:1px solid #eee}.vol-trail-form textarea{min-height:70px}.vol-trail-form label{margin:0}.vol-inline-actions{display:flex;gap:8px;flex-wrap:wrap}.vol-empty{color:#777}.vol-consent{font-size:12px;color:#666;margin-top:8px}@media(max-width:900px){.vol-summary{grid-template-columns:1fr 1fr}.vol-two,.vol-chat{grid-template-columns:1fr}.vol-readiness{grid-template-columns:1fr}.vol-conversations{max-height:300px}}@media(max-width:600px){.vol-summary{grid-template-columns:1fr}}
 </style>
 <main class="wrap">
-<section class="hero-admin"><h1><?=admin_role()==='whatsapp'?'Gestione WhatsApp':'Volontariato e cura del territorio'?></h1><p><?=admin_role()==='whatsapp'?'Gestisci gruppi, inviti e conversazioni WhatsApp.':'Un solo pannello per disponibilità, gruppi WhatsApp, conversazioni, attività e stato dei sentieri.'?></p></section>
+<section class="hero-admin"><h1><?=admin_can('admin.all')?'Volontariato e cura del territorio':'Gestione WhatsApp'?></h1><p><?=admin_can('admin.all')?'Un solo pannello per disponibilità, gruppi WhatsApp, conversazioni, attività e stato dei sentieri.':'Gestisci gruppi, inviti e conversazioni WhatsApp.'?></p></section>
 <?php if(is_array($flash)):?><div class="<?=!empty($flash['error'])?'error':'success'?>"><?=e($flash['message']??'')?></div><?php endif;?>
 <?php if(!$moduleReady):?><div class="error"><?=e($moduleError)?></div></main><?php admin_page_close();return;endif;?>
 <nav class="vol-tabs" aria-label="Sezioni volontariato">

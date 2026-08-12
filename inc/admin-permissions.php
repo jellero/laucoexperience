@@ -22,39 +22,90 @@ if (!function_exists('admin_roles')) {
     }
 }
 
+if (!function_exists('admin_filter_roles')) {
+    /** @return list<string> */
+    function admin_filter_roles(array|string|null $roles): array
+    {
+        $values = is_array($roles) ? $roles : explode(',', (string) $roles);
+        $selected = [];
+        foreach ($values as $role) {
+            if (!is_scalar($role)) {
+                continue;
+            }
+            $role = strtolower(trim((string) $role));
+            if (array_key_exists($role, admin_roles())) {
+                $selected[$role] = true;
+            }
+        }
+
+        return array_values(array_filter(
+            array_keys(admin_roles()),
+            static fn (string $role): bool => isset($selected[$role])
+        ));
+    }
+}
+
+if (!function_exists('admin_normalize_roles')) {
+    /** @return list<string> */
+    function admin_normalize_roles(array|string|null $roles): array
+    {
+        $selected = admin_filter_roles($roles);
+        if ($selected === []) {
+            $hasInput = is_array($roles) ? $roles !== [] : trim((string) $roles) !== '';
+            return $hasInput ? ['collaboratore'] : ['admin'];
+        }
+        return in_array('admin', $selected, true) ? ['admin'] : $selected;
+    }
+}
+
+if (!function_exists('admin_roles_value')) {
+    function admin_roles_value(array|string|null $roles): string
+    {
+        $selected = admin_filter_roles($roles);
+        if ($selected === []) {
+            return '';
+        }
+        return implode(',', in_array('admin', $selected, true) ? ['admin'] : $selected);
+    }
+}
+
 if (!function_exists('admin_normalize_role')) {
     function admin_normalize_role(?string $role): string
     {
-        $role = strtolower(trim((string) $role));
-        if ($role === '') {
-            return 'admin';
-        }
-        return array_key_exists($role, admin_roles()) ? $role : 'collaboratore';
+        return implode(',', admin_normalize_roles($role));
+    }
+}
+
+if (!function_exists('admin_role_has')) {
+    function admin_role_has(array|string|null $roles, string $required): bool
+    {
+        return in_array($required, admin_normalize_roles($roles), true);
     }
 }
 
 if (!function_exists('admin_role_label')) {
     function admin_role_label(?string $role): string
     {
-        $role = admin_normalize_role($role);
-        return admin_roles()[$role]['label'];
+        $labels = [];
+        foreach (admin_normalize_roles($role) as $selected) {
+            $labels[] = admin_roles()[$selected]['label'];
+        }
+        return implode(' + ', $labels);
     }
 }
 
 if (!function_exists('admin_role_can')) {
-    function admin_role_can(?string $role, string $capability): bool
+    function admin_role_can(array|string|null $role, string $capability): bool
     {
-        $role = admin_normalize_role($role);
-        if ($role === 'admin') {
+        $roles = admin_normalize_roles($role);
+        if (in_array('admin', $roles, true)) {
             return true;
         }
-
-        $capabilities = [
-            'collaboratore' => ['dashboard.access', 'communications.respond'],
-            'whatsapp' => ['dashboard.access', 'whatsapp.manage'],
-        ];
-
-        return in_array($capability, $capabilities[$role] ?? [], true);
+        if ($capability === 'dashboard.access') {
+            return $roles !== [];
+        }
+        return ($capability === 'communications.respond' && in_array('collaboratore', $roles, true))
+            || ($capability === 'whatsapp.manage' && in_array('whatsapp', $roles, true));
     }
 }
 
@@ -95,18 +146,18 @@ if (!function_exists('admin_script_capability')) {
 
 if (!function_exists('admin_whatsapp_allowed_views')) {
     /** @return list<string> */
-    function admin_whatsapp_allowed_views(?string $role): array
+    function admin_whatsapp_allowed_views(array|string|null $role): array
     {
-        return admin_normalize_role($role) === 'admin'
+        return admin_role_can($role, 'admin.all')
             ? ['overview', 'volontari', 'gruppi', 'chat', 'attivita', 'sentieri']
             : ['gruppi', 'chat'];
     }
 }
 
 if (!function_exists('admin_whatsapp_action_allowed')) {
-    function admin_whatsapp_action_allowed(?string $role, string $action): bool
+    function admin_whatsapp_action_allowed(array|string|null $role, string $action): bool
     {
-        if (admin_normalize_role($role) === 'admin') {
+        if (admin_role_can($role, 'admin.all')) {
             return true;
         }
 

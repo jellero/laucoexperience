@@ -42,6 +42,24 @@ final class AdminPermissionsTest extends TestCase
         self::assertFalse(admin_whatsapp_action_allowed('whatsapp', 'save_activity'));
     }
 
+    public function testCollaboratorAndWhatsappPermissionsCanBeCombined(): void
+    {
+        $roles = admin_roles_value(['whatsapp', 'collaboratore']);
+
+        self::assertSame('collaboratore,whatsapp', $roles);
+        self::assertSame(['collaboratore', 'whatsapp'], admin_normalize_roles($roles));
+        self::assertSame('Collaboratore + Operatore WhatsApp', admin_role_label($roles));
+        self::assertTrue(admin_role_can($roles, 'communications.respond'));
+        self::assertTrue(admin_role_can($roles, 'whatsapp.manage'));
+        self::assertFalse(admin_role_can($roles, 'admin.all'));
+    }
+
+    public function testAdminSelectionSupersedesOtherPermissions(): void
+    {
+        self::assertSame('admin', admin_roles_value(['collaboratore', 'admin', 'whatsapp']));
+        self::assertSame(['admin'], admin_normalize_roles('admin,whatsapp'));
+    }
+
     public function testEndpointPermissionsDefaultToAdminOnly(): void
     {
         self::assertSame('dashboard.access', admin_script_capability('/admin/index.php'));

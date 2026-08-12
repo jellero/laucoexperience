@@ -155,7 +155,7 @@ if (!function_exists('admin_page_open')) {
                             <a href="newsletter.php"<?= admin_nav_active($active, 'newsletter') ?>>Newsletter</a>
                         <?php endif; ?>
                         <?php if (admin_can('whatsapp.manage')): ?>
-                            <a href="volontariato.php<?= admin_role() === 'whatsapp' ? '?view=chat' : '' ?>"<?= admin_nav_active($active, 'volontariato') ?>><?= admin_role() === 'whatsapp' ? 'WhatsApp' : 'Volontariato' ?></a>
+                            <a href="volontariato.php<?= !admin_can('admin.all') ? '?view=chat' : '' ?>"<?= admin_nav_active($active, 'volontariato') ?>><?= !admin_can('admin.all') ? 'WhatsApp' : 'Volontariato' ?></a>
                         <?php endif; ?>
                         <?php if (admin_can('admin.all')): ?>
                             <a href="crea-account.php"<?= admin_nav_active($active, 'account') ?>>Utenti</a>

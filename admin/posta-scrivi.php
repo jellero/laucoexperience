@@ -20,11 +20,11 @@ $htmlBody = trim((string) ($_POST['html_body'] ?? ''));
 $originalMessageId = trim((string) ($_POST['original_message_id'] ?? ''));
 $originalReferences = trim((string) ($_POST['original_references'] ?? ''));
 $error = '';
-$replyOnly = admin_role() === 'collaboratore';
+$replyOnly = !admin_can('admin.all');
 $isReply = $replyUid > 0 || $contactId > 0 || $contributionId > 0 || $reportId > 0;
 
 if ($replyOnly && !$isReply) {
-    admin_access_denied('Il ruolo Collaboratore può rispondere alle comunicazioni ricevute, ma non iniziare una nuova email.');
+    admin_access_denied('Un account non amministratore può rispondere alle comunicazioni ricevute, ma non iniziare una nuova email.');
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $replyUid > 0) {

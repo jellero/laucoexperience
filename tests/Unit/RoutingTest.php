@@ -134,7 +134,7 @@ final class RoutingTest extends TestCase
 
         $canonicalPaths = [
             '/', '/mappa', '/segnaletica', '/consigli', '/itinerari-piedi', '/itinerari-mtb',
-            '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/luoghi',
+            '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/stato-sentieri', '/luoghi',
             '/frazioni', '/storia', '/natura', '/come-arrivare', '/eventi', '/eventi/archivio',
             '/contatti', '/contribuisci', '/segnala-problema', '/privacy', '/cookie',
         ];

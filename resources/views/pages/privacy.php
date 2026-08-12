@@ -7,6 +7,7 @@ $copy = [
  'sections'=>[
   ['Titolare del trattamento','Il titolare del trattamento è il Comune di Lauco. Per richieste relative alla protezione dei dati puoi utilizzare i contatti istituzionali pubblicati dal Comune e i canali indicati nella pagina Contatti.'],
   ['Dati inviati tramite i moduli','I moduli del sito possono trattare nome, indirizzo email, eventuale telefono, contenuto del messaggio o della segnalazione, allegati e dati tecnici come indirizzo IP e user agent. I dati sono utilizzati per gestire la richiesta, la segnalazione o il contributo inviato.'],
+  ['Volontariato e WhatsApp','Il modulo volontariato tratta nome, numero di telefono, eventuale email, zona, interessi e disponibilità per organizzare le attività territoriali. Con consenso esplicito, il numero è usato per inviare tramite WhatsApp l’invito al gruppo operativo e le comunicazioni collegate. Entrando in un gruppo WhatsApp, il numero e le informazioni del profilo WhatsApp diventano visibili agli altri partecipanti. I messaggi gestiti tramite il backoffice possono essere conservati per coordinare le attività e documentare le comunicazioni operative. Il consenso può essere revocato in qualsiasi momento.'],
   ['Newsletter','L’indirizzo email fornito per la newsletter è utilizzato per gestire l’iscrizione e l’invio delle comunicazioni richieste. Le preferenze e lo stato dell’iscrizione sono conservati nel sistema del sito.'],
   ['Google Analytics','Google Analytics 4 viene caricato soltanto dopo il consenso dell’utente. Senza consenso il tag Analytics non viene caricato. Il consenso può essere modificato o revocato in qualsiasi momento tramite “Gestisci cookie”. Quando attivo, Analytics può elaborare informazioni relative alla visita, al dispositivo e alla sessione secondo le impostazioni applicate dal sito. Le funzioni pubblicitarie restano disabilitate.'],
   ['Accessi tramite QR','Quando viene aperto l’URL /map presente sul QR fisico ufficiale, il server registra data e ora dell’accesso, user agent e una classificazione tecnica del dispositivo come mobile, tablet o desktop. L’indirizzo IP non viene conservato. Questi dati servono a distinguere e misurare l’utilizzo del QR fisico e a supportare verifiche tecniche. Il sistema QR non utilizza cookie analitici e non registra la geolocalizzazione del dispositivo.'],
@@ -14,13 +15,14 @@ $copy = [
   ['Destinatari e trasferimenti','I dati possono essere trattati da fornitori tecnici che supportano il funzionamento del sito. Quando Google Analytics è attivo, dati di utilizzo sono trattati anche tramite i servizi Google; Google dichiara che i propri prodotti Analytics possono comportare trasferimenti internazionali e descrive i relativi meccanismi di garanzia.'],
   ['Diritti','Nei casi previsti dalla normativa puoi chiedere accesso, rettifica, cancellazione, limitazione, opposizione e, ove applicabile, portabilità dei dati; puoi inoltre revocare il consenso senza pregiudicare la liceità del trattamento precedente alla revoca.'],
  ],
- 'cookie'=>'Consulta la Cookie Policy','updated'=>'Ultimo aggiornamento: 11 agosto 2026',
+ 'cookie'=>'Consulta la Cookie Policy','updated'=>'Ultimo aggiornamento: 12 agosto 2026',
 ],
 'en'=>[
  'title'=>'Privacy Policy','subtitle'=>'Information on personal data processing','intro'=>'Lauco Experience processes personal data in connection with website functions, forms submitted by users, technical logs of accesses through the official QR code and, only after consent, statistical measurement through Google Analytics.',
  'sections'=>[
   ['Data controller','The data controller is the Municipality of Lauco. For data-protection requests, use the institutional contact details published by the Municipality and the channels listed on the Contact page.'],
   ['Data submitted through forms','Website forms may process name, email address, optional telephone number, message or report content, attachments and technical data such as IP address and user agent. Data are used to manage the submitted request, report or contribution.'],
+  ['Volunteering and WhatsApp','The volunteering form processes name, telephone number, optional email, area, interests and availability to organise local activities. With explicit consent, the number is used to send the operations-group invitation and related messages through WhatsApp. After joining a WhatsApp group, the number and WhatsApp profile information become visible to other members. Messages handled in the back office may be retained to coordinate activities and document operational communications. Consent may be withdrawn at any time.'],
   ['Newsletter','The email address provided for the newsletter is used to manage the subscription and send the requested communications. Subscription status and preferences are stored in the website system.'],
   ['Google Analytics','Google Analytics 4 is loaded only after user consent. Without consent the Analytics tag is not loaded. Consent can be changed or withdrawn at any time through “Manage cookies”. When active, Analytics may process information about the visit, device and session under the settings applied by the website. Advertising functions remain disabled.'],
   ['QR-code access','When the /map URL printed on the official physical QR code is opened, the server records the access date and time, user agent and a technical device classification such as mobile, tablet or desktop. The IP address is not retained. These data are used to distinguish and measure use of the physical QR code and to support technical checks. The QR system does not use analytics cookies and does not record device geolocation.'],
@@ -28,13 +30,14 @@ $copy = [
   ['Recipients and transfers','Data may be processed by technical providers supporting the website. When Google Analytics is active, usage data are also processed through Google services; Google states that Analytics products may involve international transfers and describes the safeguards it uses.'],
   ['Your rights','Where provided by law, you may request access, rectification, erasure, restriction, objection and, where applicable, portability. You may also withdraw consent without affecting processing carried out before withdrawal.'],
  ],
- 'cookie'=>'Read the Cookie Policy','updated'=>'Last updated: 11 August 2026',
+ 'cookie'=>'Read the Cookie Policy','updated'=>'Last updated: 12 August 2026',
 ],
 'de'=>[
  'title'=>'Datenschutz','subtitle'=>'Informationen zur Verarbeitung personenbezogener Daten','intro'=>'Lauco Experience verarbeitet personenbezogene Daten im Zusammenhang mit Website-Funktionen, von Nutzern übermittelten Formularen, technischen Protokollen der Zugriffe über den offiziellen QR-Code und – nur nach Einwilligung – der statistischen Messung mit Google Analytics.',
  'sections'=>[
   ['Verantwortlicher','Verantwortlicher für die Datenverarbeitung ist die Gemeinde Lauco. Für Datenschutzanfragen verwenden Sie die institutionellen Kontaktdaten der Gemeinde und die auf der Kontaktseite angegebenen Kanäle.'],
   ['Formulardaten','Formulare können Name, E-Mail-Adresse, optional Telefonnummer, Inhalt von Nachricht oder Meldung, Anhänge sowie technische Daten wie IP-Adresse und User Agent verarbeiten. Die Daten dienen der Bearbeitung der Anfrage, Meldung oder des Beitrags.'],
+  ['Ehrenamt und WhatsApp','Das Ehrenamtsformular verarbeitet Name, Telefonnummer, optionale E-Mail, Gebiet, Interessen und Verfügbarkeit zur Organisation lokaler Aktivitäten. Mit ausdrücklicher Einwilligung wird die Nummer für die Einladung zur Einsatzgruppe und zugehörige WhatsApp-Mitteilungen verwendet. Nach dem Beitritt sind Nummer und WhatsApp-Profilinformationen für andere Gruppenmitglieder sichtbar. Im Backoffice bearbeitete Nachrichten können zur Koordination und Dokumentation operativer Mitteilungen gespeichert werden. Die Einwilligung kann jederzeit widerrufen werden.'],
   ['Newsletter','Die für den Newsletter angegebene E-Mail-Adresse wird zur Verwaltung der Anmeldung und zum Versand der angeforderten Mitteilungen verwendet. Status und Einstellungen der Anmeldung werden im System gespeichert.'],
   ['Google Analytics','Google Analytics 4 wird nur nach Einwilligung geladen. Ohne Einwilligung wird das Analytics-Tag nicht geladen. Die Einwilligung kann jederzeit über „Cookies verwalten“ geändert oder widerrufen werden. Werbefunktionen bleiben deaktiviert.'],
   ['QR-Zugriffe','Beim Öffnen der auf dem offiziellen physischen QR-Code angegebenen URL /map protokolliert der Server Datum und Uhrzeit des Zugriffs, den User Agent und eine technische Geräteklasse wie Mobilgerät, Tablet oder Desktop. Die IP-Adresse wird nicht gespeichert. Diese Daten dienen der Unterscheidung und Messung der Nutzung des physischen QR-Codes sowie technischen Prüfungen. Das QR-System verwendet keine Analytics-Cookies und speichert keine Geräte-Geolokalisierung.'],
@@ -42,13 +45,14 @@ $copy = [
   ['Empfänger und Übermittlungen','Technische Dienstleister können Daten zur Unterstützung der Website verarbeiten. Bei aktivem Google Analytics werden Nutzungsdaten auch über Google-Dienste verarbeitet; Google weist darauf hin, dass Analytics-Produkte internationale Übermittlungen beinhalten können, und beschreibt entsprechende Garantien.'],
   ['Rechte','Soweit gesetzlich vorgesehen, bestehen Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und gegebenenfalls Datenübertragbarkeit. Eine Einwilligung kann jederzeit widerrufen werden.'],
  ],
- 'cookie'=>'Cookie-Richtlinie lesen','updated'=>'Letzte Aktualisierung: 11. August 2026',
+ 'cookie'=>'Cookie-Richtlinie lesen','updated'=>'Letzte Aktualisierung: 12. August 2026',
 ],
 'sl'=>[
  'title'=>'Pravilnik o zasebnosti','subtitle'=>'Informacije o obdelavi osebnih podatkov','intro'=>'Lauco Experience obdeluje osebne podatke v povezavi s funkcijami spletnega mesta, obrazci uporabnikov, tehničnimi dnevniki dostopov prek uradne kode QR in – samo po soglasju – statističnim merjenjem prek Google Analytics.',
  'sections'=>[
   ['Upravljavec','Upravljavec osebnih podatkov je Občina Lauco. Za zahteve v zvezi z varstvom podatkov uporabite uradne kontaktne podatke občine in kanale na strani Kontakt.'],
   ['Podatki iz obrazcev','Obrazci lahko obdelujejo ime, e-poštni naslov, neobvezno telefonsko številko, vsebino sporočila ali prijave, priloge ter tehnične podatke, kot sta IP-naslov in user agent. Podatki se uporabljajo za obravnavo poslane zahteve, prijave ali prispevka.'],
+  ['Prostovoljstvo in WhatsApp','Obrazec za prostovoljstvo obdeluje ime, telefonsko številko, neobvezno e-pošto, območje, interese in razpoložljivost za organizacijo lokalnih dejavnosti. Z izrecnim soglasjem se številka uporablja za pošiljanje vabila v operativno skupino in povezanih sporočil prek WhatsAppa. Po vstopu so številka in podatki profila WhatsApp vidni drugim članom. Sporočila v zalednem sistemu se lahko hranijo za koordinacijo in dokumentiranje operativnih komunikacij. Soglasje lahko kadar koli prekličete.'],
   ['E-novice','E-poštni naslov za e-novice se uporablja za upravljanje prijave in pošiljanje zahtevanih obvestil. Stanje in nastavitve prijave se hranijo v sistemu spletnega mesta.'],
   ['Google Analytics','Google Analytics 4 se naloži samo po soglasju uporabnika. Brez soglasja se oznaka Analytics ne naloži. Soglasje lahko kadar koli spremenite ali prekličete z možnostjo »Upravljanje piškotkov«. Oglaševalske funkcije ostanejo izključene.'],
   ['Dostopi prek QR','Ko uporabnik odpre URL /map, natisnjen na uradni fizični kodi QR, strežnik zabeleži datum in čas dostopa, user agent ter tehnično razvrstitev naprave, kot so mobilna naprava, tablični ali namizni računalnik. IP-naslov se ne hrani. Podatki se uporabljajo za razlikovanje in merjenje uporabe fizične kode QR ter za tehnične preglede. Sistem QR ne uporablja analitičnih piškotkov in ne shranjuje geolokacije naprave.'],
@@ -56,7 +60,7 @@ $copy = [
   ['Prejemniki in prenosi','Podatke lahko obdelujejo tehnični ponudniki, ki podpirajo delovanje spletnega mesta. Ko je Google Analytics aktiven, se podatki o uporabi obdelujejo tudi prek Googlovih storitev; Google navaja, da lahko izdelki Analytics vključujejo mednarodne prenose in opisuje uporabljena jamstva.'],
   ['Pravice','Kjer zakon to določa, lahko zahtevate dostop, popravek, izbris, omejitev, ugovor in po potrebi prenosljivost. Soglasje lahko kadar koli prekličete.'],
  ],
- 'cookie'=>'Preberite pravilnik o piškotkih','updated'=>'Zadnja posodobitev: 11. avgust 2026',
+ 'cookie'=>'Preberite pravilnik o piškotkih','updated'=>'Zadnja posodobitev: 12. avgust 2026',
 ],
 ];
 $c=$copy[$locale] ?? $copy['it'];

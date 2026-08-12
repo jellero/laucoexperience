@@ -136,6 +136,7 @@ if (!function_exists('admin_page_open')) {
                         <a href="contatti-messaggi.php"<?= admin_nav_active($active, 'messaggi') ?>>Messaggi</a>
                         <a href="posta.php"<?= admin_nav_active($active, 'posta') ?>>Posta</a>
                         <a href="newsletter.php"<?= admin_nav_active($active, 'newsletter') ?>>Newsletter</a>
+                        <a href="volontariato.php"<?= admin_nav_active($active, 'volontariato') ?>>Volontariato</a>
                         <a href="contributi.php"<?= admin_nav_active($active, 'contributi') ?>>Contributi</a>
                         <a href="segnalazioni.php"<?= admin_nav_active($active, 'segnalazioni') ?>>Segnalazioni</a>
                         <a href="crea-account.php"<?= admin_nav_active($active, 'account') ?>>Account</a>

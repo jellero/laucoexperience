@@ -1,9 +1,7 @@
 <?php
 /*
- * Sezione Home: Contributi e Segnalazioni
- *
- * Da includere in home con:
- * <?php require LAUCO_VIEW_PATH . '/sections/contributi.php'; ?>
+ * Sezione Home: Contributi e Segnalazioni.
+ * Le due funzionalità restano separate dal nuovo modulo volontariato.
  */
 ?>
 <section id="contributi-segnalazioni" class="">
@@ -20,7 +18,6 @@
         <div class="row margin-leftright-null">
             <div class="col-md-12 text">
                 <div class="contribution-grid">
-
                     <a class="contribution-card" href="/contribuisci">
                         <span class="code">+</span>
                         <h3>Contribuisci</h3>
@@ -40,153 +37,13 @@
                         </p>
                         <span class="card-link">Segnala un problema</span>
                     </a>
-
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-
-<section id="call-to-action-partecipa" class="elementor-section elementor-top-section elementor-section-full_width elementor-section-height-default">
-    <div class="elementor-container elementor-column-gap-no">
-        <div class="elementor-column elementor-col-100 elementor-top-column">
-            <div class="elementor-widget-wrap elementor-element-populated">
-                <div class="elementor-widget-container">
-
-                    <div class="row text margin-leftright-null color-background cta-partecipa">
-                        <div class="container">
-                            <div class="row margin-leftright-null">
-
-                                <div class="col-md-8 col-sm-12">
-                                    <h4 class="big white margin-bottom-small">
-                                        Vuoi dare una mano concreta?
-                                    </h4>
-
-                                    <p class="white cta-partecipa-text">
-                                        Se vuoi contribuire alla cura dei sentieri, alla pulizia del territorio,
-                                        alla manutenzione leggera dei percorsi o alla valorizzazione dell’immagine di Lauco,
-                                        scrivici: verrai ricontattato e potrai essere inserito nel gruppo operativo dedicato.
-                                    </p>
-
-                                    <p class="white cta-partecipa-subtext">
-                                        Anche una piccola disponibilità può essere utile: una segnalazione, una fotografia,
-                                        una giornata di pulizia, un controllo sul posto o un aggiornamento sui percorsi
-                                        aiutano a rendere Lauco Experience più vivo, preciso e vicino al territorio.
-                                    </p>
-                                </div>
-
-                                <div class="col-md-4 col-sm-12 text-center cta-partecipa-actions">
-                                    <div class="cta-partecipa-box">
-                                        <h5 class="white">Partecipa al gruppo</h5>
-
-                                        <p class="white">
-                                            Lascia il tuo contatto e indica come vorresti contribuire.
-                                            Potremo organizzare attività, aggiornamenti e comunicazioni operative.
-                                        </p>
-
-                                        <a href="/contatti" class="btn-pro simple white">
-                                            Scrivici
-                                        </a>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <style>
-                        #call-to-action-partecipa .cta-partecipa {
-                            padding: 70px 0;
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa h4 {
-                            line-height: 1.25;
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa-text {
-                            font-size: 18px;
-                            line-height: 1.75;
-                            max-width: 850px;
-                            margin-bottom: 18px;
-                            opacity: .96;
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa-subtext {
-                            font-size: 15px;
-                            line-height: 1.7;
-                            max-width: 820px;
-                            opacity: .86;
-                            margin-bottom: 0;
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa-actions {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa-box {
-                            width: 100%;
-                            padding: 34px 28px;
-                            border: 1px solid rgba(255,255,255,.28);
-                            background: rgba(255,255,255,.08);
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa-box h5 {
-                            margin-top: 0;
-                            margin-bottom: 14px;
-                            font-size: 20px;
-                            font-weight: 700;
-                        }
-
-                        #call-to-action-partecipa .cta-partecipa-box p {
-                            font-size: 14px;
-                            line-height: 1.65;
-                            margin-bottom: 22px;
-                            opacity: .92;
-                        }
-
-                        #call-to-action-partecipa .cta-secondary-link {
-                            margin-top: 10px;
-                        }
-
-                        @media (max-width: 991px) {
-                            #call-to-action-partecipa .cta-partecipa {
-                                padding: 55px 0;
-                            }
-
-                            #call-to-action-partecipa .cta-partecipa-actions {
-                                margin-top: 28px;
-                            }
-
-                            #call-to-action-partecipa .cta-partecipa-box {
-                                max-width: 520px;
-                                margin: 0 auto;
-                            }
-                        }
-
-                        @media (max-width: 767px) {
-                            #call-to-action-partecipa .cta-partecipa {
-                                padding: 45px 0;
-                            }
-
-                            #call-to-action-partecipa .cta-partecipa-text {
-                                font-size: 16px;
-                            }
-
-                            #call-to-action-partecipa .cta-partecipa-box {
-                                padding: 28px 22px;
-                            }
-                        }
-                    </style>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?php require LAUCO_VIEW_PATH . '/sections/volontariato.php'; ?>
 
 <style>
     #contributi-segnalazioni {

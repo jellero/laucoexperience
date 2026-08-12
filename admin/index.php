@@ -68,6 +68,8 @@ $counts = [
     'segnalazioni' => dash_count($pdo, 'SELECT COUNT(*) FROM segnalazioni_problemi'),
     'segnalazioni_nuove' => dash_count($pdo, "SELECT COUNT(*) FROM segnalazioni_problemi WHERE stato = 'nuova'"),
     'utenti' => dash_count($pdo, 'SELECT COUNT(*) FROM utenti'),
+    'volontari' => dash_count($pdo, 'SELECT COUNT(*) FROM volontari'),
+    'volontari_attivi' => dash_count($pdo, "SELECT COUNT(*) FROM volontari WHERE stato = 'attivo'"),
 ];
 
 $latestSegnalazioni = dash_rows($pdo, "
@@ -496,6 +498,13 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
             <strong><?= (int) $counts['slider']['value'] ?></strong>
             <h2>Slider</h2>
             <p>Slide principali <?= dash_missing($counts['slider']) ?></p>
+        </a>
+
+        <a class="dash-card" href="volontariato.php">
+            <small>Territorio</small>
+            <strong><?= (int) $counts['volontari']['value'] ?></strong>
+            <h2>Volontariato</h2>
+            <p><?= (int) $counts['volontari_attivi']['value'] ?> attivi · gruppi, chat e planning <?= dash_missing($counts['volontari']) ?></p>
         </a>
 
         <a class="dash-card" href="crea-account.php">

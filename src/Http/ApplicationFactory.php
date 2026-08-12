@@ -12,6 +12,8 @@ use LaucoExperience\Http\Action\MapPdfAction;
 use LaucoExperience\Http\Action\NewsletterSubscribeAction;
 use LaucoExperience\Http\Action\QrRedirectAction;
 use LaucoExperience\Http\Action\SitemapAction;
+use LaucoExperience\Http\Action\VolunteerSignupAction;
+use LaucoExperience\Http\Action\WhatsAppWebhookAction;
 use LaucoExperience\Http\Middleware\CanonicalUrlMiddleware;
 use LaucoExperience\Localization\HtmlLocalizer;
 use LaucoExperience\Localization\LocaleResolver;
@@ -45,6 +47,8 @@ final class ApplicationFactory
             'account-setup' => new AccountSetupAction($root, $pages),
             'contact-submit' => new ContactSubmitAction($root),
             'newsletter' => new NewsletterSubscribeAction($root, $locales),
+            'volunteer-signup' => new VolunteerSignupAction($root, $locales),
+            'whatsapp-webhook' => new WhatsAppWebhookAction($root),
             'qr-redirect' => new QrRedirectAction($root),
             'gpx-file' => new GpxFileAction($root),
             'map-pdf' => new MapPdfAction($root),

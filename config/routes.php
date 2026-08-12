@@ -18,6 +18,7 @@ return [
     ['name' => 'barbecue', 'methods' => ['GET'], 'paths' => ['/barbecue', '/barbecue.php'], 'handler' => 'page', 'template' => 'barbecue.php', 'script' => 'barbecue.php'],
     ['name' => 'qr.redirect', 'methods' => ['GET'], 'paths' => ['/qr', '/qr.php'], 'handler' => 'qr-redirect'],
     ['name' => 'trail.management', 'methods' => ['GET'], 'paths' => ['/gestione-sentieri', '/gestione-sentieri.php'], 'handler' => 'page', 'template' => 'gestione-sentieri.php', 'script' => 'gestione-sentieri.php'],
+    ['name' => 'trail.status', 'methods' => ['GET'], 'paths' => ['/stato-sentieri'], 'handler' => 'page', 'template' => 'stato-sentieri.php', 'script' => 'stato-sentieri.php'],
     ['name' => 'places', 'methods' => ['GET'], 'paths' => ['/luoghi', '/luoghi.php'], 'handler' => 'page', 'template' => 'luoghi.php', 'script' => 'luoghi.php'],
     ['name' => 'places.detail', 'methods' => ['GET'], 'paths' => ['/luogo', '/luogo.php'], 'handler' => 'page', 'template' => 'luogo.php', 'script' => 'luogo.php'],
     ['name' => 'territory.fractions', 'methods' => ['GET'], 'paths' => ['/frazioni'], 'handler' => 'page', 'template' => 'frazioni.php', 'script' => 'frazioni.php'],
@@ -39,5 +40,7 @@ return [
     ['name' => 'account.setup', 'methods' => ['GET', 'POST'], 'paths' => ['/crea-account', '/crea-account.php'], 'handler' => 'account-setup', 'template' => 'crea-account.php'],
     ['name' => 'contact.submit', 'methods' => ['GET', 'POST'], 'paths' => ['/send', '/send.php'], 'handler' => 'contact-submit'],
     ['name' => 'newsletter.subscribe', 'methods' => ['GET', 'POST'], 'paths' => ['/newsletter', '/newsletter.php'], 'handler' => 'newsletter'],
+    ['name' => 'volunteer.signup', 'methods' => ['GET', 'POST'], 'paths' => ['/volontariato/iscrizione'], 'handler' => 'volunteer-signup'],
+    ['name' => 'whatsapp.webhook', 'methods' => ['GET', 'POST'], 'paths' => ['/api/whatsapp/webhook'], 'handler' => 'whatsapp-webhook'],
     ['name' => 'error.not-found', 'methods' => ['GET'], 'paths' => ['/400', '/400.php'], 'handler' => 'page', 'template' => '400.php', 'script' => '400.php', 'status' => 404],
 ];

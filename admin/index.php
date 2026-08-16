@@ -75,9 +75,8 @@ $counts = [
     'slider' => dash_count($pdo, 'SELECT COUNT(*) FROM home_slider'),
     'segnalazioni' => dash_count($pdo, 'SELECT COUNT(*) FROM segnalazioni_problemi'),
     'segnalazioni_nuove' => dash_count($pdo, "SELECT COUNT(*) FROM segnalazioni_problemi WHERE stato = 'nuova'"),
-    'utenti' => dash_count($pdo, 'SELECT COUNT(*) FROM utenti'),
     'volontari' => dash_count($pdo, 'SELECT COUNT(*) FROM volontari'),
-    'volontari_attivi' => dash_count($pdo, "SELECT COUNT(*) FROM volontari WHERE stato = 'attivo'"),
+    'volontari_nuovi' => dash_count($pdo, "SELECT COUNT(*) FROM volontari WHERE stato = 'da_confermare'"),
 ];
 
 $latestSegnalazioni = dash_rows($pdo, "
@@ -144,6 +143,18 @@ $dashboardPriorityCards = $canCommunications ? [
         'urgent' => (int) $counts['contributi_nuovi']['value'] > 0,
     ],
 ] : [];
+
+if ($isAdmin) {
+    $dashboardPriorityCards[] = [
+        'href' => 'volontariato.php?view=volontari',
+        'label' => 'Volontariato · nuovi',
+        'number' => (int) $counts['volontari_nuovi']['value'],
+        'text' => $counts['volontari']['ok']
+            ? (int) $counts['volontari']['value'] . ' volontari totali. Gestisci le disponibilità.'
+            : 'Conteggio volontari non disponibile.',
+        'urgent' => (int) $counts['volontari_nuovi']['value'] > 0,
+    ];
+}
 
 if ($canWhatsApp && !$isAdmin) {
     $whatsAppUnread = dash_count($pdo, 'SELECT COALESCE(SUM(non_letti), 0) FROM whatsapp_conversazioni');
@@ -539,19 +550,6 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
             <p>Slide principali <?= dash_missing($counts['slider']) ?></p>
         </a>
 
-        <a class="dash-card" href="volontariato.php">
-            <small>Territorio</small>
-            <strong><?= (int) $counts['volontari']['value'] ?></strong>
-            <h2>Volontariato</h2>
-            <p><?= (int) $counts['volontari_attivi']['value'] ?> attivi · gruppi, chat e planning <?= dash_missing($counts['volontari']) ?></p>
-        </a>
-
-        <a class="dash-card" href="crea-account.php">
-            <small>Sicurezza</small>
-            <strong><?= (int) $counts['utenti']['value'] ?></strong>
-            <h2>Utenti e permessi</h2>
-            <p>Gestione ruoli e accessi backoffice <?= dash_missing($counts['utenti']) ?></p>
-        </a>
     </section>
     <?php elseif ($canWhatsApp): ?>
         <section class="dash-cards">

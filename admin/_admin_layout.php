@@ -66,7 +66,7 @@ if (!function_exists('admin_page_open')) {
                 .admin-top-actions a:hover { background:#fff; color:#222; opacity:1; }
                 .admin-nav-wrap { border-top:1px solid rgba(255,255,255,.08); background:var(--admin-dark-soft); }
                 .admin-nav { max-width:1280px; margin:0 auto; padding:0 22px; display:flex; align-items:center; gap:0; overflow-x:auto; white-space:nowrap; }
-                .admin-nav a { color:#fff; text-decoration:none; padding:14px 12px; font-size:13px; border-left:1px solid rgba(255,255,255,.06); opacity:.86; }
+                .admin-nav a { color:#fff; text-decoration:none; padding:14px 10px; font-size:13px; border-left:1px solid rgba(255,255,255,.06); opacity:.86; }
                 .admin-nav a:last-child { border-right:1px solid rgba(255,255,255,.06); }
                 .admin-nav a:hover,.admin-nav a.active { opacity:1; background:#fff; color:#222; }
                 .wrap { max-width:1280px; margin:34px auto; padding:0 22px; }

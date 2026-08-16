@@ -8,6 +8,17 @@ foreach (['percorso', 'luogo', 'evento'] as $seoEntityVariable) {
     }
 }
 $seo = seo_metadata();
+$seoImageInfo = null;
+$seoImagePath = (string) (parse_url((string) $seo['image'], PHP_URL_PATH) ?: '');
+if ($seoImagePath !== '') {
+    $seoImageFile = LAUCO_ROOT . '/' . ltrim(rawurldecode($seoImagePath), '/');
+    if (is_file($seoImageFile)) {
+        $detectedImageInfo = @getimagesize($seoImageFile);
+        if (is_array($detectedImageInfo)) {
+            $seoImageInfo = $detectedImageInfo;
+        }
+    }
+}
 
 // /map è riservato al QR tracciato; /mappa è la pagina pubblica indicizzabile.
 if (seo_path() === '/mappa') {
@@ -58,11 +69,25 @@ if (seo_path() === '/mappa') {
 <meta property="og:description" content="<?= htmlspecialchars((string) $seo['description'], ENT_QUOTES, 'UTF-8') ?>">
 <meta property="og:url" content="<?= htmlspecialchars((string) $seo['canonical'], ENT_QUOTES, 'UTF-8') ?>">
 <meta property="og:image" content="<?= htmlspecialchars((string) $seo['image'], ENT_QUOTES, 'UTF-8') ?>">
+<meta property="og:image:secure_url" content="<?= htmlspecialchars((string) $seo['image'], ENT_QUOTES, 'UTF-8') ?>">
+<meta property="og:image:alt" content="<?= htmlspecialchars((string) $seo['title'], ENT_QUOTES, 'UTF-8') ?>">
+<?php if (is_array($seoImageInfo)): ?>
+<meta property="og:image:width" content="<?= (int) $seoImageInfo[0] ?>">
+<meta property="og:image:height" content="<?= (int) $seoImageInfo[1] ?>">
+<?php if (!empty($seoImageInfo['mime'])): ?><meta property="og:image:type" content="<?= htmlspecialchars((string) $seoImageInfo['mime'], ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+<?php endif; ?>
 <meta property="og:locale" content="<?= htmlspecialchars((string) $seo['og_locale'], ENT_QUOTES, 'UTF-8') ?>">
+<?php foreach (['it_IT', 'en_GB', 'de_DE', 'sl_SI'] as $alternateOgLocale): ?>
+    <?php if ($alternateOgLocale !== (string) $seo['og_locale']): ?>
+<meta property="og:locale:alternate" content="<?= htmlspecialchars($alternateOgLocale, ENT_QUOTES, 'UTF-8') ?>">
+    <?php endif; ?>
+<?php endforeach; ?>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="<?= htmlspecialchars((string) $seo['title'], ENT_QUOTES, 'UTF-8') ?>">
 <meta name="twitter:description" content="<?= htmlspecialchars((string) $seo['description'], ENT_QUOTES, 'UTF-8') ?>">
+<meta name="twitter:url" content="<?= htmlspecialchars((string) $seo['canonical'], ENT_QUOTES, 'UTF-8') ?>">
 <meta name="twitter:image" content="<?= htmlspecialchars((string) $seo['image'], ENT_QUOTES, 'UTF-8') ?>">
+<meta name="twitter:image:alt" content="<?= htmlspecialchars((string) $seo['title'], ENT_QUOTES, 'UTF-8') ?>">
 <script type="application/ld+json"><?= json_encode($seo['json_ld'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
 
 <script>

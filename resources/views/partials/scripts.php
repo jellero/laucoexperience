@@ -156,3 +156,4 @@ $backToTopLabel = $backToTopLabels[$backToTopLocale] ?? $backToTopLabels['it'];
 </script>
 
 <?php require LAUCO_VIEW_PATH . '/partials/consent.php'; ?>
+<?php require LAUCO_VIEW_PATH . '/partials/share.php'; ?>

@@ -24,6 +24,10 @@
 
   const routeLayers = new Map();
   const routeLookup = new Map(routes.map((route) => [route.id, route]));
+  routes.forEach((route, index) => {
+    const hue = Math.round((index * 137.508 + 8) % 360);
+    route.color = `hsl(${hue}, 72%, 40%)`;
+  });
   let activeFilter = "all";
   let selectedRouteId = null;
 
@@ -36,10 +40,8 @@
       .replace(/'/g, "&#039;");
   }
 
-  function colorFor(category) {
-    if (category === "mtb") return "#1565c0";
-    if (category === "speciali") return "#d45b20";
-    return "#2e7d32";
+  function colorFor(route) {
+    return route && route.color ? route.color : "#333333";
   }
 
   function isVisible(route) {
@@ -68,7 +70,7 @@
     routeLayers.forEach((layer, id) => {
       const route = routeLookup.get(id);
       layer.setStyle({
-        color: colorFor(route ? route.category : "piedi"),
+        color: colorFor(route),
         weight: id === routeId ? 7 : 5,
         opacity: id === routeId ? 1 : 0.88
       });
@@ -139,7 +141,7 @@
     if (!features.length) throw new Error("GPX senza tracce");
 
     const layer = L.geoJSON({ type: "FeatureCollection", features }, {
-      style: { color: colorFor(route.category), weight: 5, opacity: 0.88 }
+      style: { color: colorFor(route), weight: 5, opacity: 0.82 }
     });
     layer.bindPopup(popupHtml(route), { maxWidth: 320 });
     layer.on("click", function () { setSelected(route.id); });
@@ -152,6 +154,10 @@
   });
   document.querySelectorAll(".itinerary-map-focus").forEach((button) => {
     button.addEventListener("click", function () { focusRoute(this.dataset.routeId || "", true); });
+  });
+  document.querySelectorAll(".itinerary-map-card").forEach((card) => {
+    const route = routeLookup.get(card.dataset.routeId || "");
+    card.style.setProperty("--route-color", colorFor(route));
   });
 
   Promise.allSettled(routes.map(loadRoute)).then((results) => {

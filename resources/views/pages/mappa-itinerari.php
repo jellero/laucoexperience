@@ -54,20 +54,6 @@ if (!function_exists('itinerary_map_category')) {
     }
 }
 
-if (!function_exists('itinerary_map_asset_url')) {
-    function itinerary_map_asset_url(?string $path, string $fallback): string
-    {
-        $path = trim((string) $path);
-        if ($path === '') {
-            return $fallback;
-        }
-        if (preg_match('~^https?://~i', $path) || str_starts_with($path, '/')) {
-            return $path;
-        }
-        return '/' . ltrim($path, '/');
-    }
-}
-
 if (!function_exists('itinerary_map_value')) {
     function itinerary_map_value(mixed $stored, mixed $fallback, string $suffix = '', int $decimals = 0): string
     {
@@ -91,7 +77,6 @@ foreach ($routes as &$route) {
     $hasGpx = $gpxPath !== '' && gpx_abs_path($gpxPath) !== null;
     $route['_map_category'] = $category;
     $route['_map_has_gpx'] = $hasGpx;
-    $route['_map_cover'] = itinerary_map_asset_url($route['cover_image'] ?? null, '/assets/img/trip5.jpg');
     $route['_map_detail_url'] = '/percorso?slug=' . rawurlencode((string) $route['slug']);
     $route['_map_distance'] = itinerary_map_value($route['distanza_km'] ?? null, $stats['length_label'] ?? '-', ' km', 2);
     $route['_map_ascent'] = itinerary_map_value($route['dislivello_m'] ?? null, $stats['ascent_label'] ?? '-', ' m');
@@ -116,7 +101,6 @@ foreach ($routes as &$route) {
 }
 unset($route);
 
-$hero = itinerary_map_asset_url($routes[0]['cover_image'] ?? null, '/assets/img/trip11.jpg');
 $cssVersion = (int) (filemtime(LAUCO_ROOT . '/assets/css/mappa-itinerari.css') ?: 1);
 $jsVersion = (int) (filemtime(LAUCO_ROOT . '/assets/js/mappa-itinerari.js') ?: 1);
 ?>
@@ -132,35 +116,20 @@ $jsVersion = (int) (filemtime(LAUCO_ROOT . '/assets/js/mappa-itinerari.js') ?: 1
 <div id="myloader"><span class="loader"><div class="inner-loader"></div></span></div>
 <div id="main-wrap" class="full-width">
     <?php require LAUCO_VIEW_PATH . '/partials/menu.php'; ?>
-    <div id="page-content" class="header-static">
-        <div id="flexslider" class="fullpage-wrap small">
-            <ul class="slides">
-                <li style="background-image:url('<?= e($hero) ?>')">
-                    <div class="container text text-center">
-                        <h1 class="white margin-bottom-small"><?= e($labels['title']) ?></h1>
-                        <p class="heading white"><?= e($labels['subtitle']) ?></p>
-                    </div>
-                    <div class="gradient dark"></div>
-                </li>
-            </ul>
-        </div>
-
+    <div id="page-content" class="header-static footer-fixed">
         <main class="itinerary-map-page">
-            <section class="container itinerary-map-intro text-center">
-                <h2 class="margin-bottom-null title line center"><?= e($labels['title']) ?></h2>
-                <p class="heading center grey"><?= e($labels['intro']) ?></p>
-
-                <div class="itinerary-map-filters" role="group" aria-label="<?= e($labels['title']) ?>">
-                    <button type="button" class="is-active" data-filter="all" aria-pressed="true"><?= e($labels['all']) ?></button>
-                    <button type="button" data-filter="piedi" aria-pressed="false"><span class="filter-dot walking"></span><?= e($labels['walking']) ?></button>
-                    <button type="button" data-filter="mtb" aria-pressed="false"><span class="filter-dot mtb"></span><?= e($labels['mtb']) ?></button>
-                    <button type="button" data-filter="speciali" aria-pressed="false"><span class="filter-dot special"></span><?= e($labels['special']) ?></button>
+            <section class="itinerary-map-stage">
+                <div id="itinerary-map" aria-label="<?= e($labels['title']) ?>"></div>
+                <div class="itinerary-map-toolbar">
+                    <h1><?= e($labels['title']) ?></h1>
+                    <div class="itinerary-map-filters" role="group" aria-label="<?= e($labels['title']) ?>">
+                        <button type="button" class="is-active" data-filter="all" aria-pressed="true"><?= e($labels['all']) ?></button>
+                        <button type="button" data-filter="piedi" aria-pressed="false"><?= e($labels['walking']) ?></button>
+                        <button type="button" data-filter="mtb" aria-pressed="false"><?= e($labels['mtb']) ?></button>
+                        <button type="button" data-filter="speciali" aria-pressed="false"><?= e($labels['special']) ?></button>
+                    </div>
                 </div>
-
-                <div class="itinerary-map-shell">
-                    <div id="itinerary-map" aria-label="<?= e($labels['title']) ?>"></div>
-                    <div id="itinerary-map-status" class="itinerary-map-status" role="status"><?= e($labels['loading']) ?></div>
-                </div>
+                <div id="itinerary-map-status" class="itinerary-map-status" role="status"><?= e($labels['loading']) ?></div>
             </section>
 
             <section class="itinerary-map-list-section">
@@ -173,7 +142,6 @@ $jsVersion = (int) (filemtime(LAUCO_ROOT . '/assets/js/mappa-itinerari.js') ?: 1
                         <?php foreach ($routes as $route): ?>
                             <?php $mapId = 'itinerary-' . (int) $route['id']; ?>
                             <article class="itinerary-map-card" data-category="<?= e($route['_map_category']) ?>" data-route-id="<?= e($mapId) ?>">
-                                <img src="<?= e($route['_map_cover']) ?>" alt="<?= e($route['titolo']) ?>" loading="lazy">
                                 <div class="itinerary-map-card-body">
                                     <span class="itinerary-kind <?= e($route['_map_category']) ?>"><?= e($labels[$route['_map_category'] === 'piedi' ? 'walking' : ($route['_map_category'] === 'mtb' ? 'mtb' : 'special')]) ?></span>
                                     <h3><?= e($route['titolo']) ?></h3>

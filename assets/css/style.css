@@ -7038,6 +7038,8 @@ table {
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
   text-align: center; }
+  .sponsor-carousel .item a {
+    display: block; }
   .sponsor-carousel .item img {
     width: auto !important;
     max-width: 80%;

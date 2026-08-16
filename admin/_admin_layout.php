@@ -141,6 +141,7 @@ if (!function_exists('admin_page_open')) {
                             <a href="eventi.php"<?= admin_nav_active($active, 'eventi') ?>>Eventi</a>
                             <a href="galleria.php"<?= admin_nav_active($active, 'galleria') ?>>Galleria</a>
                             <a href="slider.php"<?= admin_nav_active($active, 'slider') ?>>Slider</a>
+                            <a href="sponsor.php"<?= admin_nav_active($active, 'sponsor') ?>>Sponsor</a>
                             <a href="luoghi.php"<?= admin_nav_active($active, 'luoghi') ?>>Luoghi</a>
                             <a href="statistiche-qr.php"<?= admin_nav_active($active, 'qr-stats') ?>>Statistiche</a>
                             <a href="traduzioni-contenuti.php"<?= admin_nav_active($active, 'traduzioni') ?>>Traduzioni</a>

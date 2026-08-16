@@ -10,6 +10,7 @@ return [
     ['name' => 'map.secondary', 'methods' => ['GET'], 'paths' => ['/mappa1', '/mappa1.php'], 'handler' => 'page', 'template' => 'mappa1.php', 'script' => 'mappa1.php'],
     ['name' => 'signage', 'methods' => ['GET'], 'paths' => ['/segnaletica', '/segnaletica.php'], 'handler' => 'page', 'template' => 'segnaletica.php', 'script' => 'segnaletica.php'],
     ['name' => 'advice', 'methods' => ['GET'], 'paths' => ['/consigli', '/consigli.php'], 'handler' => 'page', 'template' => 'consigli.php', 'script' => 'consigli.php'],
+    ['name' => 'routes.map', 'methods' => ['GET'], 'paths' => ['/mappa-itinerari', '/mappa-itinerari.php'], 'handler' => 'page', 'template' => 'mappa-itinerari.php', 'script' => 'mappa-itinerari.php'],
     ['name' => 'routes.walking', 'methods' => ['GET'], 'paths' => ['/itinerari-piedi', '/itinerari-piedi.php'], 'handler' => 'page', 'template' => 'itinerari-piedi.php', 'script' => 'itinerari-piedi.php'],
     ['name' => 'routes.mtb', 'methods' => ['GET'], 'paths' => ['/itinerari-mtb', '/itinerari-mtb.php'], 'handler' => 'page', 'template' => 'itinerari-mtb.php', 'script' => 'itinerari-mtb.php'],
     ['name' => 'routes.special', 'methods' => ['GET'], 'paths' => ['/itinerari-speciali', '/itinerari-speciali.php'], 'handler' => 'page', 'template' => 'itinerari-speciali.php', 'script' => 'itinerari-speciali.php'],

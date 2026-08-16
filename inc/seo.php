@@ -57,7 +57,7 @@ if (!function_exists('seo_labels')) {
         $it = [
             '/' => 'Lauco Experience', '/map' => 'Mappa dei sentieri', '/mappa1' => 'Mappa',
             '/segnaletica' => 'Segnaletica dei sentieri', '/consigli' => 'Consigli escursionistici',
-            '/itinerari-piedi' => 'Itinerari a piedi', '/itinerari-mtb' => 'Itinerari MTB',
+            '/mappa-itinerari' => 'Mappa itinerari', '/itinerari-piedi' => 'Itinerari a piedi', '/itinerari-mtb' => 'Itinerari MTB',
             '/itinerari-speciali' => 'Itinerari speciali', '/forra' => 'Forra del Vinadia',
             '/barbecue' => 'Aree barbecue', '/gestione-sentieri' => 'Gestione dei sentieri', '/stato-sentieri' => 'Stato dei sentieri',
             '/luoghi' => 'Luoghi e frazioni', '/frazioni' => 'Frazioni e borgate di Lauco',
@@ -73,6 +73,9 @@ if (!function_exists('seo_labels')) {
             'de' => ['Mappa dei sentieri'=>'Wanderkarte','Segnaletica dei sentieri'=>'Wegemarkierung','Consigli escursionistici'=>'Wandertipps','Itinerari a piedi'=>'Wanderrouten','Itinerari MTB'=>'MTB-Routen','Itinerari speciali'=>'Besondere Routen','Forra del Vinadia'=>'Vinadia-Schlucht','Aree barbecue'=>'Grillplätze','Gestione dei sentieri'=>'Wegemanagement','Stato dei sentieri'=>'Zustand der Wege','Luoghi e frazioni'=>'Orte und Dörfer','Frazioni e borgate di Lauco'=>'Fraktionen und Weiler von Lauco','Storia di Lauco'=>'Geschichte von Lauco','Natura di Lauco'=>'Natur in Lauco','Come arrivare a Lauco'=>'Anreise nach Lauco','Eventi a Lauco'=>'Veranstaltungen in Lauco','Archivio eventi di Lauco'=>'Veranstaltungsarchiv von Lauco','Contatti'=>'Kontakt','Contribuisci'=>'Mitmachen','Segnala un problema'=>'Problem melden','Accesso'=>'Anmeldung','Crea account'=>'Konto erstellen','Pagina non trovata'=>'Seite nicht gefunden'],
             'sl' => ['Mappa dei sentieri'=>'Zemljevid poti','Segnaletica dei sentieri'=>'Označevanje poti','Consigli escursionistici'=>'Pohodniški nasveti','Itinerari a piedi'=>'Pohodniške poti','Itinerari MTB'=>'MTB-poti','Itinerari speciali'=>'Posebne poti','Forra del Vinadia'=>'Soteska Vinadia','Aree barbecue'=>'Prostori za žar','Gestione dei sentieri'=>'Upravljanje poti','Stato dei sentieri'=>'Stanje poti','Luoghi e frazioni'=>'Kraji in vasi','Frazioni e borgate di Lauco'=>'Vasi in zaselki Lauca','Storia di Lauco'=>'Zgodovina Lauca','Natura di Lauco'=>'Narava Lauca','Come arrivare a Lauco'=>'Kako do Lauca','Eventi a Lauco'=>'Dogodki v Laucu','Archivio eventi di Lauco'=>'Arhiv dogodkov v Laucu','Contatti'=>'Kontakt','Contribuisci'=>'Prispevajte','Segnala un problema'=>'Prijavite težavo','Accesso'=>'Prijava','Crea account'=>'Ustvari račun','Pagina non trovata'=>'Stran ni najdena'],
         ];
+        $translations['en']['Mappa itinerari'] = 'Route map';
+        $translations['de']['Mappa itinerari'] = 'Routenkarte';
+        $translations['sl']['Mappa itinerari'] = 'Zemljevid poti';
         if ($locale === 'it') return $it;
         foreach ($it as $path => $label) $it[$path] = $translations[$locale][$label] ?? $label;
         return $it;
@@ -84,6 +87,7 @@ if (!function_exists('seo_static_description')) {
     {
         $descriptions = [
             'it' => [
+                '/mappa-itinerari' => 'Mappa interattiva di tutti gli itinerari a piedi, MTB e speciali di Lauco, con filtri e collegamenti alle schede complete.',
                 '/' => 'Scopri l’Altopiano di Lauco in Carnia: sentieri, mappa GPX, storia, natura, frazioni, luoghi ed eventi del territorio.',
                 '/map' => 'Mappa interattiva dei sentieri di Lauco con tracce GPX, profili altimetrici e informazioni utili per conoscere la rete escursionistica locale.',
                 '/itinerari-piedi' => 'Itinerari e sentieri a piedi nel territorio di Lauco, con informazioni sui percorsi e collegamenti alla mappa e alle tracce GPX.',
@@ -98,6 +102,7 @@ if (!function_exists('seo_static_description')) {
                 '/eventi/archivio' => 'Archivio degli eventi pubblicati da Lauco Experience: manifestazioni, tradizioni e iniziative svolte nel territorio di Lauco.',
             ],
             'en' => [
+                '/mappa-itinerari' => 'Interactive map of all walking, MTB and special routes in Lauco, with filters and links to full route details.',
                 '/' => 'Discover the Lauco Plateau in Carnia: trails, GPX map, history, nature, villages, places and local events.',
                 '/map' => 'Interactive map of Lauco trails with GPX tracks, elevation profiles and useful information about the local hiking network.',
                 '/itinerari-piedi' => 'Walking and hiking routes in Lauco, with trail information and links to the interactive map and GPX tracks.',
@@ -112,6 +117,7 @@ if (!function_exists('seo_static_description')) {
                 '/eventi/archivio' => 'Archive of events published by Lauco Experience, preserving past traditions, initiatives and activities in the area.',
             ],
             'de' => [
+                '/mappa-itinerari' => 'Interaktive Karte aller Wander-, MTB- und besonderen Routen in Lauco mit Filtern und Links zu den vollständigen Routendetails.',
                 '/' => 'Entdecken Sie das Hochplateau von Lauco in Karnien: Wege, GPX-Karte, Geschichte, Natur, Orte und Veranstaltungen.',
                 '/map' => 'Interaktive Karte der Wege von Lauco mit GPX-Tracks, Höhenprofilen und Informationen zum örtlichen Wegenetz.',
                 '/itinerari-piedi' => 'Wanderwege und Routen im Gebiet von Lauco mit Informationen, Karten und GPX-Tracks.',
@@ -126,6 +132,7 @@ if (!function_exists('seo_static_description')) {
                 '/eventi/archivio' => 'Archiv der von Lauco Experience veröffentlichten Veranstaltungen, Traditionen und Initiativen im Gemeindegebiet.',
             ],
             'sl' => [
+                '/mappa-itinerari' => 'Interaktivni zemljevid vseh pohodniških, MTB in posebnih poti v Laucu s filtri in povezavami do podrobnosti poti.',
                 '/' => 'Odkrijte planoto Lauco v Karniji: poti, GPX-zemljevid, zgodovino, naravo, vasi, kraje in dogodke.',
                 '/map' => 'Interaktivni zemljevid poti v Laucu z GPX-sledmi, višinskimi profili in informacijami o lokalni pohodniški mreži.',
                 '/itinerari-piedi' => 'Pohodniške poti v Laucu z informacijami o trasah ter povezavami do zemljevida in GPX-sledi.',

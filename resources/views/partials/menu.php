@@ -29,6 +29,12 @@ $trailStatusLabel = match ($currentLanguage) {
     'sl' => 'Preveri stanje poti',
     default => 'Consulta lo stato dei sentieri',
 };
+$itineraryMapLabel = match ($currentLanguage) {
+    'en' => 'Route map',
+    'de' => 'Routenkarte',
+    'sl' => 'Zemljevid poti',
+    default => 'Mappa itinerari',
+};
 if (!function_exists('isCurrent')) {
     function isCurrent($pages): bool {
         $current = basename((string) ($_SERVER['PHP_SELF'] ?? ''));
@@ -64,8 +70,9 @@ if (!function_exists('isCurrent')) {
                         </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['itinerari-piedi.php','itinerari-mtb.php','itinerari-speciali.php']) ? 'active-item' : '' ?>">Itinerari</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['mappa-itinerari.php','itinerari-piedi.php','itinerari-mtb.php','itinerari-speciali.php']) ? 'active-item' : '' ?>">Itinerari</a>
                             <ul class="sub-menu">
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/mappa-itinerari'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($itineraryMapLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/itinerari-piedi">A piedi</a></li>
                                 <li><a href="/itinerari-mtb">In MTB</a></li>
                                 <li><a href="/itinerari-speciali">Itinerari speciali</a></li>

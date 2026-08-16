@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../inc/auth.php';
 require_admin();
+require_once __DIR__ . '/../inc/sentieri.php';
 require_once __DIR__ . '/_admin_layout.php';
 
 $isAdmin = admin_can('admin.all');
@@ -58,9 +59,9 @@ $counts = [
     'percorsi' => dash_count($pdo, 'SELECT COUNT(*) FROM percorsi'),
     'percorsi_pubblicati' => dash_count($pdo, 'SELECT COUNT(*) FROM percorsi WHERE pubblicato = 1'),
     'percorsi_speciali' => dash_count($pdo, 'SELECT COUNT(*) FROM percorsi WHERE speciale = 1'),
-    'sentieri' => dash_count($pdo, 'SELECT COUNT(*) FROM sentieri'),
-    'sentieri_pubblicati' => dash_count($pdo, 'SELECT COUNT(*) FROM sentieri WHERE pubblicato = 1'),
-    'sentieri_critici' => dash_count($pdo, "SELECT COUNT(*) FROM sentieri WHERE pubblicato = 1 AND stato IN ('attenzione','non_percorribile')"),
+    'sentieri' => ['value' => count(sentieri_gpx_files()), 'ok' => is_dir(sentieri_gpx_directory())],
+    'sentieri_pubblicati' => dash_count($pdo, "SELECT COUNT(*) FROM sentieri WHERE gpx_file LIKE 'gpx/%' AND pubblicato = 1"),
+    'sentieri_critici' => dash_count($pdo, "SELECT COUNT(*) FROM sentieri WHERE gpx_file LIKE 'gpx/%' AND pubblicato = 1 AND stato IN ('attenzione','non_percorribile')"),
     'eventi' => dash_count($pdo, 'SELECT COUNT(*) FROM eventi'),
     'eventi_pubblicati' => dash_count($pdo, 'SELECT COUNT(*) FROM eventi WHERE pubblicato = 1'),
     'luoghi' => dash_count($pdo, 'SELECT COUNT(*) FROM luoghi'),
@@ -471,7 +472,7 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
         <?php if ($isAdmin): ?>
         <div class="dash-hero-actions">
             <a class="btn" href="percorso-form.php">Nuovo percorso</a>
-            <a class="btn" href="sentiero-form.php">Nuovo sentiero</a>
+            <a class="btn" href="sentieri.php#carica">Carica GPX sentiero</a>
             <a class="btn" href="evento-form.php">Nuovo evento</a>
             <a class="btn" href="luogo-form.php">Nuovo luogo</a>
             <a class="btn" href="slider-form.php">Nuova slide</a>

@@ -69,7 +69,6 @@ final class GpxFileAction
         $roots = [
             $this->root . '/gpx',
             $this->root . '/uploads/percorsi/gpx',
-            $this->root . '/uploads/sentieri/gpx',
         ];
 
         foreach ($roots as $candidateRoot) {

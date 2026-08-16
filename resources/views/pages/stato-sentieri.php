@@ -4,11 +4,12 @@ require_once LAUCO_ROOT . '/inc/sentieri.php';
 
 $trailRows = [];
 try {
-    $trailRows = $pdo->query(
-        "SELECT id,nome,codice,slug,localita,descrizione,gpx_file,stato,nota_pubblica,ultima_verifica_at "
-        . "FROM sentieri WHERE pubblicato=1 "
-        . "ORDER BY FIELD(stato,'non_percorribile','attenzione','in_verifica','verificato'),ordine,nome"
-    )->fetchAll() ?: [];
+    $trailRows = sentieri_directory_rows($pdo, true);
+    $priority = ['non_percorribile' => 0, 'attenzione' => 1, 'in_verifica' => 2, 'verificato' => 3];
+    usort($trailRows, static function (array $a, array $b) use ($priority): int {
+        $statusOrder = ($priority[(string) $a['stato']] ?? 9) <=> ($priority[(string) $b['stato']] ?? 9);
+        return $statusOrder !== 0 ? $statusOrder : strnatcasecmp((string) $a['filename'], (string) $b['filename']);
+    });
 } catch (Throwable) {
     $trailRows = [];
 }

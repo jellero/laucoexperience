@@ -213,6 +213,7 @@ function form(string $root, string $liveDir, string $error = '', ?array $result 
 {
     $env = findExistingEnv($root, $liveDir);
     $uploads = findExistingUploads($root, $liveDir);
+    $gpx = findExistingGpx($root, $liveDir);
     $meta = readJson($liveDir . '/.deploy-meta.json');
     $current = $meta ? (string) ($meta['commit'] ?? 'sconosciuto') : 'nessuna release gestita';
 
@@ -245,8 +246,9 @@ function form(string $root, string $liveDir, string $error = '', ?array $result 
     }
 
     $body .= '</fieldset><fieldset><legend>Dati persistenti</legend>'
-        . '<label class="check"><input type="checkbox" name="preserve_uploads" value="1" checked><span>Conserva uploads'
-        . ($uploads ? ' da <code>' . h(displayPath($root, $uploads)) . '</code>' : '') . '</span></label>'
+        . '<label class="check"><input type="checkbox" name="preserve_uploads" value="1" checked><span>Conserva uploads e cartella GPX'
+        . ($uploads ? ' da <code>' . h(displayPath($root, $uploads)) . '</code>' : '')
+        . ($gpx ? '<br>GPX da <code>' . h(displayPath($root, $gpx)) . '</code>' : '') . '</span></label>'
         . '<label class="check"><input type="checkbox" name="install_router" value="1" checked><span>Installa il router .htaccess</span></label>'
         . '<p class="hint">Permessi finali: directory 0755, file 0644, directory upload 0775, file upload 0664, .env 0600.</p>'
         . '</fieldset><fieldset><legend>Conferma</legend>'
@@ -318,6 +320,13 @@ function deploy(string $root, string $stateDir, string $liveDir): void
         if ($uploadsSource !== null) {
             copyTree($uploadsSource, $release . '/uploads', 'uploads');
         }
+        $gpxSource = $preserveUploads ? findExistingGpx($root, $liveDir) : null;
+        if ($gpxSource !== null) {
+            // La cartella GPX live e' la fonte dati: sostituisce quella
+            // contenuta nel repository, cosi' anche le eliminazioni persistono.
+            removeTree($release . '/gpx');
+            copyTree($gpxSource, $release . '/gpx', 'gpx');
+        }
         $translationsSource = findExistingTranslations($root, $liveDir);
         if ($translationsSource !== null) {
             copyTree($translationsSource, $release . '/storage/translations', 'storage/translations');
@@ -360,6 +369,7 @@ function deploy(string $root, string $stateDir, string $liveDir): void
             'health' => health($appUrl),
             'env_source' => $existingEnv,
             'uploads_source' => $uploadsSource,
+            'gpx_source' => $gpxSource,
             'translations_source' => $translationsSource,
         ]);
     } catch (Throwable $e) {
@@ -417,6 +427,17 @@ function findExistingUploads(string $root, string $liveDir): ?string
 {
     foreach (releaseRoots($root, $liveDir) as $candidateRoot) {
         $directory = $candidateRoot . '/uploads';
+        if (is_dir($directory) && is_readable($directory)) {
+            return $directory;
+        }
+    }
+    return null;
+}
+
+function findExistingGpx(string $root, string $liveDir): ?string
+{
+    foreach (releaseRoots($root, $liveDir) as $candidateRoot) {
+        $directory = $candidateRoot . '/gpx';
         if (is_dir($directory) && is_readable($directory)) {
             return $directory;
         }
@@ -698,7 +719,7 @@ function migrate(PDO $pdo, string $directory): array
 
 function ensureUploads(string $release): void
 {
-    foreach (['uploads', 'uploads/percorsi/cover', 'uploads/percorsi/gpx', 'uploads/percorsi/gallery', 'uploads/eventi/cover', 'uploads/eventi/gallery', 'uploads/galleria', 'uploads/slider', 'uploads/luoghi', 'storage/translations'] as $relative) {
+    foreach (['uploads', 'uploads/percorsi/cover', 'uploads/percorsi/gpx', 'uploads/percorsi/gallery', 'uploads/eventi/cover', 'uploads/eventi/gallery', 'uploads/galleria', 'uploads/slider', 'uploads/luoghi', 'gpx', 'storage/translations'] as $relative) {
         mkdirOrFail($release . '/' . $relative, DEPLOY_UPLOAD_DIR_MODE);
     }
 }
@@ -744,6 +765,8 @@ function isUploadPath(string $relative): bool
     $relative = trim(str_replace('\\', '/', $relative), '/');
     return $relative === 'uploads'
         || str_starts_with($relative, 'uploads/')
+        || $relative === 'gpx'
+        || str_starts_with($relative, 'gpx/')
         || $relative === 'storage/translations'
         || str_starts_with($relative, 'storage/translations/');
 }
@@ -764,6 +787,7 @@ function verifyRelease(string $release): void
         is_readable($release . '/.htaccess'),
         is_readable($release . '/assets'),
         is_writable($release . '/uploads'),
+        is_writable($release . '/gpx'),
         is_writable($release . '/storage/translations'),
         is_readable($release . '/.env'),
         is_readable($release . '/vendor/autoload.php'),
@@ -907,6 +931,7 @@ function resultHtml(array $result): string
         . 'Commit: <code>' . h((string) $result['commit']) . '</code><br>'
         . 'Configurazione riusata: ' . h(!empty($result['env_source']) ? 'sì' : 'no') . '<br>'
         . 'Uploads conservati: ' . h(!empty($result['uploads_source']) ? 'sì' : 'no') . '<br>'
+        . 'Cartella GPX conservata: ' . h(!empty($result['gpx_source']) ? 'sì' : 'no') . '<br>'
         . 'Migrazioni applicate: ' . h($applied ? implode(', ', $applied) : 'nessuna') . '<br>'
         . 'Migrazioni già presenti: ' . h($skipped ? implode(', ', $skipped) : 'nessuna') . '<br>'
         . 'Health check: ' . h(($result['health']['ok'] ?? false) ? 'OK' : 'non riuscito')

@@ -137,6 +137,7 @@ if (!function_exists('admin_page_open')) {
                         <a href="index.php"<?= admin_nav_active($active, 'dashboard') ?>>Dashboard</a>
                         <?php if (admin_can('admin.all')): ?>
                             <a href="percorsi.php"<?= admin_nav_active($active, 'percorsi') ?>>Itinerari</a>
+                            <a href="sentieri.php"<?= admin_nav_active($active, 'sentieri') ?>>Sentieri</a>
                             <a href="eventi.php"<?= admin_nav_active($active, 'eventi') ?>>Eventi</a>
                             <a href="galleria.php"<?= admin_nav_active($active, 'galleria') ?>>Galleria</a>
                             <a href="slider.php"<?= admin_nav_active($active, 'slider') ?>>Slider</a>

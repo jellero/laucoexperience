@@ -66,6 +66,8 @@ final class AdminPermissionsTest extends TestCase
         self::assertSame('communications.respond', admin_script_capability('/admin/posta-scrivi.php'));
         self::assertSame('whatsapp.manage', admin_script_capability('/admin/volontariato.php'));
         self::assertSame('admin.all', admin_script_capability('/admin/percorso-form.php'));
+        self::assertSame('admin.all', admin_script_capability('/admin/sentieri.php'));
+        self::assertSame(['overview', 'volontari', 'gruppi', 'chat', 'attivita'], admin_whatsapp_allowed_views('admin'));
         self::assertSame('admin.all', admin_script_capability('/admin/future-feature.php'));
     }
 

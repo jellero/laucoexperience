@@ -20,7 +20,6 @@ $volunteerInterestKeys = [
                         <?php endforeach; ?>
                     </ul>
                     <p class="white cta-partecipa-subtext"><?= e(site_text('volunteer.no_commitment', null, 'Non è richiesto un impegno continuativo. Ti avviseremo delle attività e sarai sempre tu a scegliere se partecipare.')) ?></p>
-                    <a class="cta-trail-status-link" href="/stato-sentieri"><?= e(site_text('volunteer.trail_status_link', null, 'Consulta lo stato dei sentieri')) ?></a>
                 </div>
 
                 <div class="col-md-6 col-sm-12 cta-partecipa-actions">
@@ -67,7 +66,6 @@ $volunteerInterestKeys = [
     #call-to-action-partecipa .cta-volunteer-activities{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin:24px 0;padding:0;list-style:none;color:#fff}
     #call-to-action-partecipa .cta-volunteer-activities li{position:relative;padding-left:24px;line-height:1.45}
     #call-to-action-partecipa .cta-volunteer-activities li:before{content:'✓';position:absolute;left:0;font-weight:700}
-    #call-to-action-partecipa .cta-trail-status-link{display:inline-block;color:#fff;border-bottom:1px solid rgba(255,255,255,.65);padding-bottom:3px;margin-top:8px}
     #call-to-action-partecipa .cta-partecipa-box{width:100%;padding:30px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);text-align:left}
     #call-to-action-partecipa .cta-partecipa-box,#call-to-action-partecipa .cta-partecipa-box *{box-sizing:border-box}
     #call-to-action-partecipa .cta-partecipa-box h5{margin:0 0 8px;font-size:22px;font-weight:700}

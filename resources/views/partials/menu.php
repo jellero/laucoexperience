@@ -23,6 +23,12 @@ $trailMapLabel = match ($currentLanguage) {
     'sl' => 'Zemljevid poti',
     default => 'Mappa dei sentieri',
 };
+$trailStatusLabel = match ($currentLanguage) {
+    'en' => 'Check trail status',
+    'de' => 'Zustand der Wege prüfen',
+    'sl' => 'Preveri stanje poti',
+    default => 'Consulta lo stato dei sentieri',
+};
 if (!function_exists('isCurrent')) {
     function isCurrent($pages): bool {
         $current = basename((string) ($_SERVER['PHP_SELF'] ?? ''));
@@ -48,11 +54,12 @@ if (!function_exists('isCurrent')) {
                         <li><a href="/" class="<?= isCurrent('index.php') ? 'active-item' : '' ?>">Home</a></li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php']) ? 'active-item' : '' ?>">Mappa</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php','stato-sentieri.php']) ? 'active-item' : '' ?>">Mappa</a>
                             <ul class="sub-menu">
                                 <li><a href="/mappa"><?= htmlspecialchars($trailMapLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/segnaletica">Segnaletica</a></li>
                                 <li><a href="/consigli">Consigli escursionistici</a></li>
+                                <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/stato-sentieri'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($trailStatusLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                             </ul>
                         </li>
 

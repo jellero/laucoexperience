@@ -58,6 +58,9 @@ $counts = [
     'percorsi' => dash_count($pdo, 'SELECT COUNT(*) FROM percorsi'),
     'percorsi_pubblicati' => dash_count($pdo, 'SELECT COUNT(*) FROM percorsi WHERE pubblicato = 1'),
     'percorsi_speciali' => dash_count($pdo, 'SELECT COUNT(*) FROM percorsi WHERE speciale = 1'),
+    'sentieri' => dash_count($pdo, 'SELECT COUNT(*) FROM sentieri'),
+    'sentieri_pubblicati' => dash_count($pdo, 'SELECT COUNT(*) FROM sentieri WHERE pubblicato = 1'),
+    'sentieri_critici' => dash_count($pdo, "SELECT COUNT(*) FROM sentieri WHERE pubblicato = 1 AND stato IN ('attenzione','non_percorribile')"),
     'eventi' => dash_count($pdo, 'SELECT COUNT(*) FROM eventi'),
     'eventi_pubblicati' => dash_count($pdo, 'SELECT COUNT(*) FROM eventi WHERE pubblicato = 1'),
     'luoghi' => dash_count($pdo, 'SELECT COUNT(*) FROM luoghi'),
@@ -468,6 +471,7 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
         <?php if ($isAdmin): ?>
         <div class="dash-hero-actions">
             <a class="btn" href="percorso-form.php">Nuovo percorso</a>
+            <a class="btn" href="sentiero-form.php">Nuovo sentiero</a>
             <a class="btn" href="evento-form.php">Nuovo evento</a>
             <a class="btn" href="luogo-form.php">Nuovo luogo</a>
             <a class="btn" href="slider-form.php">Nuova slide</a>
@@ -487,6 +491,17 @@ admin_page_open('Dashboard', 'dashboard', $dashboardPriorityCards);
                 <?= (int) $counts['percorsi_pubblicati']['value'] ?> pubblicati ·
                 <?= (int) $counts['percorsi_speciali']['value'] ?> speciali
                 <?= dash_missing($counts['percorsi']) ?>
+            </p>
+        </a>
+
+        <a class="dash-card" href="sentieri.php">
+            <small>Rete sentieristica</small>
+            <strong><?= (int) $counts['sentieri']['value'] ?></strong>
+            <h2>Sentieri</h2>
+            <p>
+                <?= (int) $counts['sentieri_pubblicati']['value'] ?> pubblicati ·
+                <?= (int) $counts['sentieri_critici']['value'] ?> con criticità
+                <?= dash_missing($counts['sentieri']) ?>
             </p>
         </a>
 

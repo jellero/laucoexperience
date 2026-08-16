@@ -149,7 +149,7 @@ if (!function_exists('admin_whatsapp_allowed_views')) {
     function admin_whatsapp_allowed_views(array|string|null $role): array
     {
         return admin_role_can($role, 'admin.all')
-            ? ['overview', 'volontari', 'gruppi', 'chat', 'attivita', 'sentieri']
+            ? ['overview', 'volontari', 'gruppi', 'chat', 'attivita']
             : ['gruppi', 'chat'];
     }
 }

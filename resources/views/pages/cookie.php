@@ -9,9 +9,9 @@ $copy = [
   ['Google Analytics 4','Se accetti la misurazione statistica, viene caricato Google Analytics 4 con identificativo G-NCKVWM2EQ0. Prima del consenso analytics_storage, ad_storage, ad_user_data e ad_personalization sono impostati su denied. Dopo l’accettazione viene concesso soltanto analytics_storage; le funzioni pubblicitarie restano disabilitate. Google Signals e la personalizzazione pubblicitaria sono disabilitati.'],
   ['Cookie Analytics','Con il consenso, Google Analytics può impostare cookie come _ga e _ga_<container-id>. La durata predefinita indicata da Google per questi cookie è fino a 2 anni, salvo limiti del browser o cancellazione anticipata.'],
   ['Revoca e modifica della scelta','Puoi modificare la scelta in qualsiasi momento tramite il pulsante “Gestisci cookie”. La revoca disabilita nuovamente Google Analytics e il sito tenta di rimuovere i cookie _ga accessibili dal dominio.'],
-  ['Statistiche QR','Le statistiche aggregate dei QR code restano elaborate lato server e non richiedono cookie analytics né l’attivazione di Google Analytics.'],
+  ['Statistiche aggregate lato server','Le statistiche dei QR e i conteggi giornalieri delle pagine consultate sono elaborati lato server e non richiedono cookie analytics né l’attivazione di Google Analytics. Per le pagine vengono salvati soltanto pagina, lingua, giorno e numero di visualizzazioni.'],
  ],
- 'manage'=>'Gestisci cookie','updated'=>'Ultimo aggiornamento: 11 agosto 2026',
+ 'manage'=>'Gestisci cookie','updated'=>'Ultimo aggiornamento: 16 agosto 2026',
 ],
 'en'=>[
  'title'=>'Cookie Policy','subtitle'=>'Technical storage, preferences and Google Analytics','intro'=>'This page describes the storage and measurement tools used by Lauco Experience. Google Analytics is disabled by default and is loaded only after the user makes an explicit choice.',
@@ -20,9 +20,9 @@ $copy = [
   ['Google Analytics 4','If you accept statistical measurement, Google Analytics 4 is loaded with measurement ID G-NCKVWM2EQ0. Before consent, analytics_storage, ad_storage, ad_user_data and ad_personalization are denied. After acceptance only analytics_storage is granted; advertising functions remain disabled. Google Signals and ad personalisation are disabled.'],
   ['Analytics cookies','With consent, Google Analytics may set cookies such as _ga and _ga_<container-id>. Google states a default lifetime of up to 2 years, subject to browser limits or earlier deletion.'],
   ['Withdraw or change consent','You can change your choice at any time using “Manage cookies”. Withdrawal disables Google Analytics again and the website attempts to remove accessible _ga cookies.'],
-  ['QR statistics','Aggregated QR-code statistics remain server-side and do not require analytics cookies or Google Analytics.'],
+  ['Aggregate server-side statistics','QR statistics and daily page-view counts are processed server-side and do not require analytics cookies or Google Analytics. Page statistics store only the page, language, day and number of views.'],
  ],
- 'manage'=>'Manage cookies','updated'=>'Last updated: 11 August 2026',
+ 'manage'=>'Manage cookies','updated'=>'Last updated: 16 August 2026',
 ],
 'de'=>[
  'title'=>'Cookie-Richtlinie','subtitle'=>'Technische Speicherung, Einstellungen und Google Analytics','intro'=>'Diese Seite beschreibt die von Lauco Experience verwendeten Speicher- und Messwerkzeuge. Google Analytics ist standardmäßig deaktiviert und wird erst nach einer ausdrücklichen Auswahl geladen.',
@@ -31,9 +31,9 @@ $copy = [
   ['Google Analytics 4','Bei Zustimmung wird Google Analytics 4 mit der Mess-ID G-NCKVWM2EQ0 geladen. Vor der Zustimmung stehen analytics_storage, ad_storage, ad_user_data und ad_personalization auf denied. Danach wird nur analytics_storage freigegeben; Werbefunktionen, Google Signals und Anzeigenpersonalisierung bleiben deaktiviert.'],
   ['Analytics-Cookies','Mit Zustimmung kann Google Analytics Cookies wie _ga und _ga_<container-id> setzen. Google nennt eine Standarddauer von bis zu 2 Jahren, vorbehaltlich Browsergrenzen oder früherer Löschung.'],
   ['Einwilligung ändern','Die Auswahl kann jederzeit über „Cookies verwalten“ geändert werden. Ein Widerruf deaktiviert Google Analytics erneut und die Website versucht, zugängliche _ga-Cookies zu entfernen.'],
-  ['QR-Statistiken','Aggregierte QR-Statistiken werden serverseitig verarbeitet und benötigen weder Analytics-Cookies noch Google Analytics.'],
+  ['Aggregierte Serverstatistiken','QR-Statistiken und tägliche Seitenaufrufe werden serverseitig verarbeitet und benötigen weder Analytics-Cookies noch Google Analytics. Für Seiten werden nur Seite, Sprache, Tag und Anzahl der Aufrufe gespeichert.'],
  ],
- 'manage'=>'Cookies verwalten','updated'=>'Letzte Aktualisierung: 11. August 2026',
+ 'manage'=>'Cookies verwalten','updated'=>'Letzte Aktualisierung: 16. August 2026',
 ],
 'sl'=>[
  'title'=>'Pravilnik o piškotkih','subtitle'=>'Tehnično shranjevanje, nastavitve in Google Analytics','intro'=>'Ta stran opisuje orodja za shranjevanje in merjenje, ki jih uporablja Lauco Experience. Google Analytics je privzeto izklopljen in se naloži šele po izrecni izbiri uporabnika.',
@@ -42,9 +42,9 @@ $copy = [
   ['Google Analytics 4','Če dovolite statistično merjenje, se naloži Google Analytics 4 z ID G-NCKVWM2EQ0. Pred soglasjem so analytics_storage, ad_storage, ad_user_data in ad_personalization nastavljeni na denied. Po sprejetju je dovoljen le analytics_storage; oglaševalske funkcije, Google Signals in personalizacija oglasov ostanejo izključeni.'],
   ['Analitični piškotki','Po soglasju lahko Google Analytics nastavi piškotke, kot sta _ga in _ga_<container-id>. Google navaja privzeto trajanje do 2 let, ob upoštevanju omejitev brskalnika ali predčasnega izbrisa.'],
   ['Sprememba ali preklic','Izbiro lahko kadar koli spremenite z gumbom »Upravljanje piškotkov«. Preklic znova onemogoči Google Analytics in spletno mesto poskusi odstraniti dostopne piškotke _ga.'],
-  ['Statistika QR','Združena statistika kod QR se obdeluje na strežniku in ne potrebuje analitičnih piškotkov ali Google Analytics.'],
+  ['Združena strežniška statistika','Statistika kod QR in dnevno število ogledov strani se obdelujeta na strežniku in ne potrebujeta analitičnih piškotkov ali Google Analytics. Za strani se shranijo samo stran, jezik, dan in število ogledov.'],
  ],
- 'manage'=>'Upravljanje piškotkov','updated'=>'Zadnja posodobitev: 11. avgust 2026',
+ 'manage'=>'Upravljanje piškotkov','updated'=>'Zadnja posodobitev: 16. avgust 2026',
 ],
 ];
 $c=$copy[$locale] ?? $copy['it'];

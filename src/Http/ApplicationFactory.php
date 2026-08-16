@@ -39,7 +39,8 @@ final class ApplicationFactory
         $pages = new PageAction(
             new PhpView($root . '/resources/views'),
             $locales,
-            new HtmlLocalizer($catalogs)
+            new HtmlLocalizer($catalogs),
+            $root
         );
         $handlers = [
             'login' => new LoginAction($root, $pages),

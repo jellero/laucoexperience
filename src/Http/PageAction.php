@@ -6,6 +6,7 @@ namespace LaucoExperience\Http;
 use LaucoExperience\Localization\HtmlLocalizer;
 use LaucoExperience\Localization\LocaleResolver;
 use LaucoExperience\View\PhpView;
+use PDO;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -15,6 +16,7 @@ final class PageAction
         private readonly PhpView $views,
         private readonly LocaleResolver $locales,
         private readonly HtmlLocalizer $localizer,
+        private readonly string $root,
     ) {
     }
 
@@ -62,9 +64,12 @@ final class PageAction
             }
         }
 
+        $status = is_int($status) && $status >= 400 ? $status : $defaultStatus;
+        $this->trackPageView($request, $template, $locale, $status);
+
         $response->getBody()->write($this->localizer->localize($html, $locale));
         $response = $response
-            ->withStatus(is_int($status) && $status >= 400 ? $status : $defaultStatus)
+            ->withStatus($status)
             ->withHeader('Content-Type', 'text/html; charset=utf-8')
             ->withHeader('Content-Language', $locale)
             ->withHeader('Vary', 'Accept-Language, Cookie');
@@ -75,5 +80,39 @@ final class PageAction
         }
 
         return $response;
+    }
+
+    private function trackPageView(
+        ServerRequestInterface $request,
+        string $template,
+        string $locale,
+        int $status,
+    ): void
+    {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
+        $userAgent = $request->getHeaderLine('User-Agent');
+        require_once $this->root . '/inc/page-stats.php';
+        if (!page_stats_should_track($request->getMethod(), $status, $template, $userAgent)) {
+            return;
+        }
+
+        try {
+            $connection = $GLOBALS['pdo'] ?? null;
+            if (!$connection instanceof PDO) {
+                $connection = page_stats_open_pdo();
+            }
+            if ($connection instanceof PDO) {
+                page_stats_track(
+                    $connection,
+                    $request->getUri()->getPath(),
+                    $request->getQueryParams(),
+                    $locale
+                );
+            }
+        } catch (\Throwable $exception) {
+            error_log('[Page analytics] ' . $exception->getMessage());
+        }
     }
 }

@@ -87,6 +87,7 @@ $shareText = $shareLabels[$shareLocale] ?? $shareLabels['it'];
     data-copied-label="<?= e($shareText['copied']) ?>"
     data-copy-error-label="<?= e($shareText['copy_error']) ?>"
     data-share-error-label="<?= e($shareText['share_error']) ?>"
+    data-share-track-url="/api/share"
 >
     <button
         class="lauco-share-trigger"
@@ -118,15 +119,15 @@ $shareText = $shareLabels[$shareLocale] ?? $shareLabels['it'];
             <p id="lauco-share-intro"><?= e($shareText['intro']) ?></p>
 
             <div class="lauco-share-options">
-                <a class="lauco-share-option is-facebook" href="#" target="_blank" rel="noopener noreferrer" data-share-facebook>
+                <a class="lauco-share-option is-facebook" href="#" target="_blank" rel="noopener noreferrer" data-share-facebook data-share-channel="facebook">
                     <i class="fa fa-facebook" aria-hidden="true"></i>
                     <span><?= e($shareText['facebook']) ?></span>
                 </a>
-                <a class="lauco-share-option is-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-share-whatsapp>
+                <a class="lauco-share-option is-whatsapp" href="#" target="_blank" rel="noopener noreferrer" data-share-whatsapp data-share-channel="whatsapp">
                     <i class="fa fa-whatsapp" aria-hidden="true"></i>
                     <span><?= e($shareText['whatsapp']) ?></span>
                 </a>
-                <a class="lauco-share-option" href="#" data-share-email>
+                <a class="lauco-share-option" href="#" data-share-email data-share-channel="email">
                     <i class="fa fa-envelope-o" aria-hidden="true"></i>
                     <span><?= e($shareText['email']) ?></span>
                 </a>

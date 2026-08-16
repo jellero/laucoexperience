@@ -32,6 +32,31 @@
         };
     }
 
+    function trackShare(channel) {
+        var endpoint = root.getAttribute('data-share-track-url') || '/api/share';
+        var language = String(document.documentElement.getAttribute('lang') || 'it').slice(0, 2).toLowerCase();
+        var payload = JSON.stringify({
+            channel: channel,
+            url: shareData().url,
+            language: language
+        });
+
+        if (typeof navigator.sendBeacon === 'function' && typeof Blob === 'function') {
+            if (navigator.sendBeacon(endpoint, new Blob([payload], { type: 'application/json' }))) {
+                return;
+            }
+        }
+        if (typeof window.fetch === 'function') {
+            window.fetch(endpoint, {
+                method: 'POST',
+                credentials: 'same-origin',
+                keepalive: true,
+                headers: { 'Content-Type': 'application/json' },
+                body: payload
+            }).catch(function () {});
+        }
+    }
+
     function updateDestinations() {
         var data = shareData();
         var message = data.title + ' ' + data.url;
@@ -46,6 +71,7 @@
 
     function openDialog() {
         updateDestinations();
+        trackShare('open');
         status.textContent = '';
         lastFocused = document.activeElement;
         overlay.hidden = false;
@@ -84,6 +110,7 @@
             : (legacyCopy(value) ? Promise.resolve() : Promise.reject());
 
         operation.then(function () {
+            trackShare('copy_link');
             status.textContent = root.getAttribute('data-copied-label') || '';
         }).catch(function () {
             status.textContent = root.getAttribute('data-copy-error-label') || '';
@@ -96,6 +123,7 @@
 
     [facebook, whatsapp, email].forEach(function (link) {
         link.addEventListener('click', function () {
+            trackShare(link.getAttribute('data-share-channel') || '');
             window.setTimeout(closeDialog, 0);
         });
     });
@@ -103,7 +131,10 @@
     if (typeof navigator.share === 'function') {
         nativeButton.hidden = false;
         nativeButton.addEventListener('click', function () {
-            navigator.share(shareData()).then(closeDialog).catch(function (error) {
+            navigator.share(shareData()).then(function () {
+                trackShare('native');
+                closeDialog();
+            }).catch(function (error) {
                 if (!error || error.name !== 'AbortError') {
                     status.textContent = root.getAttribute('data-share-error-label') || '';
                 }

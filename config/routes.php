@@ -42,6 +42,7 @@ return [
     ['name' => 'contact.submit', 'methods' => ['GET', 'POST'], 'paths' => ['/send', '/send.php'], 'handler' => 'contact-submit'],
     ['name' => 'newsletter.subscribe', 'methods' => ['GET', 'POST'], 'paths' => ['/newsletter', '/newsletter.php'], 'handler' => 'newsletter'],
     ['name' => 'volunteer.signup', 'methods' => ['GET', 'POST'], 'paths' => ['/volontariato/iscrizione'], 'handler' => 'volunteer-signup'],
+    ['name' => 'share.track', 'methods' => ['POST'], 'paths' => ['/api/share'], 'handler' => 'share-track'],
     ['name' => 'whatsapp.webhook', 'methods' => ['GET', 'POST'], 'paths' => ['/api/whatsapp/webhook'], 'handler' => 'whatsapp-webhook'],
     ['name' => 'error.not-found', 'methods' => ['GET'], 'paths' => ['/400', '/400.php'], 'handler' => 'page', 'template' => '400.php', 'script' => '400.php', 'status' => 404],
 ];

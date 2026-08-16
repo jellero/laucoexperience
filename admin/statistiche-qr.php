@@ -4,6 +4,7 @@ require_admin();
 require_once __DIR__ . '/../inc/qr-stats.php';
 require_once __DIR__ . '/../inc/download-stats.php';
 require_once __DIR__ . '/../inc/page-stats.php';
+require_once __DIR__ . '/../inc/share-stats.php';
 require_once __DIR__ . '/_admin_layout.php';
 
 $qrSummary = qr_stats_summary($pdo);
@@ -22,6 +23,11 @@ $pageSummary = page_stats_summary($pdo);
 $pageDaily = page_stats_daily($pdo, 30);
 $pageTop = page_stats_top($pdo, 30, 30);
 $pageLanguages = page_stats_languages($pdo, 30);
+$shareSummary = share_stats_summary($pdo);
+$shareDaily = share_stats_daily($pdo, 30);
+$shareChannels = share_stats_by_channel($pdo, 30);
+$shareTopPages = share_stats_top_pages($pdo, 30, 30);
+$shareChannelLabels = share_stats_channels();
 
 $deviceLabels = [
     'mobile' => 'Mobile',
@@ -183,7 +189,7 @@ admin_page_open('Statistiche', 'qr-stats');
 <main class="wrap">
     <section class="page-title">
         <h1>Statistiche</h1>
-        <p>Scansioni QR, download dei contenuti cartografici e accessi aggregati alle pagine. I caricamenti tecnici dei GPX necessari a visualizzare le tracce sulla mappa non vengono conteggiati come download.</p>
+        <p>Scansioni QR, download, accessi alle pagine e utilizzo del pulsante Condividi. I caricamenti tecnici dei GPX necessari a visualizzare le tracce sulla mappa non vengono conteggiati come download.</p>
     </section>
 
     <?php if (!$qrSummary['available']): ?>
@@ -194,6 +200,9 @@ admin_page_open('Statistiche', 'qr-stats');
     <?php endif; ?>
     <?php if (!$pageSummary['available']): ?>
         <div class="error">Statistiche pagine non ancora disponibili: applicare la migrazione <code>20260816_page_view_analytics.sql</code>.</div>
+    <?php endif; ?>
+    <?php if (!$shareSummary['available']): ?>
+        <div class="error">Statistiche condivisioni non ancora disponibili: applicare la migrazione <code>20260816_zzzz_share_analytics.sql</code>.</div>
     <?php endif; ?>
 
     <section class="dashboard-grid">
@@ -237,6 +246,16 @@ admin_page_open('Statistiche', 'qr-stats');
             <span class="number"><?= (int) $pageSummary['last30'] ?></span>
             <p>visualizzazioni</p>
         </div>
+        <div class="dashboard-card">
+            <small>Condivisioni oggi</small>
+            <span class="number"><?= (int) $shareSummary['today'] ?></span>
+            <p>azioni avviate</p>
+        </div>
+        <div class="dashboard-card">
+            <small>Condivisioni · 30 giorni</small>
+            <span class="number"><?= (int) $shareSummary['last30'] ?></span>
+            <p>azioni avviate</p>
+        </div>
     </section>
 
     <section class="admin-card" style="margin-top:22px">
@@ -248,6 +267,8 @@ admin_page_open('Statistiche', 'qr-stats');
                 <tr><td>Download GPX</td><td><strong><?= (int) $gpxSummary['total'] ?></strong></td></tr>
                 <tr><td>Mappa PDF</td><td><strong><?= (int) $pdfSummary['total'] ?></strong></td></tr>
                 <tr><td>Visualizzazioni pagine</td><td><strong><?= (int) $pageSummary['total'] ?></strong></td></tr>
+                <tr><td>Aperture menu Condividi</td><td><strong><?= (int) $shareSummary['opens_total'] ?></strong></td></tr>
+                <tr><td>Azioni di condivisione</td><td><strong><?= (int) $shareSummary['total'] ?></strong></td></tr>
             </tbody>
         </table>
     </section>
@@ -272,6 +293,57 @@ admin_page_open('Statistiche', 'qr-stats');
             <h2>Pagine · andamento 30 giorni</h2>
             <?php stats_bar_rows($pageDaily, 'view_date', 'views'); ?>
         </div>
+    </section>
+
+    <section class="dashboard-columns" style="margin-top:22px">
+        <div class="admin-card">
+            <h2>Condivisioni · andamento 30 giorni</h2>
+            <p class="hint">Conta la scelta di un canale, non la semplice apertura del menu.</p>
+            <?php stats_bar_rows($shareDaily, 'action_date', 'actions'); ?>
+        </div>
+        <div class="admin-card">
+            <h2>Canali di condivisione</h2>
+            <?php if ($shareChannels === []): ?>
+                <p>Nessuna condivisione registrata.</p>
+            <?php else: ?>
+                <table>
+                    <thead><tr><th>Canale</th><th>30 giorni</th><th>Totale</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($shareChannels as $row): ?>
+                        <tr>
+                            <td><strong><?= e($shareChannelLabels[$row['channel']] ?? ucfirst($row['channel'])) ?></strong></td>
+                            <td><?= (int) $row['period_actions'] ?></td>
+                            <td><?= (int) $row['total_actions'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+            <p class="hint">Menu aperto: <?= (int) $shareSummary['opens_last30'] ?> volte negli ultimi 30 giorni.</p>
+        </div>
+    </section>
+
+    <section class="admin-card" style="margin-top:22px">
+        <h2>Pagine più condivise</h2>
+        <p class="hint">Classifica delle azioni avviate da Facebook, WhatsApp, email, copia link e condivisione nativa.</p>
+        <?php if ($shareTopPages === []): ?>
+            <p>Nessuna condivisione registrata.</p>
+        <?php else: ?>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>Pagina</th><th>30 giorni</th><th>Totale</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($shareTopPages as $row): ?>
+                        <tr>
+                            <td><a href="<?= e($row['page_key']) ?>" target="_blank" rel="noopener"><strong><?= e(stats_page_label($pageCatalog, (string) $row['page_key'])) ?></strong></a><br><small><code><?= e($row['page_key']) ?></code></small></td>
+                            <td><?= (int) $row['period_actions'] ?></td>
+                            <td><?= (int) $row['total_actions'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </section>
 
     <section class="dashboard-columns" style="margin-top:22px">
@@ -412,7 +484,7 @@ admin_page_open('Statistiche', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Dati registrati</h2>
-        <p>Per QR e download vengono registrati <strong>data/ora, user agent e classe dispositivo</strong>. Per gli accessi alle pagine vengono salvati soltanto <strong>giorno, pagina, lingua e conteggio aggregato</strong>. Non viene conservato l'indirizzo IP e non vengono usati cookie analitici per questi conteggi. I log dettagliati di QR e download vengono eliminati dopo 90 giorni; i conteggi giornalieri aggregati restano disponibili per lo storico.</p>
+        <p>Per QR e download vengono registrati <strong>data/ora, user agent e classe dispositivo</strong>. Per accessi e condivisioni vengono salvati soltanto <strong>giorno, pagina, lingua, canale e conteggio aggregato</strong>. Non viene conservato l'indirizzo IP e non vengono usati cookie analitici per questi conteggi. I log dettagliati di QR e download vengono eliminati dopo 90 giorni; i conteggi giornalieri aggregati restano disponibili per lo storico.</p>
     </section>
 </main>
 <?php admin_page_close(); ?>

@@ -10,7 +10,7 @@
 
   const map = L.map(mapElement, {
     center: [46.416824, 12.932648],
-    zoom: 13,
+    zoom: 14,
     gestureHandling: true,
     scrollWheelZoom: false,
     zoomControl: false
@@ -89,12 +89,17 @@
     setSelected(routeId);
     const bounds = layer.getBounds();
     if (bounds.isValid()) {
-      map.fitBounds(bounds.pad(0.18), { maxZoom: 15 });
+      fitBoundsOneLevelCloser(bounds, 16, 0.18);
       layer.openPopup(bounds.getCenter());
     }
     if (scrollToMap) {
       mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+  }
+
+  function fitBoundsOneLevelCloser(bounds, maxZoom, padding) {
+    map.fitBounds(bounds.pad(padding), { maxZoom, animate: false });
+    map.setZoom(Math.min(map.getZoom() + 1, maxZoom), { animate: false });
   }
 
   function fitVisibleRoutes() {
@@ -103,8 +108,8 @@
       const route = routeLookup.get(id);
       if (route && isVisible(route) && layer.getBounds().isValid()) bounds.extend(layer.getBounds());
     });
-    if (bounds.isValid()) map.fitBounds(bounds.pad(0.08), { maxZoom: 15 });
-    else map.setView([46.416824, 12.932648], 13);
+    if (bounds.isValid()) fitBoundsOneLevelCloser(bounds, 16, 0.08);
+    else map.setView([46.416824, 12.932648], 14);
   }
 
   function setFilter(filter) {

@@ -1,3 +1,37 @@
+.itinerary-map-layout #header {
+    background: #fff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+}
+
+.itinerary-map-layout #header nav.navbar.white #logo img.white-logo {
+    display: none !important;
+}
+
+.itinerary-map-layout #header nav.navbar.white #logo img:not(.white-logo).normal {
+    display: block !important;
+}
+
+.itinerary-map-layout #header nav.navbar.white #logo img:not(.white-logo).retina {
+    display: none !important;
+}
+
+.itinerary-map-layout #header nav.navbar.white #menu-classic .menu-holder ul:not(.sub-menu) > li > a,
+.itinerary-map-layout #header nav.navbar.white #menu-classic .menu-holder ul:not(.sub-menu) > li.lang span.current a {
+    color: #2f2911;
+}
+
+.itinerary-map-layout #header nav.navbar.white #menu-classic .menu-holder ul:not(.sub-menu) > li > a.active-item {
+    color: #cbbd9a;
+}
+
+.itinerary-map-layout #header nav.navbar.white #menu-responsive-classic .menu-button .bar {
+    background-color: #2f2911;
+}
+
+.itinerary-map-content {
+    padding-top: 80px;
+}
+
 .itinerary-map-page {
     padding: 0;
     background: #fff;
@@ -5,7 +39,7 @@
 
 .itinerary-map-stage {
     position: relative;
-    width: 100%;
+    width: auto;
     background: #e8e8e8;
 }
 
@@ -328,5 +362,11 @@
     .itinerary-map-card-body {
         min-height: 0;
         padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .itinerary-map-content {
+        padding-top: 60px;
     }
 }

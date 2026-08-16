@@ -112,13 +112,13 @@ $jsVersion = (int) (filemtime(LAUCO_ROOT . '/assets/js/mappa-itinerari.js') ?: 1
     <link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css">
     <link rel="stylesheet" href="/assets/css/mappa-itinerari.css?v=<?= $cssVersion ?>">
 </head>
-<body>
+<body class="itinerary-map-layout">
 <div id="myloader"><span class="loader"><div class="inner-loader"></div></span></div>
 <div id="main-wrap" class="full-width">
     <?php require LAUCO_VIEW_PATH . '/partials/menu.php'; ?>
-    <div id="page-content" class="header-static footer-fixed">
+    <div id="page-content" class="footer-fixed itinerary-map-content">
         <main class="itinerary-map-page">
-            <section class="itinerary-map-stage">
+            <section class="itinerary-map-stage fullpage-wrap">
                 <div id="itinerary-map" aria-label="<?= e($labels['title']) ?>"></div>
                 <div class="itinerary-map-toolbar">
                     <h1><?= e($labels['title']) ?></h1>

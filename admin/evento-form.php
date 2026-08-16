@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../inc/auth.php';
+require_once __DIR__ . '/../inc/facebook-publishing.php';
 require_admin();
 require_once __DIR__ . '/_admin_layout.php';
 
@@ -158,6 +159,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        if (isset($_POST['facebook_publish'])) {
+            $facebookEntityForPublishing = array_merge($data, ['id' => $eventoId]);
+            $facebookResult = facebook_publish_entity(
+                $pdo,
+                'evento',
+                $eventoId,
+                $facebookEntityForPublishing,
+                (string) ($_POST['facebook_message'] ?? ''),
+                admin_id()
+            );
+            $facebookStatus = in_array($facebookResult['status'], ['published', 'duplicate', 'unpublished', 'unconfigured', 'failed'], true)
+                ? $facebookResult['status']
+                : 'failed';
+            header('Location: evento-form.php?id=' . $eventoId . '&saved=1&facebook=' . rawurlencode($facebookStatus));
+            exit;
+        }
+
         header('Location: eventi.php');
         exit;
     } catch (Throwable $e) {
@@ -165,6 +183,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $evento = array_merge($evento, $_POST);
     }
 }
+
+$facebookEntityType = 'evento';
+$facebookEntityId = (int) ($evento['id'] ?? 0);
+$facebookEntity = $evento;
 ?>
 
 <?php admin_page_open('Evento', 'eventi'); ?>
@@ -177,23 +199,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <input type="hidden" name="id" value="<?= (int)($evento['id'] ?? 0) ?>">
 
 <div class="grid">
-    <div><label>Titolo *</label><input name="titolo" value="<?= e($evento['titolo']) ?>" required></div>
+    <div><label for="titolo">Titolo *</label><input id="titolo" name="titolo" value="<?= e($evento['titolo']) ?>" required></div>
     <div><label>Slug</label><input name="slug" value="<?= e($evento['slug']) ?>"><div class="hint">Se vuoto viene generato dal titolo.</div></div>
-    <div><label>Data evento</label><input type="date" name="data_evento" value="<?= e($evento['data_evento']) ?>"></div>
+    <div><label for="data_evento">Data evento</label><input id="data_evento" type="date" name="data_evento" value="<?= e($evento['data_evento']) ?>"></div>
     <div><label>Categoria</label><input name="categoria" value="<?= e($evento['categoria']) ?>" placeholder="Corsa, Tradizione"></div>
-    <div><label>Località</label><input name="localita" value="<?= e($evento['localita']) ?>"></div>
+    <div><label for="localita">Località</label><input id="localita" name="localita" value="<?= e($evento['localita']) ?>"></div>
     <div><label>Stato</label><label><input type="checkbox" name="pubblicato" value="1" <?= !empty($evento['pubblicato']) ? 'checked' : '' ?> style="width:auto"> pubblicato</label></div>
     <div><label>Ordine</label><input type="number" name="ordine" value="<?= e($evento['ordine']) ?>"></div>
     <div><label>Foto copertina</label><input type="file" name="cover_image" accept=".jpg,.jpeg,.png,.webp,.gif,image/*">
         <?php if (!empty($evento['cover_image'])): ?><div class="hint">Attuale: <?= e($evento['cover_image']) ?></div><img src="../<?= e($evento['cover_image']) ?>" style="max-width:220px;margin-top:10px"><?php endif; ?>
     </div>
-    <div class="full"><label>Descrizione breve</label><textarea name="excerpt"><?= e($evento['excerpt']) ?></textarea></div>
+    <div class="full"><label for="excerpt">Descrizione breve</label><textarea id="excerpt" name="excerpt"><?= e($evento['excerpt']) ?></textarea></div>
     <div class="full"><label>Testo completo</label><textarea name="contenuto" style="min-height:260px"><?= e($evento['contenuto']) ?></textarea></div>
     <div class="full"><label>Foto gallery</label><input type="file" name="gallery_images[]" accept=".jpg,.jpeg,.png,.webp,.gif,image/*" multiple>
         <?php if ($gallery): ?><div class="thumbs">
             <?php foreach ($gallery as $img): ?><label class="thumb"><img src="../<?= e($img['image_path']) ?>"><input type="checkbox" name="delete_gallery[]" value="<?= (int)$img['id'] ?>" style="width:auto"> elimina</label><?php endforeach; ?>
         </div><?php endif; ?>
     </div>
+    <?php require __DIR__ . '/_facebook_publish_panel.php'; ?>
     <div class="full"><button class="btn" type="submit">Salva evento</button> <a class="btn secondary" href="eventi.php">Annulla</a></div>
 </div>
 </form>

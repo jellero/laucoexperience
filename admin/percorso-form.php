@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../inc/auth.php';
 require_once __DIR__ . '/../inc/gpx-stats.php';
+require_once __DIR__ . '/../inc/facebook-publishing.php';
 require_admin();
 require_once __DIR__ . '/_admin_layout.php';
 
@@ -292,6 +293,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        if (isset($_POST['facebook_publish'])) {
+            $facebookEntityForPublishing = array_merge($data, ['id' => $percorsoId]);
+            $facebookResult = facebook_publish_entity(
+                $pdo,
+                'percorso',
+                $percorsoId,
+                $facebookEntityForPublishing,
+                (string) ($_POST['facebook_message'] ?? ''),
+                admin_id()
+            );
+            $facebookStatus = in_array($facebookResult['status'], ['published', 'duplicate', 'unpublished', 'unconfigured', 'failed'], true)
+                ? $facebookResult['status']
+                : 'failed';
+            header('Location: percorso-form.php?id=' . $percorsoId . '&saved=1&facebook=' . rawurlencode($facebookStatus));
+            exit;
+        }
+
         header('Location: percorsi.php');
         exit;
     } catch (Throwable $e) {
@@ -304,6 +322,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php
 $displayDifficulty = trim((string) ($percorso['difficolta'] ?? '')) ?: ($currentStats['difficulty'] ?? '-');
 $displayTime = trim((string) ($percorso['tempo'] ?? '')) ?: ($currentStats['duration_label'] ?? '-');
+$facebookEntityType = 'percorso';
+$facebookEntityId = (int) ($percorso['id'] ?? 0);
+$facebookEntity = $percorso;
 ?>
 
 <?php admin_page_open('Percorso', 'percorsi'); ?>
@@ -437,6 +458,8 @@ $displayTime = trim((string) ($percorso['tempo'] ?? '')) ?: ($currentStats['dura
                             </div>
                         <?php endif; ?>
                     </div>
+
+                    <?php require __DIR__ . '/_facebook_publish_panel.php'; ?>
 
                     <div class="full">
                         <button class="btn" type="submit">Salva percorso</button>

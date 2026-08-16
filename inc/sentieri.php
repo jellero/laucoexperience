@@ -63,12 +63,17 @@ if (!function_exists('sentieri_gpx_files')) {
     }
 }
 
-if (!function_exists('sentieri_name_from_filename')) {
-    function sentieri_name_from_filename(string $filename): string
+if (!function_exists('sentieri_code_from_filename')) {
+    function sentieri_code_from_filename(string $filename): string
     {
-        $name = pathinfo($filename, PATHINFO_FILENAME);
-        $name = preg_replace('/[_-]+/u', ' ', $name) ?? $name;
-        return trim(preg_replace('/\s+/u', ' ', $name) ?? $name) ?: 'Sentiero';
+        if (preg_match('/#_([^\.]+)\.gpx$/i', $filename, $matches)) {
+            $code = (string) $matches[1];
+        } else {
+            $code = pathinfo($filename, PATHINFO_FILENAME);
+        }
+        $code = preg_replace('/[_-]+/u', ' ', $code) ?? $code;
+        $code = trim(preg_replace('/\s+/u', ' ', $code) ?? $code);
+        return $code !== '' ? mb_strtoupper($code, 'UTF-8') : 'SENZA CODICE';
     }
 }
 
@@ -180,31 +185,42 @@ if (!function_exists('sentieri_sync_gpx_directory')) {
         $files = sentieri_gpx_files();
         $paths = array_column($files, 'path');
         $known = [];
-        foreach ($pdo->query("SELECT id,gpx_file FROM sentieri WHERE gpx_file LIKE 'gpx/%'")->fetchAll() as $row) {
-            $known[(string) $row['gpx_file']] = (int) $row['id'];
+        foreach ($pdo->query("SELECT id,nome,codice,gpx_file FROM sentieri WHERE gpx_file LIKE 'gpx/%'")->fetchAll() as $row) {
+            $known[(string) $row['gpx_file']] = $row;
         }
 
         $pdo->beginTransaction();
         try {
             foreach ($files as $file) {
                 if (isset($known[$file['path']])) {
+                    $row = $known[$file['path']];
+                    $code = sentieri_code_from_filename($file['filename']);
+                    if ((string) $row['nome'] !== $code || (string) ($row['codice'] ?? '') !== $code) {
+                        $pdo->prepare('UPDATE sentieri SET nome=:name_code,codice=:trail_code,updated_by=:admin WHERE id=:id')->execute([
+                            'name_code' => $code,
+                            'trail_code' => $code,
+                            'admin' => $adminId,
+                            'id' => (int) $row['id'],
+                        ]);
+                    }
                     continue;
                 }
-                $name = sentieri_name_from_filename($file['filename']);
+                $code = sentieri_code_from_filename($file['filename']);
                 $pdo->prepare(
-                    'INSERT INTO sentieri (nome,slug,gpx_file,stato,pubblicato,created_by,updated_by) VALUES (:nome,:slug,:gpx,\'in_verifica\',1,:created_by,:updated_by)'
+                    'INSERT INTO sentieri (nome,codice,slug,gpx_file,stato,pubblicato,created_by,updated_by) VALUES (:name_code,:trail_code,:slug,:gpx,\'in_verifica\',1,:created_by,:updated_by)'
                 )->execute([
-                    'nome' => $name,
-                    'slug' => sentieri_unique_slug($pdo, $name),
+                    'name_code' => $code,
+                    'trail_code' => $code,
+                    'slug' => sentieri_unique_slug($pdo, $code),
                     'gpx' => $file['path'],
                     'created_by' => $adminId,
                     'updated_by' => $adminId,
                 ]);
             }
 
-            foreach ($known as $path => $id) {
+            foreach ($known as $path => $row) {
                 if (!in_array($path, $paths, true)) {
-                    $pdo->prepare('DELETE FROM sentieri WHERE id = :id')->execute(['id' => $id]);
+                    $pdo->prepare('DELETE FROM sentieri WHERE id = :id')->execute(['id' => (int) $row['id']]);
                 }
             }
             $pdo->commit();
@@ -228,10 +244,11 @@ if (!function_exists('sentieri_directory_rows')) {
 
         $rows = [];
         foreach (sentieri_gpx_files() as $file) {
+            $code = sentieri_code_from_filename($file['filename']);
             $row = $metadata[$file['path']] ?? [
                 'id' => 0,
-                'nome' => sentieri_name_from_filename($file['filename']),
-                'codice' => null,
+                'nome' => $code,
+                'codice' => $code,
                 'slug' => sentieri_slugify($file['filename']),
                 'localita' => null,
                 'descrizione' => null,
@@ -243,6 +260,8 @@ if (!function_exists('sentieri_directory_rows')) {
                 'pubblicato' => 1,
                 'ordine' => 0,
             ];
+            $row['nome'] = $code;
+            $row['codice'] = $code;
             if ($publishedOnly && empty($row['pubblicato'])) {
                 continue;
             }

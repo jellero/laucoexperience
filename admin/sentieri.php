@@ -22,8 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($action === 'save') {
             $id = (int) ($_POST['id'] ?? 0);
             $status = (string) ($_POST['stato'] ?? 'in_verifica');
-            $name = mb_substr(trim((string) ($_POST['nome'] ?? '')), 0, 190);
-            if ($id < 1 || $name === '' || !array_key_exists($status, sentieri_statuses())) {
+            if ($id < 1 || !array_key_exists($status, sentieri_statuses())) {
                 throw new RuntimeException('Dati del sentiero non validi.');
             }
             $checkedAt = sentieri_normalize_datetime((string) ($_POST['ultima_verifica_at'] ?? ''));
@@ -34,11 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$old || !is_file(dirname(__DIR__) . '/' . (string) $old['gpx_file'])) {
                 throw new RuntimeException('Il file GPX non è più presente nella cartella. Aggiorna l’elenco.');
             }
+            $code = sentieri_code_from_filename(basename((string) $old['gpx_file']));
 
             $pdo->beginTransaction();
-            $pdo->prepare('UPDATE sentieri SET nome=:nome,codice=:codice,stato=:stato,nota_pubblica=:nota,ultima_verifica_at=:checked,pubblicato=:pubblicato,updated_by=:admin WHERE id=:id')->execute([
-                'nome' => $name,
-                'codice' => mb_substr(trim((string) ($_POST['codice'] ?? '')), 0, 80) ?: null,
+            $pdo->prepare('UPDATE sentieri SET nome=:name_code,codice=:trail_code,stato=:stato,nota_pubblica=:nota,ultima_verifica_at=:checked,pubblicato=:pubblicato,updated_by=:admin WHERE id=:id')->execute([
+                'name_code' => $code,
+                'trail_code' => $code,
                 'stato' => $status,
                 'nota' => $note,
                 'checked' => $checkedAt,
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
             }
             $pdo->commit();
-            $_SESSION['sentieri_flash'] = 'Stato aggiornato per ' . $name . '.';
+            $_SESSION['sentieri_flash'] = 'Stato aggiornato per il sentiero ' . $code . '.';
         } elseif ($action === 'delete') {
             $id = (int) ($_POST['id'] ?? 0);
             $stmt = $pdo->prepare("SELECT nome,gpx_file FROM sentieri WHERE id=:id AND gpx_file LIKE 'gpx/%' LIMIT 1");
@@ -134,7 +134,7 @@ admin_page_open('Sentieri', 'sentieri');
         </div>
 
         <table class="trail-table">
-            <thead><tr><th>File GPX</th><th>Nome e codice</th><th>Stato</th><th>Nota pubblica</th><th>Ultima verifica</th><th>Pubblico</th><th>Azioni</th></tr></thead>
+            <thead><tr><th>File GPX</th><th>Codice</th><th>Stato</th><th>Nota pubblica</th><th>Ultima verifica</th><th>Pubblico</th><th>Azioni</th></tr></thead>
             <tbody>
             <?php if ($trails === []): ?><tr><td colspan="7">La cartella <code>/gpx</code> non contiene file GPX.</td></tr><?php endif; ?>
             <?php foreach ($trails as $trail): $stats = gpx_stats((string) $trail['gpx_file'], 'piedi'); $formId = 'trail-' . (int) $trail['id']; ?>
@@ -144,7 +144,7 @@ admin_page_open('Sentieri', 'sentieri');
                         <small><?= e($stats['length_label']) ?> · +<?= (int) ($stats['ascent_m'] ?? 0) ?> m · <?= e(date('d/m/Y H:i', (int) $trail['file_modified_at'])) ?></small><br>
                         <a href="../gpx/<?= rawurlencode((string) $trail['filename']) ?>?download=1">Scarica</a>
                     </td>
-                    <td><input form="<?= e($formId) ?>" name="nome" value="<?= e($trail['nome']) ?>" required><input form="<?= e($formId) ?>" name="codice" value="<?= e($trail['codice']) ?>" placeholder="Codice (facoltativo)"></td>
+                    <td><strong class="trail-code"><?= e($trail['codice']) ?></strong></td>
                     <td><select form="<?= e($formId) ?>" name="stato"><?php foreach (sentieri_statuses() as $value => $label): ?><option value="<?= e($value) ?>" <?= (string) $trail['stato'] === $value ? 'selected' : '' ?>><?= e($label) ?></option><?php endforeach; ?></select></td>
                     <td><textarea form="<?= e($formId) ?>" name="nota_pubblica" rows="3"><?= e($trail['nota_pubblica']) ?></textarea></td>
                     <td><input form="<?= e($formId) ?>" type="datetime-local" name="ultima_verifica_at" value="<?= !empty($trail['ultima_verifica_at']) ? e(date('Y-m-d\TH:i', strtotime((string) $trail['ultima_verifica_at']))) : '' ?>"></td>

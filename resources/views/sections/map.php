@@ -1,6 +1,8 @@
 <?php
 /** Sezione pagina mappa */
 
+require_once LAUCO_ROOT . '/inc/sentieri.php';
+
 $gpxDirFs  = rtrim((string) (defined('LAUCO_ROOT') ? LAUCO_ROOT : dirname(__DIR__, 3)), '/') . '/gpx';
 $gpxDirWeb = '/gpx';
 $routes    = [];
@@ -12,12 +14,8 @@ if (is_dir($gpxDirFs)) {
     foreach ($files as $filePath) {
         $filename = basename($filePath);
 
-        // LAUCO_#_8-V.gpx -> 8-V
-        if (preg_match('/#_([^\.]+)\.gpx$/i', $filename, $matches)) {
-            $title = trim($matches[1]);
-        } else {
-            $title = pathinfo($filename, PATHINFO_FILENAME);
-        }
+        // LAUCO_#_8-V.gpx -> 8 V
+        $title = sentieri_code_from_filename($filename);
 
         $routes[] = [
             'id'       => 'route_' . md5($filename),

@@ -57,8 +57,8 @@ $trailStatusKeys = [
                         <?php foreach ($trailRows as $trail): $status=(string)($trail['stato'] ?: 'in_verifica'); $stats=gpx_stats((string)$trail['gpx_file'],'piedi'); ?>
                             <article class="trail-status-card" data-status="<?= e($status) ?>">
                                 <div>
-                                    <small><?= !empty($trail['codice']) ? e((string)$trail['codice']) : e(site_text('trail_status.trail', null, 'Sentiero')) ?><?= !empty($trail['localita']) ? ' · '.e($trail['localita']) : '' ?></small>
-                                    <h3><?= e($trail['nome']) ?></h3>
+                                    <small><?= e(site_text('trail_status.trail', null, 'Sentiero')) ?><?= !empty($trail['localita']) ? ' · '.e($trail['localita']) : '' ?></small>
+                                    <h3><?= e($trail['codice']) ?></h3>
                                     <?php if (!empty($trail['descrizione'])): ?><p><?= nl2br(e($trail['descrizione'])) ?></p><?php endif; ?>
                                     <?php if (!empty($trail['nota_pubblica'])): ?><p><strong><?= e(site_text('trail_status.notice', null, 'Avviso')) ?>:</strong> <?= nl2br(e($trail['nota_pubblica'])) ?></p><?php endif; ?>
                                     <p class="trail-status-date"><strong><?= e(site_text('trail_status.last_check', null, 'Ultima verifica')) ?>:</strong> <?= !empty($trail['ultima_verifica_at']) ? e(date('d/m/Y', strtotime((string)$trail['ultima_verifica_at']))) : e(site_text('trail_status.unknown', null, 'Non ancora verificato')) ?></p>

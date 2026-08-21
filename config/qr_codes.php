@@ -8,4 +8,10 @@ return [
         'entry' => '/map',
         'destination' => '/mappa',
     ],
+    'chiosco' => [
+        'label' => 'Chiosco',
+        'area' => 'Chiosco',
+        'entry' => '/chiosco',
+        'destination' => '/',
+    ],
 ];

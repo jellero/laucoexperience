@@ -4,6 +4,7 @@ declare(strict_types=1);
 return [
     ['name' => 'home', 'methods' => ['GET'], 'paths' => ['/', '/index', '/index.php'], 'handler' => 'page', 'template' => 'index.php', 'script' => 'index.php'],
     ['name' => 'map.qr', 'methods' => ['GET'], 'paths' => ['/map', '/map.php'], 'handler' => 'qr-redirect'],
+    ['name' => 'kiosk.qr', 'methods' => ['GET'], 'paths' => ['/chiosco'], 'handler' => 'qr-redirect'],
     ['name' => 'map', 'methods' => ['GET'], 'paths' => ['/mappa'], 'handler' => 'page', 'template' => 'map.php', 'script' => 'map.php'],
     ['name' => 'map.pdf', 'methods' => ['GET'], 'paths' => ['/mappa/pdf'], 'handler' => 'map-pdf'],
     ['name' => 'gpx.file', 'methods' => ['GET'], 'paths' => ['/gpx-file', '/gpx/{filename:.+}'], 'handler' => 'gpx-file'],

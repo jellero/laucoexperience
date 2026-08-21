@@ -11,6 +11,12 @@ $qrSummary = qr_stats_summary($pdo);
 $qrDaily = qr_stats_daily($pdo, 30);
 $qrDetailAvailable = qr_scan_log_available($pdo);
 $qrRecent = $qrDetailAvailable ? qr_stats_recent($pdo, 50) : [];
+$qrRegistry = qr_registry();
+$qrTop = qr_stats_top($pdo, 30);
+$qrTopByCode = [];
+foreach ($qrTop as $row) {
+    $qrTopByCode[(string) $row['qr_code']] = $row;
+}
 
 $gpxSummary = download_stats_summary($pdo, 'gpx');
 $pdfSummary = download_stats_summary($pdo, 'map_pdf');
@@ -263,7 +269,7 @@ admin_page_open('Statistiche', 'qr-stats');
         <table>
             <thead><tr><th>Voce</th><th>Totale</th></tr></thead>
             <tbody>
-                <tr><td>Scansioni QR mappa</td><td><strong><?= (int) $qrSummary['total'] ?></strong></td></tr>
+                <tr><td>Scansioni QR</td><td><strong><?= (int) $qrSummary['total'] ?></strong></td></tr>
                 <tr><td>Download GPX</td><td><strong><?= (int) $gpxSummary['total'] ?></strong></td></tr>
                 <tr><td>Mappa PDF</td><td><strong><?= (int) $pdfSummary['total'] ?></strong></td></tr>
                 <tr><td>Visualizzazioni pagine</td><td><strong><?= (int) $pageSummary['total'] ?></strong></td></tr>
@@ -271,6 +277,28 @@ admin_page_open('Statistiche', 'qr-stats');
                 <tr><td>Azioni di condivisione</td><td><strong><?= (int) $shareSummary['total'] ?></strong></td></tr>
             </tbody>
         </table>
+    </section>
+
+    <section class="admin-card" style="margin-top:22px">
+        <h2>Risorse QR</h2>
+        <p class="hint">Conteggi separati per ciascun URL QR attivo.</p>
+        <div style="overflow-x:auto">
+            <table>
+                <thead><tr><th>Risorsa</th><th>URL QR</th><th>Destinazione</th><th>30 giorni</th><th>Totale</th></tr></thead>
+                <tbody>
+                <?php foreach ($qrRegistry as $code => $definition): ?>
+                    <?php $stats = $qrTopByCode[(string) $code] ?? ['period_scans' => 0, 'total_scans' => 0]; ?>
+                    <tr>
+                        <td><strong><?= e((string) ($definition['label'] ?? $code)) ?></strong><br><small><code><?= e((string) $code) ?></code></small></td>
+                        <td><code><?= e((string) ($definition['entry'] ?? ('/qr?c=' . urlencode((string) $code)))) ?></code></td>
+                        <td><code><?= e((string) ($definition['destination'] ?? '')) ?></code></td>
+                        <td><?= (int) $stats['period_scans'] ?></td>
+                        <td><?= (int) $stats['total_scans'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </section>
 
     <section class="dashboard-columns" style="margin-top:22px">
@@ -460,7 +488,7 @@ admin_page_open('Statistiche', 'qr-stats');
 
     <section class="admin-card" style="margin-top:22px">
         <h2>Ultime scansioni QR</h2>
-        <p class="hint">Il QR fisico usa <code>/map</code>; gli accessi normali a <code>/mappa</code> restano esclusi. L'indirizzo IP non viene raccolto.</p>
+        <p class="hint">Gli URL QR configurati, per esempio <code>/map</code> e <code>/chiosco</code>, vengono tracciati separatamente. L'indirizzo IP non viene raccolto.</p>
         <?php if (!$qrDetailAvailable): ?>
             <p>Dettaglio non ancora disponibile.</p>
         <?php elseif ($qrRecent === []): ?>
@@ -468,11 +496,13 @@ admin_page_open('Statistiche', 'qr-stats');
         <?php else: ?>
             <div style="overflow-x:auto">
                 <table>
-                    <thead><tr><th>Data e ora</th><th>Dispositivo</th></tr></thead>
+                    <thead><tr><th>Data e ora</th><th>Risorsa</th><th>Dispositivo</th></tr></thead>
                     <tbody>
                     <?php foreach ($qrRecent as $scan): ?>
+                        <?php $qrDefinition = qr_definition((string) $scan['qr_code']); ?>
                         <tr>
                             <td style="white-space:nowrap"><?= e($scan['scanned_at']) ?></td>
+                            <td><strong><?= e((string) ($qrDefinition['label'] ?? $scan['qr_code'])) ?></strong><br><small><code><?= e((string) $scan['qr_code']) ?></code></small></td>
                             <td><?= e($deviceLabels[$scan['device_type']] ?? ucfirst($scan['device_type'])) ?></td>
                         </tr>
                     <?php endforeach; ?>

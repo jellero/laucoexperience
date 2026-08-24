@@ -34,6 +34,7 @@ return [
     ['name' => 'contact', 'methods' => ['GET'], 'paths' => ['/contatti', '/contatti.php'], 'handler' => 'page', 'template' => 'contatti.php', 'script' => 'contatti.php'],
     ['name' => 'contribute', 'methods' => ['GET', 'POST'], 'paths' => ['/contribuisci', '/contribuisci.php'], 'handler' => 'page', 'template' => 'contribuisci.php', 'script' => 'contribuisci.php'],
     ['name' => 'report', 'methods' => ['GET', 'POST'], 'paths' => ['/segnala-problema', '/segnala-problema.php'], 'handler' => 'page', 'template' => 'segnala-problema.php', 'script' => 'segnala-problema.php'],
+    ['name' => 'volunteer.page', 'methods' => ['GET'], 'paths' => ['/volontariato', '/volontariato.php'], 'handler' => 'page', 'template' => 'volontariato.php', 'script' => 'volontariato.php'],
     ['name' => 'privacy', 'methods' => ['GET'], 'paths' => ['/privacy', '/privacy.php'], 'handler' => 'page', 'template' => 'privacy.php', 'script' => 'privacy.php'],
     ['name' => 'cookies', 'methods' => ['GET'], 'paths' => ['/cookie', '/cookie.php'], 'handler' => 'page', 'template' => 'cookie.php', 'script' => 'cookie.php'],
     ['name' => 'sitemap', 'methods' => ['GET'], 'paths' => ['/sitemap.xml'], 'handler' => 'sitemap'],

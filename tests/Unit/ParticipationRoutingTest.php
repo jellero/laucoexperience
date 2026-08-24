@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace LaucoExperience\Tests\Unit;
 
+use LaucoExperience\Localization\SiteCatalogRepository;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Factory\ServerRequestFactory;
 
@@ -36,6 +37,35 @@ final class ParticipationRoutingTest extends TestCase
         self::assertStringNotContainsString('dal gesto più semplice', $section);
         self::assertStringNotContainsString('sections/volontariato.php', $section);
         self::assertStringNotContainsString('volunteerSignupForm', $section);
+    }
+
+    public function testParticipationStringsExistInEverySupportedLanguage(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $repository = new SiteCatalogRepository(
+            $root . '/resources/lang',
+            sys_get_temp_dir() . '/lauco-participation-catalog-' . bin2hex(random_bytes(4))
+        );
+        $keys = [
+            'participation.active.body',
+            'participation.active.cta',
+            'participation.active.title',
+            'participation.home.intro',
+            'participation.volunteer.breadcrumb',
+            'participation.volunteer.hero',
+        ];
+
+        foreach (['it', 'en', 'de', 'sl'] as $locale) {
+            $catalog = $repository->loadDefault($locale);
+            foreach ($keys as $key) {
+                self::assertArrayHasKey($key, $catalog, $locale . ': ' . $key);
+                self::assertNotSame('', trim((string) $catalog[$key]), $locale . ': ' . $key);
+            }
+        }
+
+        self::assertSame('Get actively involved', $repository->loadDefault('en')['participation.active.title']);
+        self::assertSame('Aktiv mitmachen', $repository->loadDefault('de')['participation.active.title']);
+        self::assertSame('Aktivno sodeluj', $repository->loadDefault('sl')['participation.active.title']);
     }
 
     public function testVolunteerPageIsIncludedInThePublicSitemap(): void

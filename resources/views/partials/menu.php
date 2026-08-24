@@ -60,12 +60,13 @@ if (!function_exists('isCurrent')) {
                         <li><a href="/" class="<?= isCurrent('index.php') ? 'active-item' : '' ?>">Home</a></li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php','stato-sentieri.php']) ? 'active-item' : '' ?>">Mappa</a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php','stato-sentieri.php','gestione-sentieri.php']) ? 'active-item' : '' ?>">Mappa</a>
                             <ul class="sub-menu">
                                 <li><a href="/mappa"><?= htmlspecialchars($trailMapLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/segnaletica">Segnaletica</a></li>
                                 <li><a href="/consigli">Consigli escursionistici</a></li>
                                 <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/stato-sentieri'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($trailStatusLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
+                                <li><a href="/gestione-sentieri">Gestione sentieri</a></li>
                             </ul>
                         </li>
 
@@ -93,9 +94,8 @@ if (!function_exists('isCurrent')) {
                         </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['gestione-sentieri.php','segnala-problema.php','contribuisci.php','volontariato.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['segnala-problema.php','contribuisci.php','volontariato.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">
-                                <li><a href="/gestione-sentieri">Come gestiamo i sentieri</a></li>
                                 <li><a href="/segnala-problema">Segnala un problema</a></li>
                                 <li><a href="/contribuisci">Invia un contributo</a></li>
                                 <li><a href="/volontariato">Partecipa attivamente</a></li>

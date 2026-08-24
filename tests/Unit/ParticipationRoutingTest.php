@@ -21,7 +21,7 @@ final class ParticipationRoutingTest extends TestCase
         self::assertStringContainsString('action="/volontariato/iscrizione"', $body);
     }
 
-    public function testHomeParticipationOffersThreeProgressiveActionsWithoutEmbeddingTheForm(): void
+    public function testHomeParticipationOffersThreeIndependentActionsWithoutEmbeddingTheForm(): void
     {
         $section = file_get_contents(dirname(__DIR__, 2) . '/resources/views/sections/contributi.php');
 
@@ -29,9 +29,11 @@ final class ParticipationRoutingTest extends TestCase
         self::assertStringContainsString('href="/segnala-problema"', $section);
         self::assertStringContainsString('href="/contribuisci"', $section);
         self::assertStringContainsString('href="/volontariato"', $section);
-        self::assertStringContainsString('<span class="code">1</span>', $section);
-        self::assertStringContainsString('<span class="code">2</span>', $section);
-        self::assertStringContainsString('<span class="code">3</span>', $section);
+        self::assertStringNotContainsString('<span class="code">1</span>', $section);
+        self::assertStringNotContainsString('<span class="code">2</span>', $section);
+        self::assertStringNotContainsString('<span class="code">3</span>', $section);
+        self::assertStringNotContainsString('modalità progressive', $section);
+        self::assertStringNotContainsString('dal gesto più semplice', $section);
         self::assertStringNotContainsString('sections/volontariato.php', $section);
         self::assertStringNotContainsString('volunteerSignupForm', $section);
     }

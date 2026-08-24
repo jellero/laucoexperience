@@ -1,6 +1,6 @@
 <?php
 /*
- * Sezione Home: tre modalità progressive per partecipare al progetto.
+ * Sezione Home: tre modalità distinte per partecipare al progetto.
  */
 ?>
 <section id="contributi-segnalazioni" class="">
@@ -9,7 +9,7 @@
             <div class="col-md-12 padding-leftright-null text text-center">
                 <h2 class="margin-bottom-null title line center">Partecipa al progetto</h2>
                 <p class="heading center grey margin-bottom">
-                    Tre modi per contribuire, dal gesto più semplice alla partecipazione attiva.
+                    Scegli come contribuire a Lauco Experience in base a ciò che vuoi fare.
                 </p>
             </div>
         </div>
@@ -18,7 +18,6 @@
             <div class="col-md-12 text">
                 <div class="contribution-grid">
                     <a class="contribution-card" href="/segnala-problema">
-                        <span class="code">1</span>
                         <h3>Segnala un problema</h3>
                         <p>
                             Segnala errori, tratti non percorribili, problemi di segnaletica, ostacoli,
@@ -28,7 +27,6 @@
                     </a>
 
                     <a class="contribution-card" href="/contribuisci">
-                        <span class="code">2</span>
                         <h3>Invia un contributo</h3>
                         <p>
                             Invia fotografie, descrizioni, tracce, punti di interesse o informazioni utili
@@ -38,7 +36,6 @@
                     </a>
 
                     <a class="contribution-card" href="/volontariato">
-                        <span class="code">3</span>
                         <h3>Partecipa attivamente</h3>
                         <p>
                             Metti a disposizione tempo e disponibilità per attività concrete di cura,
@@ -69,7 +66,7 @@
         position: relative;
         background: #fff;
         padding: 34px 32px 32px;
-        min-height: 300px;
+        min-height: 260px;
         color: inherit;
         text-decoration: none;
         box-shadow: 0 10px 30px rgba(0,0,0,.06);
@@ -84,21 +81,6 @@
         transform: translateY(-4px);
         box-shadow: 0 18px 42px rgba(0,0,0,.12);
         border-color: rgba(0,0,0,.08);
-    }
-
-    #contributi-segnalazioni .contribution-card .code {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 58px;
-        height: 58px;
-        margin-bottom: 22px;
-        border-radius: 50%;
-        background: #222;
-        color: #fff;
-        font-size: 26px;
-        font-weight: 700;
-        line-height: 1;
     }
 
     #contributi-segnalazioni .contribution-card h3 {

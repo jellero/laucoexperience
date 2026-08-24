@@ -1,7 +1,6 @@
 <?php
 /*
- * Sezione Home: Contributi e Segnalazioni.
- * Le due funzionalità restano separate dal nuovo modulo volontariato.
+ * Sezione Home: tre modalità progressive per partecipare al progetto.
  */
 ?>
 <section id="contributi-segnalazioni" class="">
@@ -10,7 +9,7 @@
             <div class="col-md-12 padding-leftright-null text text-center">
                 <h2 class="margin-bottom-null title line center">Partecipa al progetto</h2>
                 <p class="heading center grey margin-bottom">
-                    Contributi e segnalazioni aiutano a mantenere Lauco Experience vivo, utile e aggiornato.
+                    Tre modi per contribuire, dal gesto più semplice alla partecipazione attiva.
                 </p>
             </div>
         </div>
@@ -18,9 +17,19 @@
         <div class="row margin-leftright-null">
             <div class="col-md-12 text">
                 <div class="contribution-grid">
+                    <a class="contribution-card" href="/segnala-problema">
+                        <span class="code">1</span>
+                        <h3>Segnala un problema</h3>
+                        <p>
+                            Segnala errori, tratti non percorribili, problemi di segnaletica, ostacoli,
+                            variazioni del percorso o informazioni da correggere e aggiornare.
+                        </p>
+                        <span class="card-link">Segnala un problema</span>
+                    </a>
+
                     <a class="contribution-card" href="/contribuisci">
-                        <span class="code">+</span>
-                        <h3>Contribuisci</h3>
+                        <span class="code">2</span>
+                        <h3>Invia un contributo</h3>
                         <p>
                             Invia fotografie, descrizioni, tracce, punti di interesse o informazioni utili
                             per arricchire le schede del sito e raccontare meglio il territorio di Lauco.
@@ -28,22 +37,20 @@
                         <span class="card-link">Invia un contributo</span>
                     </a>
 
-                    <a class="contribution-card" href="/segnala-problema">
-                        <span class="code">!</span>
-                        <h3>Segnalazioni</h3>
+                    <a class="contribution-card" href="/volontariato">
+                        <span class="code">3</span>
+                        <h3>Partecipa attivamente</h3>
                         <p>
-                            Segnala errori, tratti non percorribili, problemi di segnaletica, ostacoli,
-                            variazioni del percorso o informazioni da correggere e aggiornare.
+                            Metti a disposizione tempo e disponibilità per attività concrete di cura,
+                            supporto e valorizzazione del territorio insieme al progetto Lauco Experience.
                         </p>
-                        <span class="card-link">Segnala un problema</span>
+                        <span class="card-link">Vai al volontariato</span>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<?php require LAUCO_VIEW_PATH . '/sections/volontariato.php'; ?>
 
 <style>
     #contributi-segnalazioni {
@@ -52,7 +59,7 @@
 
     #contributi-segnalazioni .contribution-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 28px;
         margin-top: 18px;
     }
@@ -62,7 +69,7 @@
         position: relative;
         background: #fff;
         padding: 34px 32px 32px;
-        min-height: 280px;
+        min-height: 300px;
         color: inherit;
         text-decoration: none;
         box-shadow: 0 10px 30px rgba(0,0,0,.06);
@@ -117,11 +124,7 @@
         padding-bottom: 5px;
     }
 
-    @media (max-width: 767px) {
-        #contributi-segnalazioni {
-            padding: 60px 0;
-        }
-
+    @media (max-width: 991px) {
         #contributi-segnalazioni .contribution-grid {
             grid-template-columns: 1fr;
             gap: 20px;
@@ -129,6 +132,15 @@
 
         #contributi-segnalazioni .contribution-card {
             min-height: auto;
+        }
+    }
+
+    @media (max-width: 767px) {
+        #contributi-segnalazioni {
+            padding: 60px 0;
+        }
+
+        #contributi-segnalazioni .contribution-card {
             padding: 28px 24px;
         }
     }

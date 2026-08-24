@@ -93,11 +93,12 @@ if (!function_exists('isCurrent')) {
                         </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['gestione-sentieri.php','contribuisci.php','segnala-problema.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
+                            <a href="javascript:void(0)" class="<?= isCurrent(['gestione-sentieri.php','segnala-problema.php','contribuisci.php','volontariato.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">
-                                <li><a href="/gestione-sentieri">Gestione sentieri</a></li>
-                                <li><a href="/contribuisci">Contribuisci</a></li>
-                                <li><a href="/segnala-problema">Segnala problema</a></li>
+                                <li><a href="/gestione-sentieri">Come gestiamo i sentieri</a></li>
+                                <li><a href="/segnala-problema">Segnala un problema</a></li>
+                                <li><a href="/contribuisci">Invia un contributo</a></li>
+                                <li><a href="/volontariato">Partecipa attivamente</a></li>
                             </ul>
                         </li>
 

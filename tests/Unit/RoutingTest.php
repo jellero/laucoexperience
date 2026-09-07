@@ -124,19 +124,18 @@ final class RoutingTest extends TestCase
         self::assertSame(200, $response->getStatusCode());
         self::assertStringStartsWith('application/xml', $response->getHeaderLine('Content-Type'));
         self::assertStringContainsString('<urlset', $body);
-        self::assertStringContainsString('<loc>https://', $body);
+        self::assertStringContainsString('<loc>https://laucoexperience.it/</loc>', $body);
         self::assertStringContainsString('/mappa', $body);
         self::assertStringNotContainsString('<loc>https://laucoexperience.it/map</loc>', $body);
-        self::assertStringContainsString('hreflang="en"', $body);
-        self::assertStringContainsString('hreflang="de"', $body);
-        self::assertStringContainsString('hreflang="sl"', $body);
-        self::assertStringContainsString('hreflang="x-default"', $body);
+        self::assertStringNotContainsString('dev.laucoexperience.it', $body);
+        self::assertStringNotContainsString('hreflang=', $body);
+        self::assertStringNotContainsString('?lang=it', $body);
 
         $canonicalPaths = [
             '/', '/mappa', '/segnaletica', '/consigli', '/mappa-itinerari', '/itinerari-piedi', '/itinerari-mtb',
             '/itinerari-speciali', '/forra', '/barbecue', '/gestione-sentieri', '/stato-sentieri', '/luoghi',
             '/frazioni', '/storia', '/natura', '/come-arrivare', '/eventi', '/eventi/archivio',
-            '/contatti', '/contribuisci', '/segnala-problema', '/privacy', '/cookie',
+            '/contatti', '/contribuisci', '/segnala-problema', '/volontariato', '/privacy', '/cookie',
         ];
         foreach ($canonicalPaths as $path) {
             $url = 'https://laucoexperience.it' . ($path === '/' ? '/' : $path);

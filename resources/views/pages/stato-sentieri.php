@@ -62,7 +62,7 @@ $trailStatusKeys = [
                                     <?php if (!empty($trail['descrizione'])): ?><p><?= nl2br(e($trail['descrizione'])) ?></p><?php endif; ?>
                                     <?php if (!empty($trail['nota_pubblica'])): ?><p><strong><?= e(site_text('trail_status.notice', null, 'Avviso')) ?>:</strong> <?= nl2br(e($trail['nota_pubblica'])) ?></p><?php endif; ?>
                                     <p class="trail-status-date"><strong><?= e(site_text('trail_status.last_check', null, 'Ultima verifica')) ?>:</strong> <?= !empty($trail['ultima_verifica_at']) ? e(date('d/m/Y', strtotime((string)$trail['ultima_verifica_at']))) : e(site_text('trail_status.unknown', null, 'Non ancora verificato')) ?></p>
-                                    <p class="trail-status-meta"><?= e($stats['length_label']) ?> · +<?= (int)($stats['ascent_m'] ?? 0) ?> m</p>
+                                    <p class="trail-status-meta"><?= e(sprintf('%s · +%d m', (string) $stats['length_label'], (int) ($stats['ascent_m'] ?? 0))) ?></p>
                                     <a class="trail-status-link" href="/gpx/<?= rawurlencode(basename((string)$trail['gpx_file'])) ?>?download=1"><?= e(site_text('trail_status.download_gpx', null, 'Scarica GPX')) ?></a>
                                 </div>
                                 <span class="trail-status-badge <?= e($status) ?>"><?= e(site_text($trailStatusKeys[$status] ?? 'trail_status.pending', null, sentieri_status_label($status))) ?></span>

@@ -23,7 +23,7 @@ $footerClass = isset($footerClass) && is_string($footerClass) ? $footerClass : '
 
                 <ul class="sitemap">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/map">Mappa</a></li>
+                    <li><a href="/mappa">Mappa</a></li>
                     <li><a href="/itinerari-piedi">Itinerari</a></li>
                     <li><a href="/gestione-sentieri">Patrimonio</a></li>
                     <li><a href="/contatti">Contatti</a></li>

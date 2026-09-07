@@ -5,13 +5,13 @@ $copy = [
 'it'=>[
  'title'=>'Cookie Policy','subtitle'=>'Cookie tecnici, preferenze e Google Analytics','intro'=>'Questa pagina descrive gli strumenti di memorizzazione e misurazione usati da Lauco Experience. Google Analytics è disattivato per impostazione predefinita e viene caricato solo dopo una scelta esplicita dell’utente.',
  'sections'=>[
-  ['Cookie e strumenti necessari','Il sito usa solo le funzionalità tecniche necessarie al funzionamento. La preferenza relativa agli analytics viene salvata nel localStorage del browser con la chiave lauco_consent_v1, così il sito può ricordare la scelta senza attivare Google Analytics.'],
-  ['Google Analytics 4','Se accetti la misurazione statistica, viene caricato Google Analytics 4 con identificativo G-NCKVWM2EQ0. Prima del consenso analytics_storage, ad_storage, ad_user_data e ad_personalization sono impostati su denied. Dopo l’accettazione viene concesso soltanto analytics_storage; le funzioni pubblicitarie restano disabilitate. Google Signals e la personalizzazione pubblicitaria sono disabilitati.'],
-  ['Cookie Analytics','Con il consenso, Google Analytics può impostare cookie come _ga e _ga_<container-id>. La durata predefinita indicata da Google per questi cookie è fino a 2 anni, salvo limiti del browser o cancellazione anticipata.'],
+  ['Cookie e strumenti necessari','Il sito usa solo le funzionalità tecniche necessarie al funzionamento. La preferenza relativa ad Analytics viene salvata nel localStorage del browser con la chiave lauco_consent_v1, così il sito può ricordare la scelta senza attivare Google Analytics.'],
+  ['Google Analytics 4','Se accetti la misurazione statistica, viene caricato Google Analytics 4 con identificativo G-NCKVWM2EQ0. Prima del consenso, i parametri analytics_storage, ad_storage, ad_user_data e ad_personalization sono impostati su denied. Dopo l’accettazione viene concesso soltanto analytics_storage; le funzioni pubblicitarie restano disabilitate. Anche Google Signals e la personalizzazione pubblicitaria restano disabilitati.'],
+  ['Cookie di Analytics','Con il consenso, Google Analytics può impostare cookie come _ga e _ga_<container-id>. La durata predefinita indicata da Google per questi cookie è fino a due anni, salvo limiti del browser o cancellazione anticipata.'],
   ['Revoca e modifica della scelta','Puoi modificare la scelta in qualsiasi momento tramite il pulsante “Gestisci cookie”. La revoca disabilita nuovamente Google Analytics e il sito tenta di rimuovere i cookie _ga accessibili dal dominio.'],
-  ['Statistiche aggregate lato server','Le statistiche dei QR, i conteggi giornalieri delle pagine e le azioni avviate dal pulsante Condividi sono elaborati lato server e non richiedono cookie analytics né Google Analytics. Per accessi e condivisioni vengono salvati soltanto giorno, pagina, lingua, canale scelto e conteggio aggregato.'],
+  ['Statistiche aggregate lato server','Le statistiche dei QR, i conteggi giornalieri delle visualizzazioni di pagina e le azioni avviate dal pulsante Condividi sono elaborati lato server e non richiedono cookie analitici né Google Analytics. Per accessi e condivisioni vengono salvati soltanto giorno, pagina, lingua, canale scelto e conteggio aggregato.'],
  ],
- 'manage'=>'Gestisci cookie','updated'=>'Ultimo aggiornamento: 16 agosto 2026',
+ 'manage'=>'Gestisci cookie','updated'=>'Ultimo aggiornamento: 7 settembre 2026',
 ],
 'en'=>[
  'title'=>'Cookie Policy','subtitle'=>'Technical storage, preferences and Google Analytics','intro'=>'This page describes the storage and measurement tools used by Lauco Experience. Google Analytics is disabled by default and is loaded only after the user makes an explicit choice.',
@@ -22,7 +22,7 @@ $copy = [
   ['Withdraw or change consent','You can change your choice at any time using “Manage cookies”. Withdrawal disables Google Analytics again and the website attempts to remove accessible _ga cookies.'],
   ['Aggregate server-side statistics','QR statistics, daily page-view counts and actions started from the Share button are processed server-side and do not require analytics cookies or Google Analytics. Only the day, page, language, selected channel and aggregate count are stored for views and shares.'],
  ],
- 'manage'=>'Manage cookies','updated'=>'Last updated: 16 August 2026',
+ 'manage'=>'Manage cookies','updated'=>'Last updated: 7 September 2026',
 ],
 'de'=>[
  'title'=>'Cookie-Richtlinie','subtitle'=>'Technische Speicherung, Einstellungen und Google Analytics','intro'=>'Diese Seite beschreibt die von Lauco Experience verwendeten Speicher- und Messwerkzeuge. Google Analytics ist standardmäßig deaktiviert und wird erst nach einer ausdrücklichen Auswahl geladen.',
@@ -33,7 +33,7 @@ $copy = [
   ['Einwilligung ändern','Die Auswahl kann jederzeit über „Cookies verwalten“ geändert werden. Ein Widerruf deaktiviert Google Analytics erneut und die Website versucht, zugängliche _ga-Cookies zu entfernen.'],
   ['Aggregierte Serverstatistiken','QR-Statistiken, tägliche Seitenaufrufe und über die Teilen-Schaltfläche gestartete Aktionen werden serverseitig verarbeitet und benötigen weder Analytics-Cookies noch Google Analytics. Gespeichert werden nur Tag, Seite, Sprache, gewählter Kanal und aggregierte Anzahl.'],
  ],
- 'manage'=>'Cookies verwalten','updated'=>'Letzte Aktualisierung: 16. August 2026',
+ 'manage'=>'Cookies verwalten','updated'=>'Letzte Aktualisierung: 7. September 2026',
 ],
 'sl'=>[
  'title'=>'Pravilnik o piškotkih','subtitle'=>'Tehnično shranjevanje, nastavitve in Google Analytics','intro'=>'Ta stran opisuje orodja za shranjevanje in merjenje, ki jih uporablja Lauco Experience. Google Analytics je privzeto izklopljen in se naloži šele po izrecni izbiri uporabnika.',
@@ -44,7 +44,7 @@ $copy = [
   ['Sprememba ali preklic','Izbiro lahko kadar koli spremenite z gumbom »Upravljanje piškotkov«. Preklic znova onemogoči Google Analytics in spletno mesto poskusi odstraniti dostopne piškotke _ga.'],
   ['Združena strežniška statistika','Statistika kod QR, dnevno število ogledov in dejanja, začeta z gumbom za deljenje, se obdelujejo na strežniku brez analitičnih piškotkov ali Google Analytics. Shranijo se le dan, stran, jezik, izbrani kanal in združeno število.'],
  ],
- 'manage'=>'Upravljanje piškotkov','updated'=>'Zadnja posodobitev: 16. avgust 2026',
+ 'manage'=>'Upravljanje piškotkov','updated'=>'Zadnja posodobitev: 7. september 2026',
 ],
 ];
 $c=$copy[$locale] ?? $copy['it'];

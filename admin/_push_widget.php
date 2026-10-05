@@ -6,7 +6,11 @@ require_once __DIR__ . '/../inc/admin-push.php';
 $adminPushPublicKey = '';
 $adminPushError = '';
 try {
-    $adminPushPublicKey = admin_push_vapid_keypair($pdo)['public'];
+    $adminPushPdo = $GLOBALS['pdo'] ?? null;
+    if (!$adminPushPdo instanceof PDO) {
+        throw new RuntimeException('Connessione database non disponibile.');
+    }
+    $adminPushPublicKey = admin_push_vapid_keypair($adminPushPdo)['public'];
 } catch (Throwable $exception) {
     error_log('[Lauco Push] ' . $exception->getMessage());
     $adminPushError = 'Notifiche non disponibili: applica la migrazione Web Push sul database.';
@@ -81,7 +85,7 @@ try {
         <span class="admin-push-kicker">Questo dispositivo</span>
         <h2 class="admin-push-title">Notifiche del backoffice</h2>
         <p class="admin-push-status" id="adminPushStatus">
-            <?= $adminPushError !== '' ? e($adminPushError) : 'Ricevi gli avvisi di Lauco Experience anche quando il browser è chiuso.' ?>
+            <?= $adminPushError !== '' ? e($adminPushError) : 'Preparazione delle notifiche…' ?>
         </p>
     </div>
     <div class="admin-push-actions">
@@ -89,7 +93,7 @@ try {
             class="btn admin-push-button"
             type="button"
             id="adminPushButton"
-            <?= $adminPushError !== '' ? 'disabled' : '' ?>
+            disabled
         >Abilita notifiche</button>
         <button class="admin-push-disable" type="button" id="adminPushDisable" hidden>Disattiva su questo dispositivo</button>
     </div>
@@ -228,8 +232,8 @@ try {
         }
 
         try {
-            registration = await navigator.serviceWorker.register('/admin-push-sw.js', {scope: '/admin/'});
-            await navigator.serviceWorker.ready;
+            await navigator.serviceWorker.register('/admin-push-sw.js', {scope: '/admin/'});
+            registration = await navigator.serviceWorker.ready;
             currentSubscription = await registration.pushManager.getSubscription();
             if (currentSubscription) {
                 await syncSubscription(currentSubscription);

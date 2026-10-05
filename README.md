@@ -21,6 +21,8 @@ mariadb lauco < database.sql
 mariadb lauco < migrations/20260806_ai_event_import.sql
 mariadb lauco < migrations/20260807_framework_i18n.sql
 mariadb lauco < migrations/20261005_admin_web_push.sql
+mariadb lauco < migrations/20261005_admin_push_preferences.sql
+mariadb lauco < migrations/20261005_admin_push_queue.sql
 ```
 
 Le credenziali restano esclusivamente nel file locale `.env`; `.env` e i dump con dati reali non devono essere versionati. La directory `storage/translations` deve essere scrivibile dal processo PHP.
@@ -37,7 +39,15 @@ La dashboard mostra a ogni utente autenticato il comando `Abilita notifiche` per
 
 Su Android e desktop il pulsante attiva direttamente la subscription dopo il consenso del browser. Su iPhone/iPad la Web Push di Safari richiede che il backoffice sia prima aggiunto alla schermata Home come web app: se la dashboard è ancora aperta nella normale scheda Safari, lo stesso pulsante mostra le istruzioni minime; una volta aperta l'icona `Lauco Admin`, un singolo tap su `Abilita notifiche` avvia il consenso di sistema e registra il dispositivo. La subscription resta associata all'utente amministrativo e viene sincronizzata nuovamente ai login successivi.
 
-Il service worker `admin-push-sw.js` mostra notifiche generiche e apre `/admin/` al tocco. `inc/admin-push.php` espone inoltre `admin_push_send_to_admin()` per inviare un push a tutti i dispositivi registrati di un utente e rimuove automaticamente gli endpoint scaduti (`404`/`410`). Gli eventi applicativi che devono inviare una notifica vanno collegati esplicitamente a questa funzione, evitando avvisi non desiderati.
+Sotto al pulsante è presente il pannello `Preferenze notifiche`: ogni account può attivare o disattivare con autosalvataggio Posta, Messaggi, Segnalazioni, Contributi, Volontariato, WhatsApp e Newsletter. Sono mostrate solo le categorie compatibili con i permessi dell'account; in assenza di una preferenza esplicita le categorie consentite sono attive per impostazione predefinita.
+
+Messaggi contatti, volontariato, WhatsApp e nuove iscrizioni newsletter inviano il push direttamente quando l'evento viene registrato. Contributi e segnalazioni vengono accodati tramite trigger DB. La posta viene rilevata confrontando il numero di messaggi non letti. Per elaborare la coda e controllare la posta anche quando nessun amministratore ha il sito aperto, configurare il cron dell'hosting a eseguire ogni minuto:
+
+```bash
+* * * * * /usr/bin/php /percorso/del/sito/tools/admin-push-worker.php >/dev/null 2>&1
+```
+
+Il worker è eseguibile esclusivamente da CLI, usa un lock MySQL per evitare esecuzioni concorrenti e non espone endpoint web. Il service worker `admin-push-sw.js` mostra notifiche generiche e apre `/admin/` al tocco. Gli endpoint push scaduti (`404`/`410`) vengono rimossi automaticamente.
 
 ## Architettura
 

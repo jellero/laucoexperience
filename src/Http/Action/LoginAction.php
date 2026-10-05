@@ -29,18 +29,27 @@ final class LoginAction
         }
 
         $error = '';
+        $remember = false;
         if (strtoupper($request->getMethod()) === 'POST') {
             $data = RequestInput::form($request);
+            $remember = !empty($data['remember']);
             $token = (string) ($data['_csrf_token'] ?? '');
             if ($token === '' || !hash_equals(csrf_token(), $token)) {
                 $error = 'Sessione scaduta o richiesta non valida.';
-            } elseif (login_admin(trim((string) ($data['email'] ?? '')), (string) ($data['password'] ?? ''))) {
+            } elseif (login_admin(
+                trim((string) ($data['email'] ?? '')),
+                (string) ($data['password'] ?? ''),
+                $remember
+            )) {
                 return $response->withHeader('Location', '/admin/index.php')->withStatus(302);
             } else {
                 $error = 'Email o password non corretti.';
             }
         }
 
-        return $this->pages->render($request, $response, 'login.php', 'login.php', ['error' => $error]);
+        return $this->pages->render($request, $response, 'login.php', 'login.php', [
+            'error' => $error,
+            'remember' => $remember,
+        ]);
     }
 }

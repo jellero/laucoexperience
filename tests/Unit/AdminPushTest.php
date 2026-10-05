@@ -10,7 +10,7 @@ final class AdminPushTest extends TestCase
     protected function setUp(): void
     {
         require_once dirname(__DIR__, 2) . '/inc/env.php';
-        require_once dirname(__DIR__, 2) . '/inc/admin-push.php';
+        require_once dirname(__DIR__, 2) . '/inc/admin-push-preferences.php';
     }
 
     public function testPushEndpointAllowlistCoversAppleAndroidAndFirefox(): void
@@ -73,5 +73,25 @@ final class AdminPushTest extends TestCase
         self::assertArrayHasKey('sub', $payload);
         self::assertIsString($signature);
         self::assertSame(64, strlen($signature));
+    }
+
+    public function testPushCategoriesRespectBackofficePermissions(): void
+    {
+        self::assertSame(
+            ['mail', 'contacts', 'reports', 'contributions', 'volunteers', 'whatsapp', 'newsletter'],
+            array_keys(admin_push_allowed_categories('admin'))
+        );
+        self::assertSame(
+            ['mail', 'contacts', 'reports', 'contributions'],
+            array_keys(admin_push_allowed_categories('collaboratore'))
+        );
+        self::assertSame(
+            ['whatsapp'],
+            array_keys(admin_push_allowed_categories('whatsapp'))
+        );
+        self::assertSame(
+            ['mail', 'contacts', 'reports', 'contributions', 'whatsapp'],
+            array_keys(admin_push_allowed_categories('collaboratore,whatsapp'))
+        );
     }
 }

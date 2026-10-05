@@ -18,6 +18,186 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+if (!function_exists('admin_request_is_https')) {
+    function admin_request_is_https(): bool
+    {
+        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https';
+    }
+}
+
+if (!function_exists('admin_remember_cookie_name')) {
+    function admin_remember_cookie_name(): string
+    {
+        return 'lauco_admin_remember';
+    }
+}
+
+if (!function_exists('admin_remember_days')) {
+    function admin_remember_days(): int
+    {
+        return max(1, min(90, lauco_env_int('ADMIN_REMEMBER_DAYS', 30)));
+    }
+}
+
+if (!function_exists('admin_remember_token')) {
+    function admin_remember_token(): ?string
+    {
+        $token = strtolower(trim((string) ($_COOKIE[admin_remember_cookie_name()] ?? '')));
+        return preg_match('/^[a-f0-9]{64}$/D', $token) === 1 ? $token : null;
+    }
+}
+
+if (!function_exists('admin_set_remember_cookie')) {
+    function admin_set_remember_cookie(string $token, int $expiresAt): void
+    {
+        setcookie(admin_remember_cookie_name(), $token, [
+            'expires' => $expiresAt,
+            'path' => '/',
+            'secure' => admin_request_is_https(),
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
+        $_COOKIE[admin_remember_cookie_name()] = $token;
+    }
+}
+
+if (!function_exists('admin_clear_remember_cookie')) {
+    function admin_clear_remember_cookie(): void
+    {
+        setcookie(admin_remember_cookie_name(), '', [
+            'expires' => time() - 42000,
+            'path' => '/',
+            'secure' => admin_request_is_https(),
+            'httponly' => true,
+            'samesite' => 'Strict',
+        ]);
+        unset($_COOKIE[admin_remember_cookie_name()]);
+    }
+}
+
+if (!function_exists('admin_populate_session')) {
+    /** @param array<string,mixed> $user */
+    function admin_populate_session(array $user, bool $remembered = false, int $rememberExpiresAt = 0): void
+    {
+        session_regenerate_id(true);
+        $_SESSION['admin_id'] = (int) $user['id'];
+        $_SESSION['admin_nome'] = (string) ($user['nome'] ?? '');
+        $_SESSION['admin_email'] = (string) $user['email'];
+        $_SESSION['admin_ruolo'] = admin_normalize_role((string) ($user['ruolo'] ?? 'admin'));
+        $_SESSION['admin_user'] = [
+            'id' => (int) $user['id'],
+            'nome' => (string) ($user['nome'] ?? ''),
+            'email' => (string) $user['email'],
+            'ruolo' => $_SESSION['admin_ruolo'],
+        ];
+        $_SESSION['admin_last_activity'] = time();
+        $_SESSION['admin_remembered'] = $remembered;
+        $_SESSION['admin_remember_expires_at'] = $remembered ? $rememberExpiresAt : 0;
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+}
+
+if (!function_exists('admin_issue_remember_token')) {
+    function admin_issue_remember_token(PDO $pdo, int $adminId): void
+    {
+        $token = bin2hex(random_bytes(32));
+        $tokenHash = hash('sha256', $token);
+        $expiresAt = time() + (admin_remember_days() * 86400);
+
+        $pdo->prepare('DELETE FROM admin_remember_tokens WHERE expires_at <= NOW()')->execute();
+        $insert = $pdo->prepare(
+            'INSERT INTO admin_remember_tokens (admin_id, token_hash, expires_at) '
+            . 'VALUES (:admin_id, :token_hash, :expires_at)'
+        );
+        $insert->execute([
+            'admin_id' => $adminId,
+            'token_hash' => $tokenHash,
+            'expires_at' => date('Y-m-d H:i:s', $expiresAt),
+        ]);
+
+        admin_set_remember_cookie($token, $expiresAt);
+        $_SESSION['admin_remembered'] = true;
+        $_SESSION['admin_remember_expires_at'] = $expiresAt;
+    }
+}
+
+if (!function_exists('admin_revoke_remember_token')) {
+    function admin_revoke_remember_token(PDO $pdo): void
+    {
+        $token = admin_remember_token();
+        if ($token !== null) {
+            try {
+                $delete = $pdo->prepare('DELETE FROM admin_remember_tokens WHERE token_hash = :token_hash');
+                $delete->execute(['token_hash' => hash('sha256', $token)]);
+            } catch (Throwable $exception) {
+                error_log('[Admin remember logout] ' . $exception->getMessage());
+            }
+        }
+        admin_clear_remember_cookie();
+    }
+}
+
+if (!function_exists('admin_restore_remembered_admin')) {
+    function admin_restore_remembered_admin(): bool
+    {
+        global $pdo;
+        static $attempted = false;
+        if ($attempted) {
+            return false;
+        }
+        $attempted = true;
+
+        $token = admin_remember_token();
+        if ($token === null || !$pdo instanceof PDO) {
+            return false;
+        }
+
+        $tokenHash = hash('sha256', $token);
+        try {
+            $stmt = $pdo->prepare(
+                'SELECT t.id AS remember_id, u.id, u.nome, u.email, u.ruolo '
+                . 'FROM admin_remember_tokens t '
+                . 'INNER JOIN utenti u ON u.id = t.admin_id '
+                . 'WHERE t.token_hash = :token_hash AND t.expires_at > NOW() LIMIT 1'
+            );
+            $stmt->execute(['token_hash' => $tokenHash]);
+            $user = $stmt->fetch();
+            if (!is_array($user)) {
+                admin_clear_remember_cookie();
+                return false;
+            }
+
+            $newToken = bin2hex(random_bytes(32));
+            $newHash = hash('sha256', $newToken);
+            $expiresAt = time() + (admin_remember_days() * 86400);
+            $rotate = $pdo->prepare(
+                'UPDATE admin_remember_tokens '
+                . 'SET token_hash = :new_hash, expires_at = :expires_at, last_used_at = CURRENT_TIMESTAMP '
+                . 'WHERE id = :id AND token_hash = :old_hash'
+            );
+            $rotate->execute([
+                'new_hash' => $newHash,
+                'expires_at' => date('Y-m-d H:i:s', $expiresAt),
+                'id' => (int) $user['remember_id'],
+                'old_hash' => $tokenHash,
+            ]);
+            if ($rotate->rowCount() !== 1) {
+                admin_clear_remember_cookie();
+                return false;
+            }
+
+            admin_populate_session($user, true, $expiresAt);
+            admin_set_remember_cookie($newToken, $expiresAt);
+            return true;
+        } catch (Throwable $exception) {
+            error_log('[Admin remember restore] ' . $exception->getMessage());
+            admin_clear_remember_cookie();
+            return false;
+        }
+    }
+}
+
 if (!function_exists('current_admin')) {
     /** @return array<string,mixed>|null */
     function current_admin(): ?array
@@ -34,6 +214,11 @@ if (!function_exists('current_admin')) {
                 'email' => (string) $_SESSION['admin_email'],
                 'ruolo' => admin_normalize_role((string) ($_SESSION['admin_ruolo'] ?? 'admin')),
             ];
+        }
+
+        if (admin_restore_remembered_admin()) {
+            $admin = $_SESSION['admin_user'] ?? null;
+            return is_array($admin) ? $admin : null;
         }
         return null;
     }
@@ -85,7 +270,7 @@ if (!function_exists('admin_id')) {
 }
 
 if (!function_exists('login_admin')) {
-    function login_admin(string $email, string $password): bool
+    function login_admin(string $email, string $password, bool $remember = false): bool
     {
         global $pdo;
         $now = time();
@@ -112,20 +297,25 @@ if (!function_exists('login_admin')) {
             return false;
         }
 
-        session_regenerate_id(true);
         unset($_SESSION['login_attempts']);
-        $_SESSION['admin_id'] = (int) $user['id'];
-        $_SESSION['admin_nome'] = (string) $user['nome'];
-        $_SESSION['admin_email'] = (string) $user['email'];
-        $_SESSION['admin_ruolo'] = admin_normalize_role((string) ($user['ruolo'] ?? 'admin'));
-        $_SESSION['admin_user'] = [
-            'id' => (int) $user['id'],
-            'nome' => (string) $user['nome'],
-            'email' => (string) $user['email'],
-            'ruolo' => $_SESSION['admin_ruolo'],
-        ];
-        $_SESSION['admin_last_activity'] = time();
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        admin_populate_session($user, false, 0);
+
+        if ($remember) {
+            try {
+                admin_issue_remember_token($pdo, (int) $user['id']);
+            } catch (Throwable $exception) {
+                error_log('[Admin remember login] ' . $exception->getMessage());
+                $_SESSION['admin_remembered'] = false;
+                $_SESSION['admin_remember_expires_at'] = 0;
+                admin_clear_remember_cookie();
+            }
+        } else {
+            $existingToken = admin_remember_token();
+            if ($existingToken !== null) {
+                admin_revoke_remember_token($pdo);
+            }
+        }
+
         return true;
     }
 }
@@ -133,10 +323,24 @@ if (!function_exists('login_admin')) {
 if (!function_exists('logout_admin')) {
     function logout_admin(): void
     {
+        global $pdo;
+        if ($pdo instanceof PDO) {
+            admin_revoke_remember_token($pdo);
+        } else {
+            admin_clear_remember_cookie();
+        }
+
         $_SESSION = [];
         if (ini_get('session.use_cookies')) {
             $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'] ?? '', $params['secure'], $params['httponly']);
+            setcookie(session_name(), '', [
+                'expires' => time() - 42000,
+                'path' => $params['path'] ?: '/',
+                'domain' => $params['domain'] ?? '',
+                'secure' => (bool) ($params['secure'] ?? false),
+                'httponly' => (bool) ($params['httponly'] ?? true),
+                'samesite' => 'Strict',
+            ]);
         }
         session_destroy();
     }
@@ -147,12 +351,28 @@ if (!function_exists('require_admin')) {
     {
         global $pdo;
         $admin = current_admin();
-        $maxIdle = max(900, lauco_env_int('ADMIN_IDLE_TIMEOUT_SECONDS', 7200));
-        $lastActivity = (int) ($_SESSION['admin_last_activity'] ?? time());
-        if (!$admin || $lastActivity < time() - $maxIdle) {
+        if (!$admin) {
             logout_admin();
             header('Location: ../login.php');
             exit;
+        }
+
+        $remembered = !empty($_SESSION['admin_remembered']);
+        if ($remembered) {
+            $rememberExpiresAt = (int) ($_SESSION['admin_remember_expires_at'] ?? 0);
+            if ($rememberExpiresAt <= time()) {
+                logout_admin();
+                header('Location: ../login.php');
+                exit;
+            }
+        } else {
+            $maxIdle = max(900, lauco_env_int('ADMIN_IDLE_TIMEOUT_SECONDS', 7200));
+            $lastActivity = (int) ($_SESSION['admin_last_activity'] ?? time());
+            if ($lastActivity < time() - $maxIdle) {
+                logout_admin();
+                header('Location: ../login.php');
+                exit;
+            }
         }
 
         try {

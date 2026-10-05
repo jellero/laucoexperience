@@ -35,25 +35,88 @@ $adminPushPreferences = $adminPushPdo instanceof PDO
         gap:10px;
     }
     .admin-push-pref {
-        display:flex;
-        gap:10px;
-        align-items:flex-start;
-        padding:12px 14px;
+        display:grid;
+        grid-template-columns:minmax(0,1fr) auto;
+        gap:14px;
+        align-items:center;
+        padding:14px 16px;
         background:#f7f7f7;
         border:1px solid #ececec;
         cursor:pointer;
         margin:0;
+        min-height:72px;
+        -webkit-tap-highlight-color:transparent;
     }
-    .admin-push-pref input { margin-top:2px; flex:0 0 auto; }
-    .admin-push-pref span { display:block; min-width:0; }
+    .admin-push-pref:hover { background:#f2f2f2; }
+    .admin-push-pref-copy { display:block; min-width:0; }
     .admin-push-pref strong { display:block; font-size:13px; margin-bottom:3px; }
     .admin-push-pref small { display:block; color:#777; line-height:1.35; font-weight:400; }
     .admin-push-pref-all { grid-column:1 / -1; background:#efefef; }
+
+    .admin-push-toggle {
+        position:relative;
+        display:inline-block;
+        width:52px;
+        height:30px;
+        flex:0 0 auto;
+    }
+    .admin-push-toggle input {
+        position:absolute;
+        inset:0;
+        z-index:2;
+        width:100%;
+        height:100%;
+        margin:0;
+        opacity:0;
+        cursor:pointer;
+    }
+    .admin-push-toggle-track {
+        position:absolute;
+        inset:0;
+        display:block;
+        border-radius:999px;
+        background:#c8c8c8;
+        box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+        transition:background .18s ease, box-shadow .18s ease;
+    }
+    .admin-push-toggle-track::after {
+        content:'';
+        position:absolute;
+        top:3px;
+        left:3px;
+        width:24px;
+        height:24px;
+        border-radius:50%;
+        background:#fff;
+        box-shadow:0 1px 4px rgba(0,0,0,.28);
+        transition:transform .18s ease;
+    }
+    .admin-push-toggle input:checked + .admin-push-toggle-track {
+        background:#0f7b32;
+    }
+    .admin-push-toggle input:checked + .admin-push-toggle-track::after {
+        transform:translateX(22px);
+    }
+    .admin-push-toggle input:indeterminate + .admin-push-toggle-track {
+        background:#8b8b8b;
+    }
+    .admin-push-toggle input:indeterminate + .admin-push-toggle-track::after {
+        transform:translateX(11px);
+    }
+    .admin-push-toggle input:focus-visible + .admin-push-toggle-track {
+        box-shadow:0 0 0 3px rgba(15,123,50,.22), inset 0 0 0 1px rgba(0,0,0,.08);
+    }
+
     @media(max-width:780px) {
         .admin-push-preferences { padding:18px; }
         .admin-push-preferences-head { flex-direction:column; }
         .admin-push-pref-grid { grid-template-columns:1fr; }
         .admin-push-pref-all { grid-column:auto; }
+        .admin-push-pref { min-height:76px; padding:14px; }
+        .admin-push-toggle { width:56px; height:32px; }
+        .admin-push-toggle-track::after { width:26px; height:26px; }
+        .admin-push-toggle input:checked + .admin-push-toggle-track::after { transform:translateX(24px); }
+        .admin-push-toggle input:indeterminate + .admin-push-toggle-track::after { transform:translateX(12px); }
     }
 </style>
 
@@ -68,24 +131,30 @@ $adminPushPreferences = $adminPushPdo instanceof PDO
 
     <div class="admin-push-pref-grid">
         <label class="admin-push-pref admin-push-pref-all">
-            <input type="checkbox" id="adminPushPrefAll">
-            <span>
+            <span class="admin-push-pref-copy">
                 <strong>Tutte le notifiche</strong>
                 <small>Attiva o disattiva tutte le categorie disponibili per il tuo profilo.</small>
+            </span>
+            <span class="admin-push-toggle">
+                <input type="checkbox" id="adminPushPrefAll">
+                <span class="admin-push-toggle-track"></span>
             </span>
         </label>
 
         <?php foreach ($adminPushCategories as $key => $category): ?>
             <label class="admin-push-pref">
-                <input
-                    type="checkbox"
-                    class="admin-push-pref-input"
-                    data-category="<?= e($key) ?>"
-                    <?= !empty($adminPushPreferences[$key]) ? 'checked' : '' ?>
-                >
-                <span>
+                <span class="admin-push-pref-copy">
                     <strong><?= e($category['label']) ?></strong>
                     <small><?= e($category['description']) ?></small>
+                </span>
+                <span class="admin-push-toggle">
+                    <input
+                        type="checkbox"
+                        class="admin-push-pref-input"
+                        data-category="<?= e($key) ?>"
+                        <?= !empty($adminPushPreferences[$key]) ? 'checked' : '' ?>
+                    >
+                    <span class="admin-push-toggle-track"></span>
                 </span>
             </label>
         <?php endforeach; ?>

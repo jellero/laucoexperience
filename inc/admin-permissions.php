@@ -113,7 +113,7 @@ if (!function_exists('admin_script_capability')) {
     function admin_script_capability(string $script): string
     {
         $script = strtolower(basename($script));
-        if ($script === 'index.php') {
+        if (in_array($script, ['index.php', 'push.php'], true)) {
             return 'dashboard.access';
         }
 

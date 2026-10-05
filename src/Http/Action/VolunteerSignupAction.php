@@ -22,6 +22,7 @@ final class VolunteerSignupAction
     {
         require_once $this->root . '/inc/translations.php';
         require_once $this->root . '/inc/volontariato.php';
+        require_once $this->root . '/inc/admin-push-preferences.php';
         $locale = $this->locales->resolve($request);
         $_GET['lang'] = $locale;
         if (strtoupper($request->getMethod()) !== 'POST') {
@@ -116,6 +117,7 @@ final class VolunteerSignupAction
             if ($outboxId !== null) {
                 volontariato_dispatch_outbox($connection, $outboxId, 1);
             }
+            admin_push_notify($connection, 'volunteers');
             return $this->respond($response, true, site_text(
                 'volunteer.success', $locale,
                 'Grazie! La disponibilità è registrata. Riceverai su WhatsApp il link per entrare nel gruppo operativo.'

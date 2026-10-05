@@ -174,6 +174,7 @@ if (!function_exists('admin_page_open')) {
             <?php if ($active === 'dashboard'): ?>
                 <section class="dashboard-summary" aria-label="Riepilogo dashboard">
                     <?php require __DIR__ . '/_push_widget.php'; ?>
+                    <?php require __DIR__ . '/_push_preferences.php'; ?>
                     <div class="dashboard-grid">
                         <?php foreach ($dashboardCards as $card): ?>
                             <a class="dashboard-card<?= !empty($card['urgent']) ? ' urgent' : '' ?>" href="<?= e($card['href']) ?>">

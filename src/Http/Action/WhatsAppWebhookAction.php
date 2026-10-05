@@ -18,6 +18,7 @@ final class WhatsAppWebhookAction
     {
         require_once $this->root . '/inc/env.php';
         require_once $this->root . '/inc/volontariato.php';
+        require_once $this->root . '/inc/admin-push-preferences.php';
         if (strtoupper($request->getMethod()) === 'GET') {
             $query = $request->getQueryParams();
             if (($query['hub_mode'] ?? $query['hub.mode'] ?? '') === 'subscribe'
@@ -47,7 +48,10 @@ final class WhatsAppWebhookAction
             $store = $connection->prepare('INSERT IGNORE INTO whatsapp_webhook_events (event_hash,payload_json) VALUES (:hash,:payload)');
             $store->execute(['hash' => $hash, 'payload' => $raw]);
             if ($store->rowCount() > 0) {
-                $this->process($connection, is_array($payload) ? $payload : []);
+                $newMessages = $this->process($connection, is_array($payload) ? $payload : []);
+                if ($newMessages > 0) {
+                    admin_push_notify($connection, 'whatsapp');
+                }
             }
             $response->getBody()->write('EVENT_RECEIVED');
             return $response->withStatus(200)->withHeader('Content-Type', 'text/plain');
@@ -58,8 +62,9 @@ final class WhatsAppWebhookAction
     }
 
     /** @param array<string,mixed> $payload */
-    private function process(PDO $pdo, array $payload): void
+    private function process(PDO $pdo, array $payload): int
     {
+        $newMessages = 0;
         foreach ((array) ($payload['entry'] ?? []) as $entry) {
             foreach ((array) ($entry['changes'] ?? []) as $change) {
                 $value = is_array($change['value'] ?? null) ? $change['value'] : [];
@@ -101,15 +106,19 @@ final class WhatsAppWebhookAction
                     ]);
                     $find = $pdo->prepare('SELECT id FROM whatsapp_conversazioni WHERE external_id=:external');
                     $find->execute(['external' => $conversationExternal]);
-                    $pdo->prepare(
+                    $insert = $pdo->prepare(
                         "INSERT IGNORE INTO whatsapp_messaggi (conversazione_id,external_message_id,direzione,tipo,testo,stato,raw_json,messaggio_at) "
                         . "VALUES (:conversation,:external,'entrata',:tipo,:testo,'ricevuto',:raw,:message_at)"
-                    )->execute([
+                    );
+                    $insert->execute([
                         'conversation' => (int) $find->fetchColumn(), 'external' => (string) ($message['id'] ?? ''),
                         'tipo' => (string) ($message['type'] ?? 'unknown'), 'testo' => $text,
                         'raw' => json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
                         'message_at' => date('Y-m-d H:i:s', (int) ($message['timestamp'] ?? time())),
                     ]);
+                    if ($insert->rowCount() > 0) {
+                        $newMessages++;
+                    }
                 }
                 foreach ((array) ($value['statuses'] ?? []) as $status) {
                     if (!is_array($status) || empty($status['id'])) continue;
@@ -121,6 +130,8 @@ final class WhatsAppWebhookAction
                 }
             }
         }
+
+        return $newMessages;
     }
 
     /** @param array<string,mixed> $message */

@@ -29,6 +29,7 @@ final class ContactSubmitAction
         try {
             require_once $this->root . '/inc/db.php';
             require_once $this->root . '/inc/contact-mail.php';
+            require_once $this->root . '/inc/admin-push-preferences.php';
             $connection = $pdo ?? ($GLOBALS['pdo'] ?? null);
             if (!$connection instanceof PDO) {
                 throw new RuntimeException('Connessione database non disponibile.');
@@ -96,6 +97,7 @@ final class ContactSubmitAction
                 'user_agent' => mb_substr($request->getHeaderLine('User-Agent'), 0, 255),
             ]);
             unset($_SESSION['contact_token']);
+            admin_push_notify($connection, 'contacts');
 
             $result = 'Messaggio inviato correttamente. Codice riferimento: '
                 . htmlspecialchars($code, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '.';

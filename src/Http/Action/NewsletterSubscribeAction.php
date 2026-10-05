@@ -25,6 +25,7 @@ final class NewsletterSubscribeAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args = []): ResponseInterface
     {
         require_once $this->root . '/inc/translations.php';
+        require_once $this->root . '/inc/admin-push-preferences.php';
         $locale = $this->locales->resolve($request);
         $_GET['lang'] = $locale;
 
@@ -132,6 +133,7 @@ final class NewsletterSubscribeAction
                 if (!mail('info@laucoexperience.it', $subject, wordwrap($body, 70), implode("\r\n", $headers))) {
                     error_log('[Newsletter] Notifica amministratore non riuscita.');
                 }
+                admin_push_notify($connection, 'newsletter');
             }
 
             return $this->respond($response, true, site_text(

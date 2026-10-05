@@ -63,6 +63,7 @@ final class AdminPermissionsTest extends TestCase
     public function testEndpointPermissionsDefaultToAdminOnly(): void
     {
         self::assertSame('dashboard.access', admin_script_capability('/admin/index.php'));
+        self::assertSame('dashboard.access', admin_script_capability('/admin/push.php'));
         self::assertSame('communications.respond', admin_script_capability('/admin/posta-scrivi.php'));
         self::assertSame('whatsapp.manage', admin_script_capability('/admin/volontariato.php'));
         self::assertSame('admin.all', admin_script_capability('/admin/percorso-form.php'));

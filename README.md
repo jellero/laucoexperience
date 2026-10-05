@@ -20,6 +20,7 @@ composer install --no-dev --optimize-autoloader
 mariadb lauco < database.sql
 mariadb lauco < migrations/20260806_ai_event_import.sql
 mariadb lauco < migrations/20260807_framework_i18n.sql
+mariadb lauco < migrations/20261005_admin_web_push.sql
 ```
 
 Le credenziali restano esclusivamente nel file locale `.env`; `.env` e i dump con dati reali non devono essere versionati. La directory `storage/translations` deve essere scrivibile dal processo PHP.
@@ -29,6 +30,14 @@ Per il deploy da hosting condiviso, caricare `tools/deploy-web.php` nel document
 ## Posta nel backoffice
 
 La voce `Posta` usa la sessione amministrativa esistente per leggere via IMAP e inviare via SMTP dalla casella condivisa. Host, porte e utente hanno valori predefiniti in `.env.example`; sul server è sufficiente impostare `MAIL_PASSWORD`, oppure le due variabili separate `MAIL_IMAP_PASSWORD` e `MAIL_SMTP_PASSWORD`. Le credenziali non vanno mai inserite nel repository.
+
+## Notifiche del backoffice
+
+La dashboard mostra a ogni utente autenticato il comando `Abilita notifiche` per registrare il browser o il dispositivo corrente tramite Web Push. Le chiavi VAPID P-256 vengono generate automaticamente al primo utilizzo e conservate nel database; non è richiesta configurazione Firebase né una chiave manuale. È possibile impostare opzionalmente `PUSH_VAPID_SUBJECT` con un valore `mailto:` o HTTPS per identificare il mittente VAPID.
+
+Su Android e desktop il pulsante attiva direttamente la subscription dopo il consenso del browser. Su iPhone/iPad la Web Push di Safari richiede che il backoffice sia prima aggiunto alla schermata Home come web app: se la dashboard è ancora aperta nella normale scheda Safari, lo stesso pulsante mostra le istruzioni minime; una volta aperta l'icona `Lauco Admin`, un singolo tap su `Abilita notifiche` avvia il consenso di sistema e registra il dispositivo. La subscription resta associata all'utente amministrativo e viene sincronizzata nuovamente ai login successivi.
+
+Il service worker `admin-push-sw.js` mostra notifiche generiche e apre `/admin/` al tocco. `inc/admin-push.php` espone inoltre `admin_push_send_to_admin()` per inviare un push a tutti i dispositivi registrati di un utente e rimuove automaticamente gli endpoint scaduti (`404`/`410`). Gli eventi applicativi che devono inviare una notifica vanno collegati esplicitamente a questa funzione, evitando avvisi non desiderati.
 
 ## Architettura
 

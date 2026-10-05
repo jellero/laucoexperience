@@ -40,6 +40,12 @@ if (!function_exists('admin_page_open')) {
             <meta charset="utf-8">
             <title><?= e($title) ?> | Backoffice Lauco Experience</title>
             <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="theme-color" content="#202020">
+            <meta name="mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-title" content="Lauco Admin">
+            <link rel="manifest" href="/admin.webmanifest">
+            <link rel="apple-touch-icon" href="/android-icon-192x192.png">
             <style>
                 :root {
                     --admin-dark:#202020;
@@ -167,6 +173,7 @@ if (!function_exists('admin_page_open')) {
             </header>
             <?php if ($active === 'dashboard'): ?>
                 <section class="dashboard-summary" aria-label="Riepilogo dashboard">
+                    <?php require __DIR__ . '/_push_widget.php'; ?>
                     <div class="dashboard-grid">
                         <?php foreach ($dashboardCards as $card): ?>
                             <a class="dashboard-card<?= !empty($card['urgent']) ? ' urgent' : '' ?>" href="<?= e($card['href']) ?>">

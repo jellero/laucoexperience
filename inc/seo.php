@@ -243,6 +243,30 @@ if (!function_exists('seo_metadata')) {
             ['@type'=>'Organization','@id'=>seo_base_url().'/#organization','name'=>'Lauco Experience','url'=>seo_base_url().'/','logo'=>seo_abs('assets/img/logo.png')],
             ['@type'=>'WebSite','@id'=>seo_base_url().'/#website','url'=>seo_base_url().'/','name'=>'Lauco Experience','inLanguage'=>$locale,'publisher'=>['@id'=>seo_base_url().'/#organization']],
         ];
+        $graph[]=[
+            '@type'=>'WebPage',
+            '@id'=>$canonical . '#webpage',
+            'url'=>$canonical,
+            'name'=>$title,
+            'description'=>$description,
+            'inLanguage'=>$locale,
+            'isPartOf'=>['@id'=>seo_base_url().'/#website'],
+        ];
+        if ($path === '/') {
+            $graph[]=[
+                '@type'=>'TouristDestination',
+                '@id'=>seo_base_url().'/#destination',
+                'name'=>'Lauco',
+                'description'=>$description,
+                'url'=>seo_base_url().'/',
+                'containedInPlace'=>[
+                    '@type'=>'AdministrativeArea',
+                    'name'=>'Carnia',
+                    'containedInPlace'=>['@type'=>'AdministrativeArea','name'=>'Friuli-Venezia Giulia'],
+                ],
+            ];
+            $graph[2]['about']=['@id'=>seo_base_url().'/#destination'];
+        }
         if ($path !== '/') {
             $items=[['@type'=>'ListItem','position'=>1,'name'=>'Lauco Experience','item'=>seo_url('/',$locale)]];
             $pos=2;
@@ -253,10 +277,13 @@ if (!function_exists('seo_metadata')) {
         if ($entity) { $entity['url']=$entity['url'] ?? $canonical; $graph[]=$entity; }
 
         $noindex=['/400','/mappa1','/login','/crea-account'];
+        // Gli ambienti di sviluppo non devono competere con il dominio canonico.
+        $host = strtolower(preg_replace('/:\\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? '')) ?? '');
+        $isStaging = (bool) preg_match('~^(?:dev|staging|test)\\.laucoexperience\\.it$~', $host);
         return [
             'locale'=>$locale,'og_locale'=>['it'=>'it_IT','en'=>'en_GB','de'=>'de_DE','sl'=>'sl_SI'][$locale] ?? 'it_IT',
             'title'=>$title,'description'=>seo_text($description),'canonical'=>$canonical,'alternates'=>$alternates,
-            'image'=>seo_abs($image),'type'=>$type,'robots'=>in_array($path,$noindex,true)?'noindex,nofollow':'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+            'image'=>seo_abs($image),'type'=>$type,'robots'=>($isStaging || in_array($path,$noindex,true))?'noindex,follow':'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
             'json_ld'=>['@context'=>'https://schema.org','@graph'=>$graph],
         ];
     }

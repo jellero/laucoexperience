@@ -88,7 +88,7 @@ if (!function_exists('seo_static_description')) {
         $descriptions = [
             'it' => [
                 '/mappa-itinerari' => 'Mappa interattiva di tutti gli itinerari a piedi, MTB e speciali di Lauco, con filtri e collegamenti alle schede complete.',
-                '/' => 'Scopri l’Altopiano di Lauco in Carnia: sentieri, mappa GPX, storia, natura, frazioni, luoghi ed eventi del territorio.',
+                '/' => 'Lauco in Carnia: cosa vedere sull’altopiano, borghi e frazioni, sentieri, escursioni, natura, storia, mappe GPX ed eventi locali.',
                 '/map' => 'Mappa interattiva dei sentieri di Lauco con tracce GPX, profili altimetrici e informazioni utili per conoscere la rete escursionistica locale.',
                 '/itinerari-piedi' => 'Itinerari e sentieri a piedi nel territorio di Lauco, con informazioni sui percorsi e collegamenti alla mappa e alle tracce GPX.',
                 '/itinerari-mtb' => 'Percorsi MTB nel territorio di Lauco, sull’altopiano e nei dintorni, con informazioni e tracce per conoscere gli itinerari disponibili.',
@@ -103,7 +103,7 @@ if (!function_exists('seo_static_description')) {
             ],
             'en' => [
                 '/mappa-itinerari' => 'Interactive map of all walking, MTB and special routes in Lauco, with filters and links to full route details.',
-                '/' => 'Discover the Lauco Plateau in Carnia: trails, GPX map, history, nature, villages, places and local events.',
+                '/' => 'Visit Lauco in Carnia: what to see on the plateau, villages, walking trails, nature, history, GPX maps and local events.',
                 '/map' => 'Interactive map of Lauco trails with GPX tracks, elevation profiles and useful information about the local hiking network.',
                 '/itinerari-piedi' => 'Walking and hiking routes in Lauco, with trail information and links to the interactive map and GPX tracks.',
                 '/itinerari-mtb' => 'MTB routes across Lauco and its plateau, with information and tracks for exploring the local network.',
@@ -118,7 +118,7 @@ if (!function_exists('seo_static_description')) {
             ],
             'de' => [
                 '/mappa-itinerari' => 'Interaktive Karte aller Wander-, MTB- und besonderen Routen in Lauco mit Filtern und Links zu den vollständigen Routendetails.',
-                '/' => 'Entdecken Sie das Hochplateau von Lauco in Karnien: Wege, GPX-Karte, Geschichte, Natur, Orte und Veranstaltungen.',
+                '/' => 'Lauco in Karnien entdecken: Sehenswürdigkeiten, Dörfer, Wanderwege, Natur, Geschichte, GPX-Karten und Veranstaltungen.',
                 '/map' => 'Interaktive Karte der Wege von Lauco mit GPX-Tracks, Höhenprofilen und Informationen zum örtlichen Wegenetz.',
                 '/itinerari-piedi' => 'Wanderwege und Routen im Gebiet von Lauco mit Informationen, Karten und GPX-Tracks.',
                 '/itinerari-mtb' => 'MTB-Routen in Lauco und auf dem Hochplateau mit Informationen und Tracks zum lokalen Wegenetz.',
@@ -133,7 +133,7 @@ if (!function_exists('seo_static_description')) {
             ],
             'sl' => [
                 '/mappa-itinerari' => 'Interaktivni zemljevid vseh pohodniških, MTB in posebnih poti v Laucu s filtri in povezavami do podrobnosti poti.',
-                '/' => 'Odkrijte planoto Lauco v Karniji: poti, GPX-zemljevid, zgodovino, naravo, vasi, kraje in dogodke.',
+                '/' => 'Odkrijte Lauco v Karniji: znamenitosti, vasi, pohodniške poti, naravo, zgodovino, zemljevide GPX in dogodke.',
                 '/map' => 'Interaktivni zemljevid poti v Laucu z GPX-sledmi, višinskimi profili in informacijami o lokalni pohodniški mreži.',
                 '/itinerari-piedi' => 'Pohodniške poti v Laucu z informacijami o trasah ter povezavami do zemljevida in GPX-sledi.',
                 '/itinerari-mtb' => 'MTB-poti v Laucu in na planoti z informacijami ter sledmi za raziskovanje lokalne mreže.',
@@ -231,12 +231,42 @@ if (!function_exists('seo_metadata')) {
         $alternates=[];
         foreach (array_keys(content_supported_languages()) as $lang) $alternates[$lang]=seo_url($path,$lang,$slug);
         $alternates['x-default']=seo_url($path,'it',$slug);
-        $title = ($path === '/' ? $label : $label . ' | Lauco Experience');
+        // La home intercetta anche l'intento turistico generico "Lauco", non solo il nome del progetto.
+        $title = $path === '/' ? match ($locale) {
+            'en' => 'Lauco: What to See and Hiking Trails | Lauco Experience',
+            'de' => 'Lauco: Sehenswürdigkeiten und Wanderwege | Lauco Experience',
+            'sl' => 'Lauco: znamenitosti in pohodniške poti | Lauco Experience',
+            default => 'Lauco: cosa vedere, sentieri e itinerari | Lauco Experience',
+        } : $label . ' | Lauco Experience';
 
         $graph=[
             ['@type'=>'Organization','@id'=>seo_base_url().'/#organization','name'=>'Lauco Experience','url'=>seo_base_url().'/','logo'=>seo_abs('assets/img/logo.png')],
             ['@type'=>'WebSite','@id'=>seo_base_url().'/#website','url'=>seo_base_url().'/','name'=>'Lauco Experience','inLanguage'=>$locale,'publisher'=>['@id'=>seo_base_url().'/#organization']],
         ];
+        $graph[]=[
+            '@type'=>'WebPage',
+            '@id'=>$canonical . '#webpage',
+            'url'=>$canonical,
+            'name'=>$title,
+            'description'=>$description,
+            'inLanguage'=>$locale,
+            'isPartOf'=>['@id'=>seo_base_url().'/#website'],
+        ];
+        if ($path === '/') {
+            $graph[]=[
+                '@type'=>'TouristDestination',
+                '@id'=>seo_base_url().'/#destination',
+                'name'=>'Lauco',
+                'description'=>$description,
+                'url'=>seo_base_url().'/',
+                'containedInPlace'=>[
+                    '@type'=>'AdministrativeArea',
+                    'name'=>'Carnia',
+                    'containedInPlace'=>['@type'=>'AdministrativeArea','name'=>'Friuli-Venezia Giulia'],
+                ],
+            ];
+            $graph[2]['about']=['@id'=>seo_base_url().'/#destination'];
+        }
         if ($path !== '/') {
             $items=[['@type'=>'ListItem','position'=>1,'name'=>'Lauco Experience','item'=>seo_url('/',$locale)]];
             $pos=2;
@@ -247,10 +277,13 @@ if (!function_exists('seo_metadata')) {
         if ($entity) { $entity['url']=$entity['url'] ?? $canonical; $graph[]=$entity; }
 
         $noindex=['/400','/mappa1','/login','/crea-account'];
+        // Gli ambienti di sviluppo non devono competere con il dominio canonico.
+        $host = strtolower(preg_replace('/:\\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? '')) ?? '');
+        $isStaging = (bool) preg_match('~^(?:dev|staging|test)\\.laucoexperience\\.it$~', $host);
         return [
             'locale'=>$locale,'og_locale'=>['it'=>'it_IT','en'=>'en_GB','de'=>'de_DE','sl'=>'sl_SI'][$locale] ?? 'it_IT',
             'title'=>$title,'description'=>seo_text($description),'canonical'=>$canonical,'alternates'=>$alternates,
-            'image'=>seo_abs($image),'type'=>$type,'robots'=>in_array($path,$noindex,true)?'noindex,nofollow':'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+            'image'=>seo_abs($image),'type'=>$type,'robots'=>$isStaging?'noindex,follow':(in_array($path,$noindex,true)?'noindex,nofollow':'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'),
             'json_ld'=>['@context'=>'https://schema.org','@graph'=>$graph],
         ];
     }

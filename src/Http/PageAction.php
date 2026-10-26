@@ -30,6 +30,24 @@ final class PageAction
         int $defaultStatus = 200,
     ): ResponseInterface {
         $locale = $this->locales->resolve($request);
+        // URL senza lang: la versione canonica e indicizzabile è sempre in italiano.
+        // Manteniamo la preferenza utente, ma tramite redirect a una URL esplicita,
+        // così la stessa URL non restituisce HTML di lingue diverse.
+        $query = $request->getQueryParams();
+        if (
+            in_array(strtoupper($request->getMethod()), ['GET', 'HEAD'], true)
+            && !isset($query['lang'])
+            && $locale !== LocaleResolver::DEFAULT_LOCALE
+        ) {
+            $query['lang'] = $locale;
+            $target = $request->getUri()->getPath()
+                . '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+            return $response
+                ->withStatus(302)
+                ->withHeader('Location', $target)
+                ->withHeader('Cache-Control', 'private, no-store')
+                ->withHeader('Vary', 'Accept-Language, Cookie');
+        }
         $previousGet = $_GET;
         $previousPost = $_POST;
         $previousServer = [];

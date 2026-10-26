@@ -23,7 +23,7 @@ final class SitemapAction
 
         $entries = [];
         foreach ($this->staticPaths() as $path) {
-            $entries[] = ['path' => $path, 'slug' => null, 'lastmod' => null];
+            $entries[] = ['path' => $path, 'slug' => null, 'lastmod' => null, 'multilingual' => true];
         }
 
         $pdo = $this->connect();
@@ -34,16 +34,34 @@ final class SitemapAction
         }
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
         foreach ($entries as $entry) {
-            $loc = $this->url((string) $entry['path'], $entry['slug']);
-            $xml .= "  <url>\n";
-            $xml .= '    <loc>' . $this->escape($loc) . "</loc>\n";
-            if (is_string($entry['lastmod']) && $entry['lastmod'] !== '') {
-                $xml .= '    <lastmod>' . $this->escape($entry['lastmod']) . "</lastmod>\n";
+            // Le pagine editoriali statiche esistono in quattro lingue.
+            // Le pagine dinamiche sono inserite solo in IT perché una traduzione
+            // pubblicata per ogni singola scheda non è garantita.
+            $localized = (bool) ($entry['multilingual'] ?? false);
+            $locales = $localized ? ['it', 'en', 'de', 'sl'] : ['it'];
+            foreach ($locales as $locale) {
+                $loc = $this->url((string) $entry['path'], $entry['slug'], $locale);
+                $xml .= "  <url>\n";
+                $xml .= '    <loc>' . $this->escape($loc) . "</loc>\n";
+                if ($localized) {
+                    foreach (['it', 'en', 'de', 'sl', 'x-default'] as $alternate) {
+                        $alternateUrl = $this->url(
+                            (string) $entry['path'],
+                            $entry['slug'],
+                            $alternate === 'x-default' ? 'it' : $alternate
+                        );
+                        $xml .= '    <xhtml:link rel="alternate" hreflang="' . $alternate
+                            . '" href="' . $this->escape($alternateUrl) . '" />' . "\n";
+                    }
+                }
+                if (is_string($entry['lastmod']) && $entry['lastmod'] !== '') {
+                    $xml .= '    <lastmod>' . $this->escape($entry['lastmod']) . "</lastmod>\n";
+                }
+                $xml .= "  </url>\n";
             }
-            $xml .= "  </url>\n";
         }
 
         $xml .= "</urlset>\n";
@@ -145,18 +163,21 @@ final class SitemapAction
                     $lastmod = $timestamp ? date('Y-m-d', $timestamp) : null;
                 }
 
-                $entries[] = ['path' => $path, 'slug' => $slug, 'lastmod' => $lastmod];
+                $entries[] = ['path' => $path, 'slug' => $slug, 'lastmod' => $lastmod, 'multilingual' => false];
             }
         } catch (Throwable $e) {
             // La sitemap statica resta disponibile anche durante una migrazione o un problema DB.
         }
     }
 
-    private function url(string $path, ?string $slug): string
+    private function url(string $path, ?string $slug, string $locale = 'it'): string
     {
         $query = [];
         if (is_string($slug) && $slug !== '') {
             $query['slug'] = $slug;
+        }
+        if ($locale !== 'it') {
+            $query['lang'] = $locale;
         }
 
         $url = self::BASE_URL . ($path === '/' ? '/' : $path);

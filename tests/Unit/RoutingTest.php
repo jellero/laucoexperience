@@ -30,6 +30,30 @@ final class RoutingTest extends TestCase
         self::assertSame('/privacy?lang=de', $response->getHeaderLine('Location'));
     }
 
+    public function testImplicitForeignLocaleRedirectsToExplicitIndexableUrl(): void
+    {
+        $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
+        $factory = new ServerRequestFactory();
+
+        $english = $factory->createServerRequest('GET', 'https://example.test/storia?ref=home')
+            ->withHeader('Accept-Language', 'en-US,en;q=0.9');
+        $response = $app->handle($english);
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame('/storia?ref=home&lang=en', $response->getHeaderLine('Location'));
+        self::assertSame('private, no-store', $response->getHeaderLine('Cache-Control'));
+
+        $german = $factory->createServerRequest('GET', 'https://example.test/storia')
+            ->withCookieParams(['lauco_lang' => 'de']);
+        $response = $app->handle($german);
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame('/storia?lang=de', $response->getHeaderLine('Location'));
+
+        $italian = $factory->createServerRequest('GET', 'https://example.test/storia');
+        $response = $app->handle($italian);
+        self::assertSame(200, $response->getStatusCode());
+        self::assertSame('it', $response->getHeaderLine('Content-Language'));
+    }
+
     public function testForraPageIsRoutedByTheApplication(): void
     {
         $app = require dirname(__DIR__, 2) . '/bootstrap/app.php';
@@ -128,7 +152,12 @@ final class RoutingTest extends TestCase
         self::assertStringContainsString('/mappa', $body);
         self::assertStringNotContainsString('<loc>https://laucoexperience.it/map</loc>', $body);
         self::assertStringNotContainsString('dev.laucoexperience.it', $body);
-        self::assertStringNotContainsString('hreflang=', $body);
+        self::assertStringContainsString('xmlns:xhtml="http://www.w3.org/1999/xhtml"', $body);
+        self::assertStringContainsString('<loc>https://laucoexperience.it/?lang=en</loc>', $body);
+        self::assertStringContainsString('<loc>https://laucoexperience.it/storia?lang=de</loc>', $body);
+        self::assertStringContainsString('<loc>https://laucoexperience.it/storia?lang=sl</loc>', $body);
+        self::assertStringContainsString('hreflang="x-default"', $body);
+        self::assertStringContainsString('hreflang="it"', $body);
         self::assertStringNotContainsString('?lang=it', $body);
 
         $canonicalPaths = [

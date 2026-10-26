@@ -283,7 +283,7 @@ if (!function_exists('seo_metadata')) {
         return [
             'locale'=>$locale,'og_locale'=>['it'=>'it_IT','en'=>'en_GB','de'=>'de_DE','sl'=>'sl_SI'][$locale] ?? 'it_IT',
             'title'=>$title,'description'=>seo_text($description),'canonical'=>$canonical,'alternates'=>$alternates,
-            'image'=>seo_abs($image),'type'=>$type,'robots'=>($isStaging || in_array($path,$noindex,true))?'noindex,follow':'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1',
+            'image'=>seo_abs($image),'type'=>$type,'robots'=>$isStaging?'noindex,follow':(in_array($path,$noindex,true)?'noindex,nofollow':'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'),
             'json_ld'=>['@context'=>'https://schema.org','@graph'=>$graph],
         ];
     }

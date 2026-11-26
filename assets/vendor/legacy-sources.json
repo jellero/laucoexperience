@@ -1,0 +1,12 @@
+{
+  "html5shiv": {
+    "version": "3.7.2",
+    "source": "cdnjs/cdnjs:ajax/libs/html5shiv/3.7.2/html5shiv.min.js",
+    "blob": "d4c731ad54418e550e181c6cb49be869076e51d8"
+  },
+  "respond": {
+    "version": "1.4.2",
+    "source": "cdnjs/cdnjs:ajax/libs/respond.js/1.4.2/respond.min.js",
+    "blob": "80a7b69dcce544dfa87ae851d92acdae0e93fb0f"
+  }
+}

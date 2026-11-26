@@ -108,8 +108,8 @@ $jsVersion = (int) (filemtime(LAUCO_ROOT . '/assets/js/mappa-itinerari.js') ?: 1
 <html lang="<?= e($locale) ?>">
 <head>
     <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css">
+    <link rel="stylesheet" href="/assets/vendor/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="/assets/vendor/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css">
     <link rel="stylesheet" href="/assets/css/mappa-itinerari.css?v=<?= $cssVersion ?>">
 </head>
 <body class="itinerary-map-layout">
@@ -175,9 +175,9 @@ $jsVersion = (int) (filemtime(LAUCO_ROOT . '/assets/js/mappa-itinerari.js') ?: 1
 window.ITINERARY_MAP_ROUTES = <?= json_encode($mapRoutes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 window.ITINERARY_MAP_LABELS = <?= json_encode(['explore' => $labels['explore'], 'loaded' => $labels['loaded'], 'mapError' => $labels['map_error']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.js"></script>
-<script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
+<script src="/assets/vendor/leaflet/dist/leaflet.js"></script>
+<script src="/assets/vendor/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.js"></script>
+<script src="/assets/vendor/togeojson/dist/togeojson.umd.js"></script>
 <script src="/assets/js/mappa-itinerari.js?v=<?= $jsVersion ?>"></script>
 </body>
 </html>

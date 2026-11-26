@@ -5,6 +5,12 @@ require_once LAUCO_ROOT . '/inc/territory-content.php';
 $currentLanguage = content_language_from_request();
 $languageCodes = ['it' => 'ITA', 'de' => 'DEU', 'en' => 'ENG', 'sl' => 'SLO'];
 $territoryNav = territory_navigation();
+$menuToggleLabel = match ($currentLanguage) {
+    'en' => 'Open or close menu',
+    'de' => 'Menü öffnen oder schließen',
+    'sl' => 'Odpri ali zapri meni',
+    default => 'Apri o chiudi il menu',
+};
 $participateLabel = match ($currentLanguage) {
     'en' => 'Participate',
     'de' => 'Mitmachen',
@@ -46,11 +52,11 @@ if (!function_exists('isCurrent')) {
     <div class="container">
         <nav class="navbar navbar-default white">
             <div id="logo">
-                <a class="navbar-brand" href="<?= htmlspecialchars(content_language_url($currentLanguage, '/index'), ENT_QUOTES, 'UTF-8') ?>">
-                    <img src="assets/img/logo.png" class="normal" alt="Lauco Experience">
-                    <img src="assets/img/logo.png" class="retina" alt="Lauco Experience">
-                    <img src="assets/img/logo_white.png" class="normal white-logo" alt="Lauco Experience">
-                    <img src="assets/img/logo_white.png" class="retina white-logo" alt="Lauco Experience">
+                <a class="navbar-brand" aria-label="Lauco Experience" href="<?= htmlspecialchars(content_language_url($currentLanguage, '/index'), ENT_QUOTES, 'UTF-8') ?>">
+                    <img src="assets/img/logo.png" class="normal" width="339" height="358" alt="">
+                    <img src="assets/img/logo.png" class="retina" width="339" height="358" alt="">
+                    <img src="assets/img/logo_white.png" class="normal white-logo" width="339" height="358" alt="">
+                    <img src="assets/img/logo_white.png" class="retina white-logo" width="339" height="358" alt="">
                 </a>
             </div>
 
@@ -60,7 +66,7 @@ if (!function_exists('isCurrent')) {
                         <li><a href="/" class="<?= isCurrent('index.php') ? 'active-item' : '' ?>">Home</a></li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php','stato-sentieri.php','gestione-sentieri.php']) ? 'active-item' : '' ?>">Mappa</a>
+                            <a href="/mappa" onclick="event.preventDefault()" class="<?= isCurrent(['map.php','segnaletica.php','consigli.php','stato-sentieri.php','gestione-sentieri.php']) ? 'active-item' : '' ?>">Mappa</a>
                             <ul class="sub-menu">
                                 <li><a href="/mappa"><?= htmlspecialchars($trailMapLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/segnaletica">Segnaletica</a></li>
@@ -71,7 +77,7 @@ if (!function_exists('isCurrent')) {
                         </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['mappa-itinerari.php','itinerari-piedi.php','itinerari-mtb.php','itinerari-speciali.php']) ? 'active-item' : '' ?>">Itinerari</a>
+                            <a href="/mappa-itinerari" onclick="event.preventDefault()" class="<?= isCurrent(['mappa-itinerari.php','itinerari-piedi.php','itinerari-mtb.php','itinerari-speciali.php']) ? 'active-item' : '' ?>">Itinerari</a>
                             <ul class="sub-menu">
                                 <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/mappa-itinerari'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($itineraryMapLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <li><a href="/itinerari-piedi">A piedi</a></li>
@@ -81,7 +87,7 @@ if (!function_exists('isCurrent')) {
                         </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['luoghi.php','luogo.php','frazioni.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars((string) ($territoryNav['territory'] ?? 'Territorio'), ENT_QUOTES, 'UTF-8') ?></a>
+                            <a href="/luoghi" onclick="event.preventDefault()" class="<?= isCurrent(['luoghi.php','luogo.php','frazioni.php','forra.php','barbecue.php','storia.php','natura.php','come-arrivare.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars((string) ($territoryNav['territory'] ?? 'Territorio'), ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">
                                 <li><a href="/luoghi">Luoghi</a></li>
                                 <li><a href="<?= htmlspecialchars(content_language_url($currentLanguage, '/frazioni'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($fractionsLabel, ENT_QUOTES, 'UTF-8') ?></a></li>
@@ -94,7 +100,7 @@ if (!function_exists('isCurrent')) {
                         </li>
 
                         <li class="submenu">
-                            <a href="javascript:void(0)" class="<?= isCurrent(['segnala-problema.php','contribuisci.php','volontariato.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
+                            <a href="/volontariato" onclick="event.preventDefault()" class="<?= isCurrent(['segnala-problema.php','contribuisci.php','volontariato.php']) ? 'active-item' : '' ?>"><?= htmlspecialchars($participateLabel, ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">
                                 <li><a href="/segnala-problema">Segnala un problema</a></li>
                                 <li><a href="/contribuisci">Invia un contributo</a></li>
@@ -104,11 +110,11 @@ if (!function_exists('isCurrent')) {
 
                         <li><a href="/eventi" class="<?= isCurrent(['eventi.php','evento.php','eventi-archivio.php']) ? 'active-item' : '' ?>">Eventi</a></li>
                         <li><a href="/contatti" class="<?= isCurrent('contatti.php') ? 'active-item' : '' ?>">Contatti</a></li>
-                        <li class="submenu"><a><?= htmlspecialchars($languageCodes[$currentLanguage], ENT_QUOTES, 'UTF-8') ?></a>
+                        <li class="submenu"><a href="<?= htmlspecialchars(content_language_url($currentLanguage), ENT_QUOTES, 'UTF-8') ?>" onclick="event.preventDefault()"><?= htmlspecialchars($languageCodes[$currentLanguage], ENT_QUOTES, 'UTF-8') ?></a>
                             <ul class="sub-menu">
                             <?php foreach ($languageCodes as $language => $label): ?>
                                 <?php if ($language !== $currentLanguage): ?>
-                                    <a href="<?= htmlspecialchars(content_language_url($language), ENT_QUOTES, 'UTF-8') ?>" hreflang="<?= htmlspecialchars($language, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></a>
+                                    <li><a href="<?= htmlspecialchars(content_language_url($language), ENT_QUOTES, 'UTF-8') ?>" hreflang="<?= htmlspecialchars($language, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></a></li>
                                 <?php endif; ?>
                             <?php endforeach; ?>
                             </ul>
@@ -123,7 +129,7 @@ if (!function_exists('isCurrent')) {
                 <?php endforeach; ?>
             </div>
             <div id="menu-responsive-classic">
-                <div class="menu-button">
+                <div class="menu-button" role="button" tabindex="0" aria-label="<?= htmlspecialchars($menuToggleLabel, ENT_QUOTES, 'UTF-8') ?>" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }">
                     <span class="bar bar-1"></span><span class="bar bar-2"></span><span class="bar bar-3"></span>
                 </div>
             </div>

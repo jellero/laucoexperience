@@ -25,11 +25,13 @@ pack d3@7.8.4 d3-elevation
 pack @tmcw/togeojson@5.6.2 togeojson-elevation
 pack leaflet-geometryutil@0.10.1 leaflet-geometryutil
 pack leaflet-almostover@1.0.1 leaflet-almostover
+pack leaflet.motion@0.3.2 leaflet-motion
 python3 - "$tmp" <<'PY'
 import json, pathlib, sys, shutil
 root = pathlib.Path(sys.argv[1])
 out = root / 'out'
 replacement = {
+ 'https://unpkg.com/leaflet.motion@0.3.2/dist/leaflet.motion.min.js': '/assets/vendor/leaflet-motion/dist/leaflet.motion.min.js',
  'https://unpkg.com/d3@7.8.4/dist/d3.min.js': '/assets/vendor/d3-elevation/dist/d3.min.js',
  'https://unpkg.com/@tmcw/togeojson@5.6.2/dist/togeojson.umd.js': '/assets/vendor/togeojson-elevation/dist/togeojson.umd.js',
  'https://unpkg.com/leaflet-geometryutil@0.10.1/src/leaflet.geometryutil.js': '/assets/vendor/leaflet-geometryutil/src/leaflet.geometryutil.js',
@@ -50,7 +52,7 @@ keep = {
  'togeojson': {'dist'}, 'turf': {'turf.min.js'},
  'd3': {'dist'}, 'd3-elevation': {'dist'}, 'togeojson-elevation': {'dist'},
  'leaflet-elevation': {'dist','src','libs','images'},
- 'leaflet-geometryutil': {'src'}, 'leaflet-almostover': {'src'},
+ 'leaflet-geometryutil': {'src'}, 'leaflet-almostover': {'src'}, 'leaflet-motion': {'dist'},
 }
 for name, entries in keep.items():
     for p in (out / name).iterdir():
@@ -76,6 +78,7 @@ required = [
  'leaflet-elevation/libs/leaflet-edgescale.min.js','leaflet-elevation/images/elevation.svg',
  'd3-elevation/dist/d3.min.js','togeojson-elevation/dist/togeojson.umd.js',
  'leaflet-geometryutil/src/leaflet.geometryutil.js','leaflet-almostover/src/leaflet.almostover.js',
+ 'leaflet-motion/dist/leaflet.motion.min.js',
 ]
 for rel in required:
     p = out / rel

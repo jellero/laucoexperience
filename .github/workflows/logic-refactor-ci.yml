@@ -28,6 +28,9 @@ jobs:
               case "$file" in
                 resources/views/pages/forra.php|resources/views/pages/privacy.php|resources/views/pages/cookie.php|resources/views/partials/menu.php)
                   ;;
+                # Homepage performance changes: explicitly approved templates only.
+                resources/views/pages/index.php|resources/views/sections/slider.php|resources/views/sections/gallery.php|resources/views/sections/trips.php|resources/views/sections/news.php)
+                  ;;
                 *)
                   forbidden+=("$file")
                   ;;

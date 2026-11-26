@@ -2,6 +2,12 @@
 require_once LAUCO_ROOT . '/inc/db.php';
 
 $slides = [];
+$sliderControlLabels = match (content_language_from_request()) {
+    'en' => ['Previous slide', 'Next slide'],
+    'de' => ['Vorherige Folie', 'Nächste Folie'],
+    'sl' => ['Prejšnji diapozitiv', 'Naslednji diapozitiv'],
+    default => ['Slide precedente', 'Slide successiva'],
+};
 
 try {
     $stmt = $pdo->query("
@@ -46,13 +52,28 @@ function slider_title_html(string $title): string
 ?>
 
 <!-- Slider -->
+<style>
+    #page-content #flexslider-nav > .slides { height: 100%; }
+    #page-content #flexslider-nav > .slides > li:not(:first-child) { display: none; }
+    #page-content #flexslider-nav .slides > li > .slider-hero-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        pointer-events: none;
+    }
+</style>
 <div id="flexslider-nav" class="fullpage-wrap small">
     <ul class="slides">
         <?php if (!$slides): ?>
-            <li style="background-image:url(assets/img/old.jpg)">
+            <li>
+                <img class="slider-hero-image" src="assets/img/old.jpg" alt="" fetchpriority="high" loading="eager" decoding="async">
                 <div class="text container">
-                    <h1 class="white flex-animation animated fadeInUp">Lauco<br> Experience</h1>
-                    <h2 class="white flex-animation animated fadeInUp">Lauco</h2>
+                    <h1 class="white flex-animation">Lauco<br> Experience</h1>
+                    <h2 class="white flex-animation">Lauco</h2>
                 </div>
                 <div class="gradient dark"></div>
             </li>
@@ -64,11 +85,12 @@ function slider_title_html(string $title): string
                 $hasLink = $url !== '#';
                 $buttonLabel = $slide['button_label'] ?: 'info';
                 $animationClass = $index === 0
-                    ? 'flex-animation animated fadeInUp'
+                    ? 'flex-animation'
                     : 'flex-animation no-opacity';
             ?>
 
-            <li style="background-image:url(<?= e($slide['image_path']) ?>)">
+            <li>
+                <img class="slider-hero-image" src="<?= e($slide['image_path']) ?>" alt="" loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>" decoding="async">
                 <div class="<?= $index === 1 ? 'container text' : 'text container' ?>">
                     <h1 class="white <?= e($animationClass) ?>"><?= slider_title_html($slide['titolo']) ?></h1>
 
@@ -77,7 +99,7 @@ function slider_title_html(string $title): string
                     <?php endif; ?>
 
                     <?php if ($hasLink): ?>
-                        <a href="<?= e($url) ?>" class="shadow btn-alt small activetwo margin-bottom-null <?= e($animationClass) ?>">
+                        <a href="<?= e($url) ?>" class="shadow btn-alt small activetwo margin-bottom-null <?= e($animationClass) ?>" aria-label="<?= e($buttonLabel . ': ' . trim(strip_tags(str_ireplace('<br>', ' ', $slide['titolo'])))) ?>">
                             <?= e($buttonLabel) ?>
                         </a>
                     <?php endif; ?>
@@ -88,9 +110,9 @@ function slider_title_html(string $title): string
     </ul>
 
     <div class="slider-navigation">
-        <a href="#" class="flex-prev"><i class="icon ion-ios-arrow-thin-left"></i></a>
+        <a href="#" class="flex-prev" aria-label="<?= e($sliderControlLabels[0]) ?>"><i class="icon ion-ios-arrow-thin-left" aria-hidden="true"></i></a>
         <div class="slider-controls-container"></div>
-        <a href="#" class="flex-next"><i class="icon ion-ios-arrow-thin-right"></i></a>
+        <a href="#" class="flex-next" aria-label="<?= e($sliderControlLabels[1]) ?>"><i class="icon ion-ios-arrow-thin-right" aria-hidden="true"></i></a>
     </div>
 </div>
 <!-- END Slider -->

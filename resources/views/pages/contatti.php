@@ -131,7 +131,7 @@ if (!function_exists('h_contact_debug')) {
                                     <p class="margin-bottom">Lauco Experience nasce per valorizzare i percorsi e i sentieri del nostro territorio. Grazie a mappe interattive, foto, video e tracce scaricabili, ti offriamo un’esperienza immersiva alla scoperta della natura di Lauco.</p>
 
                                     <p>
-                                        <span class="contact-info">Indirizzo <em>Via capoluogo 104 Lauco</em></span><br>
+                                        <span class="contact-info"><?= h_contact_debug('Gruppo Sportivo Monte Arvenis APS — C.F. 84008340303') ?></span><br>
                                         
                                         <span class="contact-info">Email <a href="mailto:<?= h_contact_debug($contactEmail) ?>"><em> <?= h_contact_debug($contactEmail) ?></em></a></span>
                                     </p>
@@ -174,8 +174,9 @@ if (!function_exists('h_contact_debug')) {
                                             <textarea class="form-field" name="messageForm" id="messageForm" rows="6" placeholder="Messaggio"></textarea>
 
                                             <label class="contact-privacy">
-                                                <input type="checkbox" name="privacy" value="1">
+                                                <input type="checkbox" name="privacy" value="1" required>
                                                 Confermo che i dati inseriti possono essere utilizzati esclusivamente per rispondere alla mia richiesta.
+                                                <a href="<?= h_contact_debug(content_language_url(content_language_from_request(), '/privacy')) ?>"><?= h_contact_debug(match (content_language_from_request()) { 'en' => 'Read the Privacy Policy', 'de' => 'Datenschutzrichtlinie lesen', 'sl' => 'Preberite pravilnik o zasebnosti', default => 'Leggi la Privacy Policy' }) ?></a>
                                             </label>
 
                                             <div class="submit-area padding-onlytop-sm">

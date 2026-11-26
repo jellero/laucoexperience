@@ -11,6 +11,13 @@ $newsletterUi = [
     'network' => site_text('runtime.footer.39498f5c04', null, 'Errore di comunicazione con il server. Riprova.'),
     'timeout' => site_text('runtime.footer.025e343a94', null, 'Il server non ha risposto in tempo. Riprova.'),
 ];
+$footerLocale = content_language_from_request();
+$footerIdentity = match ($footerLocale) {
+    'en' => ['A project by', 'in collaboration with the Municipality of Lauco', 'Web development', 'I agree to receive the newsletter and have read the', 'Privacy Policy'],
+    'de' => ['Ein Projekt von', 'in Zusammenarbeit mit der Gemeinde Lauco', 'Webentwicklung', 'Ich willige in den Newsletterversand ein und habe die folgende Richtlinie gelesen:', 'Datenschutzrichtlinie'],
+    'sl' => ['Projekt izvaja', 'v sodelovanju z Občino Lauco', 'Spletni razvoj', 'Soglašam s prejemanjem e-novic in sem prebral/-a', 'Pravilnik o zasebnosti'],
+    default => ['Progetto realizzato da', 'in collaborazione con il Comune di Lauco', 'Sviluppo web', 'Acconsento a ricevere la newsletter e ho letto la', 'Privacy Policy'],
+};
 $footerClass = isset($footerClass) && is_string($footerClass) ? $footerClass : 'full-width';
 ?>
 <footer class="<?= htmlspecialchars($footerClass, ENT_QUOTES, 'UTF-8') ?>">
@@ -62,15 +69,7 @@ $footerClass = isset($footerClass) && is_string($footerClass) ? $footerClass : '
                             info@laucoexperience.it
                         </a>
                     </li>
-                    <li>
-                        <a
-                            href="https://goo.gl/maps/xyz"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Via&nbsp;Capoluogo&nbsp;104, Lauco&nbsp;(UD)
-                        </a>
-                    </li>
+                    <li><?= htmlspecialchars('Gruppo Sportivo Monte Arvenis APS — C.F. 84008340303', ENT_QUOTES, 'UTF-8') ?></li>
                 </ul>
             </div>
 
@@ -108,6 +107,12 @@ $footerClass = isset($footerClass) && is_string($footerClass) ? $footerClass : '
                             </span>
                         </div>
 
+                        <label class="newsletter-privacy">
+                            <input type="checkbox" name="newsletter_consent" value="1" required>
+                            <?= htmlspecialchars($footerIdentity[3], ENT_QUOTES, 'UTF-8') ?>
+                            <a href="<?= htmlspecialchars(content_language_url($footerLocale, '/privacy'), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($footerIdentity[4], ENT_QUOTES, 'UTF-8') ?></a>.
+                        </label>
+
                         <!-- Campo antispam invisibile -->
                         <input
                             class="newsletter-honeypot"
@@ -138,6 +143,15 @@ $footerClass = isset($footerClass) && is_string($footerClass) ? $footerClass : '
                 <div class="col-md-8 padding-leftright-null">
                     &copy; <?php echo date('Y'); ?>
                     <?= htmlspecialchars(site_text('footer.project', null, 'Lauco Experience – Progetto di valorizzazione del territorio di Lauco (UD)'), ENT_QUOTES, 'UTF-8') ?>
+                    <div class="footer-project-credit">
+                        <?= htmlspecialchars($footerIdentity[0], ENT_QUOTES, 'UTF-8') ?>
+                        <strong><?= htmlspecialchars('Gruppo Sportivo Monte Arvenis APS', ENT_QUOTES, 'UTF-8') ?></strong>
+                        <?= htmlspecialchars($footerIdentity[1], ENT_QUOTES, 'UTF-8') ?>.
+                    </div>
+                    <div class="footer-project-credit">
+                        <?= htmlspecialchars($footerIdentity[2], ENT_QUOTES, 'UTF-8') ?>:
+                        <a href="https://www.jdevpro.it/" rel="noopener noreferrer" target="_blank"><?= htmlspecialchars('Jacopo Ellero — JDevPro', ENT_QUOTES, 'UTF-8') ?></a>
+                    </div>
                 </div>
 
                 <div class="col-md-4 padding-leftright-null">
@@ -183,6 +197,10 @@ $footerClass = isset($footerClass) && is_string($footerClass) ? $footerClass : '
 </footer>
 
 <style>
+    .footer-project-credit { font-size: 13px; line-height: 1.6; }
+    .newsletter-privacy { display: block; margin-top: 10px; color: #eee; font-size: 13px; line-height: 1.5; font-weight: normal; }
+    .newsletter-privacy input { vertical-align: middle; margin-right: 4px; }
+    .newsletter-privacy a { color: #fff; text-decoration: underline; }
     /*
      * Campo honeypot antispam.
      * Non occupa spazio e non modifica il layout.

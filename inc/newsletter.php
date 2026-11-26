@@ -119,6 +119,14 @@ if (!function_exists('newsletter_send_campaign')) {
         $subject = str_replace(["\r", "\n"], ' ', $subject);
         $preheader = trim((string) ($campaign['preheader'] ?? ''));
         $body = newsletter_render_html($subject, $preheader, (string) ($campaign['html_body'] ?? ''));
+        $unsubscribe = '<p style="font-size:13px;line-height:1.5;color:#555;">Gruppo Sportivo Monte Arvenis APS — Lauco Experience. '
+            . '<a href="mailto:info@laucoexperience.it?subject=Disiscrizione%20newsletter">Disiscriviti / Unsubscribe / Abmelden / Odjava</a>'
+            . ' · <a href="https://laucoexperience.it/privacy">Privacy Policy</a></p>';
+        if (preg_match('~</body\s*>~i', $body)) {
+            $body = preg_replace('~</body\s*>~i', $unsubscribe . '</body>', $body, 1) ?? $body;
+        } else {
+            $body .= $unsubscribe;
+        }
 
         $encodedSubject = function_exists('mb_encode_mimeheader')
             ? mb_encode_mimeheader($subject, 'UTF-8', 'B', "\r\n")

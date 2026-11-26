@@ -48,6 +48,8 @@
 </head>
 <body>
 
+    <?php require_once LAUCO_VIEW_PATH . '/partials/consent.php'; ?>
+
     <!-- Loader -->
     <div id="myloader">
         <span class="loader"><div class="inner-loader"></div></span>

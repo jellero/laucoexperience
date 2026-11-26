@@ -31,6 +31,9 @@ jobs:
                 # Homepage performance changes: explicitly approved templates only.
                 resources/views/pages/index.php|resources/views/sections/slider.php|resources/views/sections/gallery.php|resources/views/sections/trips.php|resources/views/sections/news.php|resources/views/sections/forra.php|resources/views/partials/header.php)
                   ;;
+                # Only consent rendering order and footer initialization may change here.
+                resources/views/partials/consent.php|resources/views/partials/scripts.php)
+                  ;;
                 *)
                   forbidden+=("$file")
                   ;;

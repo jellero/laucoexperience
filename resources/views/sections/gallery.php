@@ -13,6 +13,36 @@ $galleryImages = $stmt->fetchAll();
 ?>
 
 <style>
+    /* Reserve the same row and item widths that Owl Carousel will use.
+       Before its synchronous setup, avoid stacking full-width photographs. */
+    .gallery-carousel:not(.owl-carousel) {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px;
+        overflow: hidden;
+    }
+    .gallery-carousel:not(.owl-carousel) > .item:nth-child(n+3) { display: none; }
+    @media (min-width: 480px) {
+        .gallery-carousel:not(.owl-carousel) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(-n+4) { display: block; }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(n+5) { display: none; }
+    }
+    @media (min-width: 767px) {
+        .gallery-carousel:not(.owl-carousel) { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(-n+5) { display: block; }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(n+6) { display: none; }
+    }
+    @media (min-width: 991px) {
+        .gallery-carousel:not(.owl-carousel) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(-n+6) { display: block; }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(n+7) { display: none; }
+    }
+    @media (min-width: 1199px) {
+        .gallery-carousel:not(.owl-carousel) { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(-n+8) { display: block; }
+        .gallery-carousel:not(.owl-carousel) > .item:nth-child(n+9) { display: none; }
+    }
+
     .gallery-carousel .image {
         position: relative;
     }

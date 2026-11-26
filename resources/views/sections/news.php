@@ -53,6 +53,16 @@ $eventiHome = $stmt->fetchAll();
         height: 300px;
         background-size: cover;
         background-position: center;
+        position: relative;
+    }
+
+    #news .home-event-card .image > img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
     }
 
     #news .home-event-card .content {
@@ -132,7 +142,7 @@ $eventiHome = $stmt->fetchAll();
                 <div class="col-sm-6 single-news horizontal-news home-event-card">
                     <article>
                         <div class="col-md-6 padding-leftright-null">
-                            <div class="image" style="background-image:url(<?= e($cover) ?>)"></div>
+                            <div class="image"><img src="<?= e($cover) ?>" alt="" loading="lazy" decoding="async" fetchpriority="low"></div>
                         </div>
 
                         <div class="col-md-6 padding-leftright-null">

@@ -16,6 +16,15 @@ $galleryImages = $stmt->fetchAll();
         position: relative;
     }
 
+    .gallery-carousel .image > img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
     .gallery-carousel .gallery-link {
         position: absolute;
         inset: 0;
@@ -30,7 +39,8 @@ $galleryImages = $stmt->fetchAll();
     <div class="gallery-carousel">
         <?php foreach ($galleryImages as $img): ?>
             <div class="item">
-                <div class="image" style="background-image:url(<?= e($img['image_path']) ?>)">
+                <div class="image">
+                    <img src="<?= e($img['image_path']) ?>" alt="" loading="lazy" decoding="async" fetchpriority="low">
                     <a
                         class="gallery-link lightbox-image"
                         href="<?= e($img['image_path']) ?>"

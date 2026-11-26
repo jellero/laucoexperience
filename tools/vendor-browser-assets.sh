@@ -25,8 +25,6 @@ pack d3@7.8.4 d3-elevation
 pack @tmcw/togeojson@5.6.2 togeojson-elevation
 pack leaflet-geometryutil@0.10.1 leaflet-geometryutil
 pack leaflet-almostover@1.0.1 leaflet-almostover
-pack html5shiv@3.7.2 html5shiv
-pack respond.js@1.4.2 respond
 python3 - "$tmp" <<'PY'
 import json, pathlib, sys, shutil
 root = pathlib.Path(sys.argv[1])
@@ -53,7 +51,6 @@ keep = {
  'd3': {'dist'}, 'd3-elevation': {'dist'}, 'togeojson-elevation': {'dist'},
  'leaflet-elevation': {'dist','src','libs','images'},
  'leaflet-geometryutil': {'src'}, 'leaflet-almostover': {'src'},
- 'html5shiv': {'dist'}, 'respond': {'dest'},
 }
 for name, entries in keep.items():
     for p in (out / name).iterdir():
@@ -79,7 +76,6 @@ required = [
  'leaflet-elevation/libs/leaflet-edgescale.min.js','leaflet-elevation/images/elevation.svg',
  'd3-elevation/dist/d3.min.js','togeojson-elevation/dist/togeojson.umd.js',
  'leaflet-geometryutil/src/leaflet.geometryutil.js','leaflet-almostover/src/leaflet.almostover.js',
- 'html5shiv/dist/html5shiv.min.js','respond/dest/respond.min.js',
 ]
 for rel in required:
     p = out / rel
@@ -98,4 +94,6 @@ PY
 # Replace only this dedicated vendor directory, not any existing template assets.
 mkdir -p assets/vendor
 cp -a "$tmp/out/." assets/vendor/
+test -s assets/vendor/html5shiv/dist/html5shiv.min.js
+test -s assets/vendor/respond/dest/respond.min.js
 echo "Local browser assets generated and verified."

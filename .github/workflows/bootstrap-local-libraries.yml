@@ -1,0 +1,32 @@
+name: Bootstrap pinned browser libraries
+on:
+  push:
+    branches:
+      - optimization/local-libraries
+    paths:
+      - tools/vendor-browser-assets.sh
+      - .github/workflows/bootstrap-local-libraries.yml
+permissions:
+  contents: write
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: optimization/local-libraries
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate and validate local assets
+        run: bash tools/vendor-browser-assets.sh
+      - name: Commit generated files only to the preparation branch
+        run: |
+          test "$(git branch --show-current)" = optimization/local-libraries
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/vendor
+          if ! git diff --cached --quiet; then
+            git commit -m "build: vendor pinned browser libraries and licenses"
+            git push origin HEAD:optimization/local-libraries
+          fi

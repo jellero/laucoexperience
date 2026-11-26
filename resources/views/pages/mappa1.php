@@ -8,10 +8,10 @@
     
 
     <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="/assets/vendor/leaflet/dist/leaflet.css" />
 
     <!-- leaflet-elevation -->
-    <link rel="stylesheet" href="https://unpkg.com/@raruto/leaflet-elevation@2.5.2/dist/leaflet-elevation.min.css">
+    <link rel="stylesheet" href="/assets/vendor/leaflet-elevation/dist/leaflet-elevation.min.css">
 </head>
 <body>
 

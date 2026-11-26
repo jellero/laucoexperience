@@ -22,7 +22,10 @@ jobs:
           mapfile -t changed < <(git diff --name-only "$base" HEAD)
           forbidden=()
           for file in "${changed[@]}"; do
-            if [[ "$file" == assets/* ]]; then
+            if [[ "$file" == assets/vendor/* ]]; then
+              # Versioned third-party browser libraries, not template graphics.
+              :
+            elif [[ "$file" == assets/* ]]; then
               forbidden+=("$file")
             elif [[ "$file" == resources/views/* ]]; then
               case "$file" in
@@ -33,6 +36,9 @@ jobs:
                   ;;
                 # Only consent rendering order and footer initialization may change here.
                 resources/views/partials/consent.php|resources/views/partials/scripts.php)
+                  ;;
+                # Local library URL changes on map pages.
+                resources/views/pages/map.php|resources/views/pages/mappa-itinerari.php|resources/views/pages/percorso.php|resources/views/pages/mappa1.php)
                   ;;
                 *)
                   forbidden+=("$file")

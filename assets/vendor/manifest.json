@@ -1,0 +1,68 @@
+{
+  "d3": {
+    "name": "d3",
+    "version": "6.5.0",
+    "integrity": "sha512-gr7FoRecKtBkBxelTeGVYERRTPgjPFLh2rOBisHdbXe3RIrVLjCo7COZYMSeFeiwVPOHDtxAGJlvN7XssNAIcg==",
+    "shasum": "55cc64690cfe7bf18788d2cfbe22d911b01309f0"
+  },
+  "d3-elevation": {
+    "name": "d3",
+    "version": "7.8.4",
+    "integrity": "sha512-q2WHStdhiBtD8DMmhDPyJmXUxr6VWRngKyiJ5EfXMxPw+tqT6BhNjhJZ4w3BHsNm3QoVfZLY8Orq/qPFczwKRA==",
+    "shasum": "e35d45800e4068cab07e59e5d883a4bb42ab217f"
+  },
+  "leaflet": {
+    "name": "leaflet",
+    "version": "1.9.4",
+    "integrity": "sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==",
+    "shasum": "23fae724e282fa25745aff82ca4d394748db7d8d"
+  },
+  "leaflet-almostover": {
+    "name": "leaflet-almostover",
+    "version": "1.0.1",
+    "integrity": "sha512-16Df50QB9DASHZn8z7A7IWh4q56pLfaJi/xfy5191zGOOwierrtY5YsTl6sEaRsfvzvmP6eMWW6jS+e3eRDBrw==",
+    "shasum": "549a6102bb3d70abe376b8f0a0ec41d867854b29"
+  },
+  "leaflet-elevation": {
+    "name": "@raruto/leaflet-elevation",
+    "version": "2.5.2",
+    "integrity": "sha512-bXWxDe72MeD5eBn6u06mF9agf2PFUg81OvT6QBQRacg+fkI4UHYL9eLcbvFo5uHltf7bN/M6f+FWsHMfgc9+QA==",
+    "shasum": "b874443ab43386181f0ea68751042b5cb3c970f6"
+  },
+  "leaflet-geometryutil": {
+    "name": "leaflet-geometryutil",
+    "version": "0.10.1",
+    "integrity": "sha512-xfyBxv0Ls2H45V4nrzn5ASi/qw0VXgEVAkbXZqQE2Qhs52fMqmWyl7egA5ht2xbyPHqjTN9ssr9lXrmXWE91yw==",
+    "shasum": "d9e7f662991dac71d234faf2db9c7641abf57523"
+  },
+  "leaflet-gesture-handling": {
+    "name": "leaflet-gesture-handling",
+    "version": "1.2.2",
+    "integrity": "sha512-Blf5V4PoNphWkzL7Y1qge+Spkd4OCQ2atjwUNhMhLIcjKzPcBH++x/lwOinaR9jSqLWqJ6oKYO8d0XdTffy4hQ==",
+    "shasum": "ea10afb94f2d477d77d47beb21e409ed327df07a"
+  },
+  "leaflet-motion": {
+    "name": "leaflet.motion",
+    "version": "0.3.2",
+    "integrity": "sha512-PqvJ86zBSsIvFgKi9kNj7Q6xvo92zhC0smfhtkYGxrjFhRXwGw8PdQJP2UB8YWReRE6r7iy9icJvKG/z0CBW4Q==",
+    "shasum": "9e20a9e66c68c45cd922452a7d339d70955e2b49"
+  },
+  "togeojson": {
+    "name": "@tmcw/togeojson",
+    "version": "5.8.1",
+    "integrity": "sha512-2YNrbis3l5kS0XrYwiHEZcGwiRp0MJ5CvwGwtMWp2z2tsVlskeec2qgvKHnF0RCwI5GnjrrBOoKsWfndEnd3LA==",
+    "shasum": "6cbcc9b1484ed28e71bdd4b5f96ceae540a4533f"
+  },
+  "togeojson-elevation": {
+    "name": "@tmcw/togeojson",
+    "version": "5.6.2",
+    "integrity": "sha512-Tj0apuZI24WxF5rVTWsrQG2rmBQhl1TYeLvrTVRpU9G+1Ey2s32Luy3/DBQzULjJtVRD4sW3TjRldNc9a93ohA==",
+    "shasum": "a09cbc2858c0bda20622605eba70e3811663fc05"
+  },
+  "turf": {
+    "name": "@turf/turf",
+    "version": "6.5.0",
+    "integrity": "sha512-ipMCPnhu59bh92MNt8+pr1VZQhHVuTMHklciQURo54heoxRzt1neNYZOBR6jdL+hNsbDGAECMuIpAutX+a3Y+w==",
+    "shasum": "49cd07b942a757f3ebbdba6cb294bbb864825a83"
+  }
+}

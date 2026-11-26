@@ -47,6 +47,7 @@ function home_image_webp_available(): bool
 {
     return function_exists('imagecreatefromjpeg') && function_exists('imagewebp')
         && function_exists('imagecreatetruecolor') && function_exists('imagecopyresampled')
+        && function_exists('exif_read_data') && defined('IMG_WEBP')
         && function_exists('imagetypes') && (imagetypes() & IMG_WEBP) !== 0;
 }
 

@@ -123,7 +123,13 @@ $consentCopy = $consentCopies[$consentLocale] ?? $consentCopies['it'];
     });
 
     window.addEventListener('lauco:consent-open', openBanner);
-    installFooterManageLink();
+    // On the homepage this partial is rendered before the footer exists.
+    // The banner itself must not wait for the other page scripts.
+    if (document.readyState === 'loading' && !document.querySelector('footer')) {
+        document.addEventListener('DOMContentLoaded', installFooterManageLink, { once: true });
+    } else {
+        installFooterManageLink();
+    }
 
     var choice = window.LaucoAnalytics.getChoice();
     if (choice) {

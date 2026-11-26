@@ -4,9 +4,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
     <style>#myloader { display: none !important; }</style>
 </head>
 <body>

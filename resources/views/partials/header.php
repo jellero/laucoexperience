@@ -224,8 +224,17 @@ if (seo_path() === '/mappa') {
 <link rel="stylesheet" href="assets/css/puredesign.css">
 <link rel="stylesheet" href="assets/css/flexslider.css">
 <link rel="stylesheet" href="assets/css/owl.carousel.css">
+<?php if (!empty($laucoHomePerformance)): ?>
+<link rel="stylesheet" href="assets/css/magnific-popup.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="assets/css/jquery.fullPage.css" media="print" onload="this.media='all'">
+<noscript>
 <link rel="stylesheet" href="assets/css/magnific-popup.css">
 <link rel="stylesheet" href="assets/css/jquery.fullPage.css">
+</noscript>
+<?php else: ?>
+<link rel="stylesheet" href="assets/css/magnific-popup.css">
+<link rel="stylesheet" href="assets/css/jquery.fullPage.css">
+<?php endif; ?>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>

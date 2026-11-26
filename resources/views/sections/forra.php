@@ -1,3 +1,11 @@
+<?php
+$forraHomeLink = match (content_language_from_request()) {
+    'en' => 'Explore the Vinadia Gorge',
+    'de' => 'Die Vinadia-Schlucht entdecken',
+    'sl' => 'Odkrijte sotesko Vinadia',
+    default => 'Scopri la Forra del Vinadia',
+};
+?>
 <!-- Forra del Vinadia -->
 <style>
     #forra-home {
@@ -70,7 +78,7 @@
             <p>La Forra del Vinadia è uno dei luoghi naturalistici più riconoscibili del territorio. Questa pagina la integra in Lauco Experience senza sostituire il sito dedicato: raccoglie i riferimenti essenziali per orientarsi e collega la visita a Vinaio, ai sentieri e agli altri punti di interesse.</p>
             <p><strong>Sicurezza prima di tutto.</strong> L’interno della gola richiede esperienza e attrezzatura adeguata. Prima della visita verifica meteo, condizioni dell’acqua e indicazioni aggiornate; per l’interno della Forra è raccomandato l’accompagnamento di una guida.</p>
             <div class="forra-home-actions">
-                <a href="/forra" class="btn-alt small active">Scopri di più</a>
+                <a href="/forra" class="btn-alt small active"><?= htmlspecialchars($forraHomeLink, ENT_QUOTES, 'UTF-8') ?></a>
                 <a href="https://www.forravinadia.it/" class="btn-alt small" target="_blank" rel="noopener noreferrer">Sito Forra del Vinadia</a>
             </div>
         </div>

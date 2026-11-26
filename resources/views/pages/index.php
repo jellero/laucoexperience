@@ -6,8 +6,45 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <?php require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
-    <style>#myloader { display: none !important; }</style>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i|Open+Sans:300,300i,400,400i|Trirong:300,300i,400,400i&amp;display=swap">
+    <?php $laucoHomePerformance = true; require LAUCO_VIEW_PATH . '/partials/header.php'; ?>
+    <style>
+        #myloader { display: none !important; }
+        /* Keep the original beige palette; use dark text on light surfaces. */
+        #home-wrap a.btn-alt.small:not(.white) {
+            color: #5e4c28;
+            border-color: #8b794f;
+        }
+        #home-wrap a.btn-alt.small:not(.white).active,
+        #home-wrap a.btn-alt.small:not(.white):hover,
+        #home-wrap a.btn-alt.small:not(.white):focus-visible {
+            color: #2f2911 !important;
+        }
+        #home-wrap p.heading.grey,
+        #home-wrap .territory-home-card p,
+        #forra-home .forra-home-inner > p {
+            color: #555 !important;
+        }
+        #page-content #showcase-treks .item .showcase-trek span.read {
+            color: #2f2911;
+        }
+        #newsletter-form form .form-input input[type="submit"] {
+            color: #2f2911;
+        }
+        #newsletter-form form .form-input input[type="submit"]:hover,
+        #newsletter-form form .form-input input[type="submit"]:focus-visible {
+            color: #fff;
+            background-color: #2f2911;
+        }
+        #lauco-consent .lauco-consent__copy a {
+            color: #5e4c28;
+        }
+        #home-wrap a:focus-visible, #newsletter-submit:focus-visible,
+        #lauco-consent a:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 3px;
+        }
+    </style>
 </head>
 <body>
 

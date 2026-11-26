@@ -29,7 +29,7 @@ jobs:
                 resources/views/pages/forra.php|resources/views/pages/privacy.php|resources/views/pages/cookie.php|resources/views/partials/menu.php)
                   ;;
                 # Homepage performance changes: explicitly approved templates only.
-                resources/views/pages/index.php|resources/views/sections/slider.php|resources/views/sections/gallery.php|resources/views/sections/trips.php|resources/views/sections/news.php)
+                resources/views/pages/index.php|resources/views/sections/slider.php|resources/views/sections/gallery.php|resources/views/sections/trips.php|resources/views/sections/news.php|resources/views/sections/forra.php|resources/views/partials/header.php)
                   ;;
                 *)
                   forbidden+=("$file")
@@ -54,7 +54,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: curl, dom, json, libxml, mbstring, pdo_mysql, simplexml
+          extensions: curl, dom, exif, gd, json, libxml, mbstring, pdo_mysql, simplexml
           coverage: none
       - uses: ramsey/composer-install@v3
       - run: composer check

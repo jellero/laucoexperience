@@ -1,5 +1,6 @@
 <?php
 require_once LAUCO_ROOT . '/inc/db.php';
+require_once LAUCO_ROOT . '/inc/home-image.php';
 
 $stmt = $pdo->query("
     SELECT *
@@ -40,7 +41,7 @@ $galleryImages = $stmt->fetchAll();
         <?php foreach ($galleryImages as $img): ?>
             <div class="item">
                 <div class="image">
-                    <img src="<?= e($img['image_path']) ?>" alt="" loading="lazy" decoding="async" fetchpriority="low">
+                    <img src="<?= e($img['image_path']) ?>"<?= home_image_attributes(LAUCO_ROOT, (string) $img['image_path'], 'gallery') ?> alt="" loading="lazy" decoding="async" fetchpriority="low">
                     <a
                         class="gallery-link lightbox-image"
                         href="<?= e($img['image_path']) ?>"

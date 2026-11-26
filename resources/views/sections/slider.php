@@ -1,5 +1,6 @@
 <?php
 require_once LAUCO_ROOT . '/inc/db.php';
+require_once LAUCO_ROOT . '/inc/home-image.php';
 
 $slides = [];
 $sliderControlLabels = match (content_language_from_request()) {
@@ -70,7 +71,7 @@ function slider_title_html(string $title): string
     <ul class="slides">
         <?php if (!$slides): ?>
             <li>
-                <img class="slider-hero-image" src="assets/img/old.jpg" alt="" fetchpriority="high" loading="eager" decoding="async">
+                <img class="slider-hero-image" src="assets/img/old.jpg"<?= home_image_attributes(LAUCO_ROOT, 'assets/img/old.jpg', 'hero') ?> alt="" fetchpriority="high" loading="eager" decoding="async">
                 <div class="text container">
                     <h1 class="white flex-animation">Lauco<br> Experience</h1>
                     <h2 class="white flex-animation">Lauco</h2>
@@ -90,7 +91,7 @@ function slider_title_html(string $title): string
             ?>
 
             <li>
-                <img class="slider-hero-image" src="<?= e($slide['image_path']) ?>" alt="" loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>" decoding="async">
+                <img class="slider-hero-image" src="<?= e($slide['image_path']) ?>"<?= home_image_attributes(LAUCO_ROOT, (string) $slide['image_path'], 'hero') ?> alt="" loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" fetchpriority="<?= $index === 0 ? 'high' : 'low' ?>" decoding="async">
                 <div class="<?= $index === 1 ? 'container text' : 'text container' ?>">
                     <h1 class="white <?= e($animationClass) ?>"><?= slider_title_html($slide['titolo']) ?></h1>
 

@@ -15,6 +15,9 @@ RewriteBase /
 # Codice applicativo e configurazione non sono mai pubblici.
 RewriteRule ^(?:bootstrap|config|inc|migrations|resources|src|storage|tests|tools|vendor)(?:/|$) - [F,L,NC]
 
+# Cached image derivatives are served only by the dedicated image endpoint.
+RewriteRule ^uploads/\.home-image-cache(?:/|$) - [F,L,NC]
+
 # Il backoffice e i file statici esistenti restano serviti direttamente.
 RewriteRule ^admin(?:/|$) - [L,NC]
 RewriteCond %{REQUEST_FILENAME} -f [OR]

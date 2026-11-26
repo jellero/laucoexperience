@@ -240,7 +240,7 @@ if (!function_exists('seo_metadata')) {
         } : $label . ' | Lauco Experience';
 
         $graph=[
-            ['@type'=>'Organization','@id'=>seo_base_url().'/#organization','name'=>'Lauco Experience','url'=>seo_base_url().'/','logo'=>seo_abs('assets/img/logo.png')],
+            ['@type'=>'Organization','@id'=>seo_base_url().'/#organization','name'=>'Gruppo Sportivo Monte Arvenis APS','legalName'=>'Gruppo Sportivo Monte Arvenis A.P.S.','taxID'=>'84008340303','url'=>seo_base_url().'/','address'=>['@type'=>'PostalAddress','addressLocality'=>'Lauco','addressRegion'=>'Friuli-Venezia Giulia','addressCountry'=>'IT']],
             ['@type'=>'WebSite','@id'=>seo_base_url().'/#website','url'=>seo_base_url().'/','name'=>'Lauco Experience','inLanguage'=>$locale,'publisher'=>['@id'=>seo_base_url().'/#organization']],
         ];
         $graph[]=[

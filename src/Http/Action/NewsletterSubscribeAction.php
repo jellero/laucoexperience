@@ -46,6 +46,16 @@ final class NewsletterSubscribeAction
             ), 200, $locale);
         }
 
+        if (($data['newsletter_consent'] ?? null) !== '1') {
+            $message = match ($locale) {
+                'en' => 'Please confirm your consent to receive the newsletter.',
+                'de' => 'Bitte bestätigen Sie Ihre Einwilligung zum Newsletterversand.',
+                'sl' => 'Potrdite soglasje za prejemanje e-novic.',
+                default => 'Conferma il consenso a ricevere la newsletter.',
+            };
+            return $this->respond($response, false, $message, 422, $locale);
+        }
+
         $email = trim((string) ($data['email'] ?? ''));
         if ($email === '') {
             return $this->respond($response, false, site_text('runtime.newsletter.1e00992632', null, 'Inserisci il tuo indirizzo email.'), 422, $locale);

@@ -34,6 +34,9 @@ jobs:
                 # Only consent rendering order and footer initialization may change here.
                 resources/views/partials/consent.php|resources/views/partials/scripts.php)
                   ;;
+                # Association identity, privacy and newsletter transparency.
+                resources/views/partials/footer.php|resources/views/pages/contatti.php)
+                  ;;
                 *)
                   forbidden+=("$file")
                   ;;

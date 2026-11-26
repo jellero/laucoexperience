@@ -3,7 +3,7 @@
  * Configurazione contatti Lauco Experience.
  */
 
-const CONTACT_TO_EMAIL = 'comune.lauco@certgov.fvg.it';
+const CONTACT_TO_EMAIL = 'info@laucoexperience.it';
 const CONTACT_TO_NAME = 'Lauco Experience';
 
 /*

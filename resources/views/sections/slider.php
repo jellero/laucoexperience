@@ -54,8 +54,19 @@ function slider_title_html(string $title): string
 
 <!-- Slider -->
 <style>
-    #page-content #flexslider-nav > .slides { height: 100%; }
+    #page-content #flexslider-nav > .slides,
+    #page-content #flexslider-nav > .flex-viewport,
+    #page-content #flexslider-nav > .flex-viewport > .slides {
+        height: 100%;
+    }
     #page-content #flexslider-nav > .slides > li:not(:first-child) { display: none; }
+    /* FlexSlider delays the inline slide widths and floats by 100 ms.
+       Match its horizontal track during that initialization window. */
+    #page-content #flexslider-nav > .flex-viewport > .slides > li {
+        display: block;
+        float: left;
+        width: calc(100% / var(--lauco-slide-track-factor));
+    }
     #page-content #flexslider-nav .slides > li > .slider-hero-image {
         position: absolute;
         inset: 0;
@@ -67,7 +78,7 @@ function slider_title_html(string $title): string
         pointer-events: none;
     }
 </style>
-<div id="flexslider-nav" class="fullpage-wrap small">
+<div id="flexslider-nav" class="fullpage-wrap small" style="--lauco-slide-track-factor: <?= 2 * (max(1, count($slides)) + 2) ?>">
     <ul class="slides">
         <?php if (!$slides): ?>
             <li>

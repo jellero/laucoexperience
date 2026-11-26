@@ -33,3 +33,20 @@ RewriteRule ^(.+?)\.php$ /$1 [R=301,L,NE]
 
 # Unico front controller per pagine, form, API e 404.
 RewriteRule ^ public/index.php [QSA,L]
+
+
+# Cache only public static assets. The deployment router internally prefixes
+# /lauco-site; matching both forms also works for a direct document root.
+<IfModule mod_setenvif.c>
+    <IfModule mod_headers.c>
+        SetEnvIfNoCase Request_URI "^/(lauco-site/)?assets/(css|js)/.+\.(css|js)$" lauco_static_code=1
+        SetEnvIfNoCase Request_URI "^/(lauco-site/)?(assets|gallery|slides)/.+\.(avif|webp|jpe?g|png|gif|svg|ico|woff2?|ttf|otf)$" lauco_static_media=1
+        SetEnvIfNoCase Request_URI "^/(lauco-site/)?uploads/(slider|galleria|eventi/(cover|gallery)|percorsi/(cover|gallery)|luoghi/gallery)/[0-9]{14}-[a-f0-9]+\.(avif|webp|jpe?g|png|gif)$" lauco_public_upload=1
+        Header set Cache-Control "public, max-age=86400" env=lauco_static_code
+        Header set Cache-Control "public, max-age=604800" env=lauco_static_media
+        Header set Cache-Control "public, max-age=86400" env=lauco_public_upload
+    </IfModule>
+</IfModule>
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/css text/javascript application/javascript application/x-javascript image/svg+xml
+</IfModule>

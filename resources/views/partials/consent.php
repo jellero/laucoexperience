@@ -60,6 +60,17 @@ $consentCopy = $consentCopies[$consentLocale] ?? $consentCopies['it'];
 </div>
 
 <style>
+/* Keep consent geometry independent of asynchronously loaded site webfonts.
+   Explicitly cover children because the theme sets fonts on paragraphs and links. */
+#lauco-consent,
+#lauco-consent p,
+#lauco-consent strong,
+#lauco-consent a,
+#lauco-consent button {
+    font-family: Arial, Helvetica, sans-serif;
+}
+#lauco-consent .lauco-consent__copy strong { line-height: 1.3; }
+#lauco-consent .lauco-consent__button { line-height: 1.4; }
 .lauco-consent{position:fixed;z-index:10050;left:20px;right:20px;bottom:20px;max-width:980px;margin:0 auto;background:#fff;color:#222;border:1px solid rgba(0,0,0,.12);box-shadow:0 18px 55px rgba(0,0,0,.22)}
 .lauco-consent__inner{position:relative;display:flex;align-items:center;gap:28px;padding:22px 48px 22px 24px}
 .lauco-consent__close{position:absolute;right:12px;top:8px;border:0;background:transparent;color:#333;font-size:28px;line-height:1;cursor:pointer;padding:4px 7px}.lauco-consent__copy{flex:1;min-width:0}
